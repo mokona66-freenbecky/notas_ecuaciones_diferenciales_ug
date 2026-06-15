@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 2 Día 2 — Variables Separables y Homogénea</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
+
+  :root {
+    --ug-blue:       #004A87;
+    --ug-blue-dark:  #002F56;
+    --ug-blue-light: #D2E4F5;
+    --ug-gold:       #C8A000;
+    --ug-gold-light: #F5E9B0;
+    --white:         #FFFFFF;
+    --gray-100:      #F7F9FC;
+    --gray-200:      #E8EEF5;
+    --gray-700:      #3A3A3A;
+    --vs-color:      #1A7A4A;
+    --vs-light:      #E0F2E9;
+    --hom-color:     #7A1A6A;
+    --hom-light:     #F2E0F0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Raleway', sans-serif; background: var(--gray-100); color: var(--gray-700); line-height: 1.7; }
+
+  header {
+    background: linear-gradient(135deg, var(--ug-blue-dark) 0%, var(--vs-color) 100%);
+    color: var(--white); padding: 0; position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; top: -80px; right: -80px;
+    width: 350px; height: 350px; border-radius: 50%;
+    background: rgba(200,160,0,0.1);
+  }
+  .header-inner { max-width: 960px; margin: 0 auto; padding: 2rem 2rem 1.5rem; position: relative; z-index: 1; }
+  .header-top { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem; }
+  .logo-placeholder {
+    width: 64px; height: 64px; background: var(--ug-gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 1.1rem; color: var(--ug-blue-dark); flex-shrink: 0;
+  }
+  .header-inst .univ { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ug-gold); display: block; }
+  .header-inst .dept { font-size: 0.75rem; color: rgba(255,255,255,0.7); display: block; }
+  .badge-semana {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: var(--ug-gold); color: var(--ug-blue-dark);
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.3rem 0.8rem; border-radius: 2rem; margin-bottom: 0.8rem;
+  }
+  header h1 { font-size: clamp(1.5rem,4vw,2.3rem); font-weight: 900; line-height: 1.15; margin-bottom: 0.4rem; }
+  header h1 span { color: var(--ug-gold); }
+  .header-sub { font-size: 0.9rem; color: rgba(255,255,255,0.75); font-weight: 300; }
+  .header-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.15); }
+  .meta-item { display: flex; flex-direction: column; gap: 0.1rem; }
+  .meta-item .label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ug-gold); }
+  .meta-item .value { font-size: 0.82rem; color: rgba(255,255,255,0.9); }
+  .gold-bar { height: 4px; background: linear-gradient(90deg, var(--ug-gold), #FFD94A, var(--ug-gold)); }
+
+  main { max-width: 960px; margin: 0 auto; padding: 2rem; }
+
+  /* Método tabs */
+  .metodo-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+
+  .metodo-card {
+    border-radius: 12px; padding: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .metodo-card.vs { background: linear-gradient(135deg, var(--vs-light), #C8EDD8); border: 2px solid var(--vs-color); }
+  .metodo-card.hom { background: linear-gradient(135deg, var(--hom-light), #E8C8E0); border: 2px solid var(--hom-color); }
+
+  .metodo-card .m-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .metodo-card.vs .m-label { color: var(--vs-color); }
+  .metodo-card.hom .m-label { color: var(--hom-color); }
+
+  .metodo-card h2 { font-size: 1rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .metodo-card.vs h2 { color: var(--vs-color); }
+  .metodo-card.hom h2 { color: var(--hom-color); }
+
+  .metodo-card p { font-size: 0.8rem; line-height: 1.5; color: var(--gray-700); }
+
+  /* content blocks */
+  .content-block {
+    background: var(--white); border-radius: 12px; padding: 1.8rem;
+    margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,74,135,0.07);
+  }
+  .block-vs { border-top: 4px solid var(--vs-color); }
+  .block-hom { border-top: 4px solid var(--hom-color); }
+
+  .content-block h3 {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;
+    padding-bottom: 0.5rem; border-bottom: 2px solid var(--gray-200);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .block-vs h3 { color: var(--vs-color); }
+  .block-hom h3 { color: var(--hom-color); }
+
+  /* Pasos */
+  .pasos-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin: 0.8rem 0; }
+  .pasos-list li {
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    background: var(--gray-100); border-radius: 8px; padding: 0.8rem 1rem;
+    font-size: 0.84rem;
+  }
+  .step-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
+  }
+  .vs .step-num { background: var(--vs-color); color: var(--white); }
+  .hom .step-num { background: var(--hom-color); color: var(--white); }
+
+  /* Fórmulas */
+  .formula-box {
+    background: #1E1E2E; border-radius: 8px;
+    padding: 1rem 1.4rem; margin: 0.8rem 0;
+    font-family: 'Source Code Pro', monospace; font-size: 0.85rem; line-height: 1.9;
+    color: #CDD6F4;
+  }
+  .formula-box .fl { color: #6C7086; font-style: italic; }
+  .formula-box .fh { color: var(--ug-gold); font-weight: 600; }
+  .formula-box .fk { color: #89DCEB; }
+  .formula-box .fn { color: #FAB387; }
+
+  /* Ejemplo paso a paso */
+  .ejemplo-pasos {
+    background: var(--gray-100); border-radius: 10px;
+    padding: 1.2rem; margin: 0.8rem 0;
+  }
+  .ejemplo-pasos .ej-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .vs .ej-label { color: var(--vs-color); }
+  .hom .ej-label { color: var(--hom-color); }
+
+  .ej-step {
+    display: flex; gap: 0.8rem; align-items: baseline;
+    margin-bottom: 0.4rem; font-size: 0.83rem;
+  }
+  .ej-step .paso { font-weight: 700; white-space: nowrap; min-width: 60px; }
+  .vs .ej-step .paso { color: var(--vs-color); }
+  .hom .ej-step .paso { color: var(--hom-color); }
+
+  code { font-family: 'Source Code Pro', monospace; background: var(--gray-200); padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.82rem; }
+
+  /* MATLAB */
+  .matlab-block { background: #1E1E2E; border-radius: 10px; overflow: hidden; margin: 0.8rem 0; }
+  .matlab-header { background: #2D2D3F; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #FF5F57; } .dot.y { background: #FEBC2E; } .dot.g { background: #28C840; }
+  .ml-label { font-size: 0.7rem; color: #888; margin-left: auto; font-family: monospace; }
+  .matlab-code { padding: 1rem 1.2rem; font-family: 'Source Code Pro', monospace; font-size: 0.8rem; line-height: 1.7; color: #CDD6F4; }
+  .ml-c { color: #6C7086; } .ml-k { color: #89DCEB; font-weight: 700; }
+  .ml-s { color: #A6E3A1; } .ml-f { color: #89B4FA; } .ml-n { color: #FAB387; }
+
+  /* Comparativa */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.8rem 0; }
+  .compare-col { border-radius: 8px; padding: 1rem; }
+  .compare-col.vs { background: var(--vs-light); }
+  .compare-col.hom { background: var(--hom-light); }
+  .compare-col h4 { font-size: 0.78rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .compare-col.vs h4 { color: var(--vs-color); }
+  .compare-col.hom h4 { color: var(--hom-color); }
+  .compare-col ul { padding-left: 1rem; font-size: 0.78rem; line-height: 1.6; }
+
+  /* Aplicación agroindustrial */
+  .agro-card {
+    background: linear-gradient(135deg, var(--ug-blue), var(--ug-blue-dark));
+    color: var(--white); border-radius: 12px; padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .agro-card .a-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ug-gold); margin-bottom: 0.5rem; }
+  .agro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.8rem; }
+  .agro-item { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 0.9rem; }
+  .agro-item .emoji { font-size: 1.5rem; margin-bottom: 0.3rem; display: block; }
+  .agro-item strong { font-size: 0.82rem; display: block; margin-bottom: 0.2rem; color: var(--ug-gold); }
+  .agro-item p { font-size: 0.77rem; color: rgba(255,255,255,0.85); line-height: 1.4; }
+
+  .section-title { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; margin-top: 1.5rem; }
+  .section-title .num { background: var(--ug-gold); color: var(--ug-blue-dark); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.9rem; flex-shrink: 0; }
+  .section-title h2 { font-size: 1.1rem; font-weight: 700; color: var(--ug-blue); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  footer { background: var(--ug-blue-dark); color: rgba(255,255,255,0.6); text-align: center; padding: 1.2rem; font-size: 0.75rem; margin-top: 2rem; }
+  footer span { color: var(--ug-gold); }
+</style>
+
+<!-- MathJax para ecuaciones profesionales -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    tags: 'none',
+    macros: {}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<!-- Estilos para bloques de ecuaciones -->
+<style>
+
+.eq-display {
+  background: #FFFFFF;
+  border-left: 5px solid var(--ug-gold);
+  border-radius: 0 10px 10px 0;
+  padding: 1rem 1.5rem;
+  margin: 0.8rem 0;
+  overflow-x: auto;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,74,135,0.10);
+}
+.eq-label {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ug-blue);
+  margin-bottom: 0.3rem; display: block;
+}
+.eq-block-white {
+  background: #F0F6FF;
+  border: 1.5px solid var(--ug-blue-light);
+  border-left: 4px solid var(--ug-blue);
+  border-radius: 0 8px 8px 0;
+  padding: 0.8rem 1.2rem;
+  margin: 0.6rem 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="logo-placeholder">UG</div>
+      <div class="header-inst">
+        <span class="univ">Universidad de Guanajuato</span>
+        <span class="dept">Campus Celaya-Salvatierra · Departamento de Ingenierías</span>
+        <span class="dept">Lic. en Ingeniería Agroindustrial</span>
+      </div>
+    </div>
+    <div class="badge-semana">📅 Semana 1 · Día 2 · 5 horas</div>
+    <h1>Tema 2: <span>Variables Separables</span><br>y Ecuación Homogénea</h1>
+    <p class="header-sub">Dra. María de la Luz López González &nbsp;|&nbsp; Ecuaciones Diferenciales</p>
+    <div class="header-meta">
+      <div class="meta-item"><span class="label">Subtemas</span><span class="value">2.1 y 2.2</span></div>
+      <div class="meta-item"><span class="label">Duración</span><span class="value">5 horas</span></div>
+      <div class="meta-item"><span class="label">Herramienta</span><span class="value">MATLAB — dsolve, ode45</span></div>
+      <div class="meta-item"><span class="label">Entregable</span><span class="value">Tarea 2</span></div>
+    </div>
+  </div>
+</header>
+<div class="gold-bar"></div>
+
+<main>
+
+  <div class="metodo-tabs">
+    <div class="metodo-card vs">
+      <div class="m-label">Subtema 2.1</div>
+      <h2>Variables Separables</h2>
+      <p>La EDO puede escribirse como g(y)dy = f(x)dx. Se integran ambos lados de forma independiente. Es el método más directo cuando la separación es posible.</p>
+    </div>
+    <div class="metodo-card hom">
+      <div class="m-label">Subtema 2.2</div>
+      <h2>Ecuación Homogénea</h2>
+      <p>f(x,y) es homogénea de grado n si f(tx,ty) = tⁿ·f(x,y). La sustitución v = y/x la convierte en una ecuación de variables separables.</p>
+    </div>
+  </div>
+
+  <!-- VARIABLES SEPARABLES -->
+  <div class="content-block block-vs vs">
+    <h3>🟢 2.1 Método de Variables Separables</h3>
+
+    <span class="eq-label">Método de Variables Separables</span>
+      <div class="eq-display">
+        \[ \frac{dy}{dx} = f(x)\cdot g(y) \]
+        \[ \frac{dy}{g(y)} = f(x)\,dx \]
+        \[ \int \frac{dy}{g(y)} = \int f(x)\,dx + C \]
+      </div>
+
+    <ul class="pasos-list vs">
+      <li><div class="step-num">1</div><div>Verificar que la EDO sea separable: escribirla como <code>dy/dx = f(x)·g(y)</code></div></li>
+      <li><div class="step-num">2</div><div>Dividir entre g(y) y multiplicar por dx: <code>dy/g(y) = f(x)dx</code></div></li>
+      <li><div class="step-num">3</div><div>Integrar ambos lados: <code>∫dy/g(y) = ∫f(x)dx + C</code></div></li>
+      <li><div class="step-num">4</div><div>Despejar y si es posible; incluir la constante C</div></li>
+      <li><div class="step-num">5</div><div>Aplicar condición inicial si es un PVI para encontrar C</div></li>
+    </ul>
+
+    <div class="ejemplo-pasos vs">
+      <div class="ej-label">Ejemplo resuelto — Enfriamiento de leche pasteurizada</div>
+      <div class="ej-step"><span class="paso">EDO:</span><span>\(\dfrac{dT}{dt} = -k(T-4),\quad T(0)=85^\circ\text{C},\quad T(10)=60^\circ\text{C}\)</span></div>
+      <div class="ej-step"><span class="paso">Separar:</span><span>\(\dfrac{dT}{T-4} = -k\,dt\)</span></div>
+      <div class="ej-step"><span class="paso">Integrar:</span><span>\(\ln|T-4| = -kt + C_1\)</span></div>
+      <div class="ej-step"><span class="paso">Solución:</span><span>\(T(t) = 4 + 81\,e^{-kt}\)</span></div>
+      <div class="ej-step"><span class="paso">Hallar k:</span><span>\(k = -\dfrac{\ln(56/81)}{10} \approx 0.0369\;\text{min}^{-1}\)</span></div>
+      <div class="ej-step"><span class="paso">¿T = 4°C?</span><span>\(t = \dfrac{\ln(81)}{0.0369} \approx 118.5\;\text{min}\)</span></div>
+    </div>
+
+    <div class="matlab-block">
+      <div class="matlab-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="ml-label">MATLAB — variables_separables.m</span>
+      </div>
+      <div class="matlab-code">
+<span class="ml-c">% Solución simbólica — variables separables</span><br>
+<span class="ml-k">syms</span> T(t) k<br>
+ode = <span class="ml-f">diff</span>(T,t) == -k*(T-<span class="ml-n">4</span>);<br>
+sol = <span class="ml-f">dsolve</span>(ode, T(<span class="ml-n">0</span>)==<span class="ml-n">85</span>)<br>
+<br>
+<span class="ml-c">% Con k numérico para graficar</span><br>
+k_val = <span class="ml-n">0.0369</span>;<br>
+T_sol = @(t) <span class="ml-n">4</span> + <span class="ml-n">81</span>*<span class="ml-f">exp</span>(-k_val*t);<br>
+t_vec = <span class="ml-n">0</span>:<span class="ml-n">1</span>:<span class="ml-n">130</span>;<br>
+<span class="ml-f">plot</span>(t_vec, <span class="ml-f">T_sol</span>(t_vec), <span class="ml-s">'b-'</span>, <span class="ml-s">'LineWidth'</span>, <span class="ml-n">2</span>)<br>
+<span class="ml-f">yline</span>(<span class="ml-n">4</span>, <span class="ml-s">'r--'</span>, <span class="ml-s">'T ambiente'</span>)<br>
+<span class="ml-f">xlabel</span>(<span class="ml-s">'Tiempo (min)'</span>); <span class="ml-f">ylabel</span>(<span class="ml-s">'Temperatura (°C)'</span>)<br>
+<span class="ml-f">title</span>(<span class="ml-s">'Enfriamiento de leche — Ley de Newton'</span>); <span class="ml-f">grid</span> on
+      </div>
+    </div>
+  </div>
+
+  <!-- HOMOGÉNEA -->
+  <div class="content-block block-hom hom">
+    <h3>🟣 2.2 Ecuación Homogénea</h3>
+
+    <span class="eq-label">Ecuación Homogénea — Sustitución</span>
+      <div class="eq-display">
+        \[ f(tx,\,ty) = t^n\,f(x,\,y) \]
+        \[ M(x,y)\,dx + N(x,y)\,dy = 0, \quad M,N \text{ homogéneas del mismo grado} \]
+        \[ v = \frac{y}{x} \;\Rightarrow\; y = vx,\quad dy = v\,dx + x\,dv \]
+      </div>
+
+    <ul class="pasos-list hom">
+      <li><div class="step-num">1</div><div>Verificar homogeneidad: comprobar que M y N son del mismo grado con f(tx,ty) = tⁿf(x,y)</div></li>
+      <li><div class="step-num">2</div><div>Sustituir <code>v = y/x</code>, es decir <code>y = vx</code> y <code>dy = v dx + x dv</code></div></li>
+      <li><div class="step-num">3</div><div>Reescribir la EDO en términos de v y x — quedará separable</div></li>
+      <li><div class="step-num">4</div><div>Separar variables y resolver la integral en v y x</div></li>
+      <li><div class="step-num">5</div><div>Regresar a las variables originales: sustituir v = y/x</div></li>
+    </ul>
+
+    <div class="ejemplo-pasos hom">
+      <div class="ej-label">Ejemplo resuelto — Flujo en canal agroindustrial</div>
+      <div class="ej-step"><span class="paso">EDO:</span><span>\((x^2+y^2)\,dx - 2xy\,dy = 0\)</span></div>
+      <div class="ej-step"><span class="paso">Grado:</span><span>M y N son homogéneas de grado 2 ✓</span></div>
+      <div class="ej-step"><span class="paso">Sustit.:</span><span>\(y=vx,\quad dy = v\,dx + x\,dv\)</span></div>
+      <div class="ej-step"><span class="paso">Separa:</span><span>\(\dfrac{dx}{x} = \dfrac{2v\,dv}{v^2-1}\)</span></div>
+      <div class="ej-step"><span class="paso">Integra:</span><span>\(\ln|x| = \ln|v^2-1| + C\)</span></div>
+      <div class="ej-step"><span class="paso">Regresa:</span><span>\(x^3 = C(y^2 - x^2)\)</span></div>
+    </div>
+
+    <div class="matlab-block">
+      <div class="matlab-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="ml-label">MATLAB — homogenea.m</span>
+      </div>
+      <div class="matlab-code">
+<span class="ml-c">% Resolución simbólica — ecuación homogénea</span><br>
+<span class="ml-k">syms</span> y(x)<br>
+ode = (<span class="ml-f">diff</span>(y,x)) == (x^<span class="ml-n">2</span> + y^<span class="ml-n">2</span>)/(<span class="ml-n">2</span>*x*y);<br>
+sol = <span class="ml-f">dsolve</span>(ode)<br>
+<br>
+<span class="ml-c">% Graficar familia de soluciones</span><br>
+<span class="ml-k">for</span> C = [-<span class="ml-n">2</span>, -<span class="ml-n">1</span>, <span class="ml-n">0</span>, <span class="ml-n">1</span>, <span class="ml-n">2</span>]<br>
+&nbsp;&nbsp;fimplicit(@(x,y) x.^<span class="ml-n">3</span> - C*(y.^<span class="ml-n">2</span>-x.^<span class="ml-n">2</span>), ...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[-<span class="ml-n">3</span> <span class="ml-n">3</span> -<span class="ml-n">3</span> <span class="ml-n">3</span>]); <span class="ml-f">hold</span> on<br>
+<span class="ml-k">end</span><br>
+<span class="ml-f">grid</span> on; <span class="ml-f">title</span>(<span class="ml-s">'Familia de soluciones — Homogénea'</span>)
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARATIVA -->
+  <div class="content-block">
+    <h3 style="color:var(--ug-blue);">🔍 ¿Cómo identificar el método correcto?</h3>
+    <div class="compare-grid">
+      <div class="compare-col vs">
+        <h4>✅ Variables Separables — úsalo cuando:</h4>
+        <ul>
+          <li>dy/dx se puede escribir como f(x)·g(y)</li>
+          <li>Al mover términos, x queda de un lado y y del otro</li>
+          <li>Ejemplo: dy/dx = x²y → separable</li>
+        </ul>
+      </div>
+      <div class="compare-col hom">
+        <h4>✅ Homogénea — úsala cuando:</h4>
+        <ul>
+          <li>M(x,y) y N(x,y) tienen el mismo grado homogéneo</li>
+          <li>La EDO se puede escribir como dy/dx = F(y/x)</li>
+          <li>Ejemplo: dy/dx = (x+y)/x → homogénea</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- APLICACIONES AGROINDUSTRIALES -->
+  <div class="agro-card">
+    <div class="a-label">🏭 Aplicaciones en Ingeniería Agroindustrial</div>
+    <div class="agro-grid">
+      <div class="agro-item">
+        <span class="emoji">🧫</span>
+        <strong>Cinética de primer orden</strong>
+        <p>dC/dt = -kC → Variables separables → Degradación de vitaminas en procesamiento térmico</p>
+      </div>
+      <div class="agro-item">
+        <span class="emoji">🌡️</span>
+        <strong>Ley de Newton del enfriamiento</strong>
+        <p>dT/dt = -k(T-T∞) → Variables separables → Cálculo de tiempos de pasteurización y enfriamiento</p>
+      </div>
+      <div class="agro-item">
+        <span class="emoji">💧</span>
+        <strong>Flujo en canales</strong>
+        <p>Perfil de velocidades → Homogénea → Diseño de canales en plantas de lavado de vegetales</p>
+      </div>
+      <div class="agro-item">
+        <span class="emoji">📦</span>
+        <strong>Secado de granos</strong>
+        <p>dM/dt = -k(M-Me) → Variables separables → Curvas de secado de maíz y sorgo</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>
+    <span>Universidad de Guanajuato</span> · Campus Celaya-Salvatierra · Departamento de Ingenierías<br>
+    Dra. María de la Luz López González · Ecuaciones Diferenciales · Lic. en Ingeniería Agroindustrial · 2026
+  </p>
+</footer>
+</body>
+</html>

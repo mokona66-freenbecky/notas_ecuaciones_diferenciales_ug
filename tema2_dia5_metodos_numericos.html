@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Práctica 1 — Métodos Numéricos para EDO</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
+  :root {
+    --ug-blue:#004A87;--ug-blue-dark:#002F56;--ug-blue-light:#D2E4F5;
+    --ug-gold:#C8A000;--ug-gold-light:#F5E9B0;
+    --white:#FFFFFF;--gray-100:#F7F9FC;--gray-200:#E8EEF5;--gray-700:#3A3A3A;
+    --eu-color:#1A7000;--eu-light:#E8F5E0;
+    --rk-color:#00607A;--rk-light:#E0F4F8;
+    --ode-color:#7A4000;--ode-light:#FFF0E0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Raleway',sans-serif;background:var(--gray-100);color:var(--gray-700);line-height:1.7;}
+
+  header{background:linear-gradient(135deg,var(--ug-blue-dark) 0%,#004000 60%,var(--eu-color) 100%);color:var(--white);position:relative;overflow:hidden;}
+  header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(200,160,0,0.12);}
+  header::after{content:'';position:absolute;bottom:-40px;left:20%;width:250px;height:250px;border-radius:50%;background:rgba(255,255,255,0.04);}
+  .header-inner{max-width:960px;margin:0 auto;padding:2rem 2rem 1.5rem;position:relative;z-index:1;}
+  .header-top{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;}
+  .logo-placeholder{width:64px;height:64px;background:var(--ug-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;color:var(--ug-blue-dark);flex-shrink:0;}
+  .header-inst .univ{font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ug-gold);display:block;}
+  .header-inst .dept{font-size:0.75rem;color:rgba(255,255,255,0.7);display:block;}
+  .badge-semana{display:inline-flex;align-items:center;gap:0.4rem;background:var(--ug-gold);color:var(--ug-blue-dark);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:2rem;margin-bottom:0.8rem;}
+  header h1{font-size:clamp(1.4rem,4vw,2.2rem);font-weight:900;line-height:1.15;margin-bottom:0.4rem;}
+  header h1 span{color:var(--ug-gold);}
+  .header-sub{font-size:0.9rem;color:rgba(255,255,255,0.75);font-weight:300;}
+  .header-meta{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,0.15);}
+  .meta-item{display:flex;flex-direction:column;gap:0.1rem;}
+  .meta-item .label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ug-gold);}
+  .meta-item .value{font-size:0.82rem;color:rgba(255,255,255,0.9);}
+  .gold-bar{height:4px;background:linear-gradient(90deg,var(--ug-gold),#FFD94A,var(--ug-gold));}
+
+  main{max-width:960px;margin:0 auto;padding:2rem;}
+
+  /* Intro práctica */
+  .practica-intro{background:linear-gradient(135deg,var(--ug-blue),var(--ug-blue-dark));color:var(--white);border-radius:12px;padding:1.6rem;margin-bottom:2rem;}
+  .practica-intro .p-label{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ug-gold);margin-bottom:0.4rem;}
+  .practica-intro p{font-size:0.9rem;line-height:1.6;color:rgba(255,255,255,0.9);}
+  .practica-intro .objetivos{margin-top:0.8rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.6rem;}
+  .obj-item{background:rgba(255,255,255,0.1);border-radius:8px;padding:0.7rem;font-size:0.78rem;display:flex;gap:0.5rem;align-items:flex-start;}
+  .obj-item .oi{flex-shrink:0;font-size:1rem;}
+
+  /* Tres métodos */
+  .metodos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
+  .metodo-card{border-radius:12px;padding:1.2rem;}
+  .metodo-card.eu{background:var(--eu-light);border:2px solid var(--eu-color);}
+  .metodo-card.rk{background:var(--rk-light);border:2px solid var(--rk-color);}
+  .metodo-card.od{background:var(--ode-light);border:2px solid var(--ode-color);}
+  .metodo-card .m-label{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem;}
+  .metodo-card.eu .m-label{color:var(--eu-color);}
+  .metodo-card.rk .m-label{color:var(--rk-color);}
+  .metodo-card.od .m-label{color:var(--ode-color);}
+  .metodo-card h2{font-size:0.88rem;font-weight:800;margin-bottom:0.4rem;}
+  .metodo-card.eu h2{color:var(--eu-color);}
+  .metodo-card.rk h2{color:var(--rk-color);}
+  .metodo-card.od h2{color:var(--ode-color);}
+  .metodo-card p{font-size:0.75rem;line-height:1.5;}
+  .metodo-card .orden{display:inline-block;margin-top:0.4rem;font-size:0.7rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:4px;}
+  .metodo-card.eu .orden{background:var(--eu-color);color:var(--white);}
+  .metodo-card.rk .orden{background:var(--rk-color);color:var(--white);}
+  .metodo-card.od .orden{background:var(--ode-color);color:var(--white);}
+
+  .content-block{background:var(--white);border-radius:12px;padding:1.8rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,74,135,0.07);}
+  .block-eu{border-top:4px solid var(--eu-color);}
+  .block-rk{border-top:4px solid var(--rk-color);}
+  .block-od{border-top:4px solid var(--ode-color);}
+  .content-block h3{font-size:0.95rem;font-weight:700;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--gray-200);display:flex;align-items:center;gap:0.5rem;}
+  .block-eu h3{color:var(--eu-color);}
+  .block-rk h3{color:var(--rk-color);}
+  .block-od h3{color:var(--ode-color);}
+
+  .formula-box{background:#1E1E2E;border-radius:8px;padding:1rem 1.4rem;margin:0.8rem 0;font-family:'Source Code Pro',monospace;font-size:0.85rem;line-height:1.9;color:#CDD6F4;}
+  .fl{color:#6C7086;font-style:italic;} .fh{color:var(--ug-gold);font-weight:600;} .fk{color:#89DCEB;} .fn{color:#FAB387;} .fs{color:#A6E3A1;}
+
+  .matlab-block{background:#1E1E2E;border-radius:10px;overflow:hidden;margin:0.8rem 0;}
+  .matlab-header{background:#2D2D3F;padding:0.5rem 1rem;display:flex;align-items:center;gap:0.5rem;}
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .dot.r{background:#FF5F57;}.dot.y{background:#FEBC2E;}.dot.g{background:#28C840;}
+  .ml-label{font-size:0.7rem;color:#888;margin-left:auto;font-family:monospace;}
+  .matlab-code{padding:1rem 1.2rem;font-family:'Source Code Pro',monospace;font-size:0.78rem;line-height:1.7;color:#CDD6F4;}
+  .ml-c{color:#6C7086;}.ml-k{color:#89DCEB;font-weight:700;}.ml-s{color:#A6E3A1;}.ml-f{color:#89B4FA;}.ml-n{color:#FAB387;}
+
+  /* Error table */
+  .error-table{width:100%;border-collapse:collapse;font-size:0.82rem;margin:0.8rem 0;}
+  .error-table thead tr{background:var(--ug-blue);color:var(--white);}
+  .error-table th{padding:0.6rem 0.9rem;text-align:left;font-size:0.72rem;letter-spacing:0.05em;text-transform:uppercase;}
+  .error-table td{padding:0.6rem 0.9rem;border-bottom:1px solid var(--gray-200);}
+  .error-table tr:nth-child(even) td{background:var(--gray-100);}
+  .error-table .mejor{color:var(--eu-color);font-weight:700;}
+  .error-table .peor{color:#B00000;}
+  .error-table .bueno{color:var(--rk-color);font-weight:700;}
+
+  /* Sección problema */
+  .problema-card{background:linear-gradient(135deg,#F5F0FF,#EDE0FF);border:2px solid #6B0080;border-radius:12px;padding:1.4rem;margin-bottom:1.5rem;}
+  .problema-card .prob-label{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#6B0080;margin-bottom:0.5rem;}
+  .problema-card h3{font-size:1rem;font-weight:700;color:#3A005A;margin-bottom:0.5rem;}
+  .problema-card p{font-size:0.84rem;line-height:1.6;}
+  .prob-datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.6rem;margin-top:0.8rem;}
+  .prob-dato{background:rgba(107,0,128,0.08);border-radius:8px;padding:0.6rem 0.8rem;}
+  .prob-dato .pd-label{font-size:0.65rem;font-weight:700;color:#6B0080;text-transform:uppercase;}
+  .prob-dato .pd-value{font-size:0.85rem;font-weight:700;color:#3A005A;}
+
+  /* Reporte */
+  .reporte-card{background:linear-gradient(135deg,var(--ug-gold-light),#FFF8D6);border:2px solid var(--ug-gold);border-radius:12px;padding:1.4rem 1.6rem;margin-top:1.5rem;}
+  .reporte-card .r-header{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.8rem;}
+  .r-badge{background:var(--ug-gold);color:var(--ug-blue-dark);font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.7rem;border-radius:4px;}
+  .reporte-card h3{font-size:0.95rem;font-weight:700;color:#7A5F00;}
+  .reporte-card ol{padding-left:1.2rem;font-size:0.84rem;line-height:1.7;}
+  .reporte-card ol li{margin-bottom:0.5rem;}
+
+  .rubrica-table{width:100%;border-collapse:collapse;font-size:0.8rem;margin-top:0.8rem;}
+  .rubrica-table thead tr{background:var(--ug-blue);color:var(--white);}
+  .rubrica-table th{padding:0.6rem 0.8rem;text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;}
+  .rubrica-table td{padding:0.6rem 0.8rem;border-bottom:1px solid var(--gray-200);vertical-align:top;}
+  .rubrica-table tr:nth-child(even) td{background:var(--gray-100);}
+  .pct{font-weight:700;color:var(--ug-blue);}
+
+  footer{background:var(--ug-blue-dark);color:rgba(255,255,255,0.6);text-align:center;padding:1.2rem;font-size:0.75rem;margin-top:2rem;}
+  footer span{color:var(--ug-gold);}
+  code{font-family:'Source Code Pro',monospace;background:var(--gray-200);padding:0.1rem 0.4rem;border-radius:3px;font-size:0.82rem;}
+</style>
+
+<!-- MathJax para ecuaciones profesionales -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    tags: 'none',
+    macros: {}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<!-- Estilos para bloques de ecuaciones -->
+<style>
+
+.eq-display {
+  background: #FFFFFF;
+  border-left: 5px solid var(--ug-gold);
+  border-radius: 0 10px 10px 0;
+  padding: 1rem 1.5rem;
+  margin: 0.8rem 0;
+  overflow-x: auto;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,74,135,0.10);
+}
+.eq-label {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ug-blue);
+  margin-bottom: 0.3rem; display: block;
+}
+.eq-block-white {
+  background: #F0F6FF;
+  border: 1.5px solid var(--ug-blue-light);
+  border-left: 4px solid var(--ug-blue);
+  border-radius: 0 8px 8px 0;
+  padding: 0.8rem 1.2rem;
+  margin: 0.6rem 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="logo-placeholder">UG</div>
+      <div class="header-inst">
+        <span class="univ">Universidad de Guanajuato</span>
+        <span class="dept">Campus Celaya-Salvatierra · Departamento de Ingenierías</span>
+        <span class="dept">Lic. en Ingeniería Agroindustrial</span>
+      </div>
+    </div>
+    <div class="badge-semana">📅 Semana 1 · Día 5 · 5 horas · Práctica 1</div>
+    <h1>Métodos <span>Numéricos</span> para EDO<br>Euler, RK4 y ode45</h1>
+    <p class="header-sub">Dra. María de la Luz López González &nbsp;|&nbsp; Ecuaciones Diferenciales</p>
+    <div class="header-meta">
+      <div class="meta-item"><span class="label">Tipo</span><span class="value">Práctica MATLAB</span></div>
+      <div class="meta-item"><span class="label">Duración</span><span class="value">5 horas (completo)</span></div>
+      <div class="meta-item"><span class="label">Herramienta</span><span class="value">MATLAB — Scripts desde cero</span></div>
+      <div class="meta-item"><span class="label">Entregable</span><span class="value">Reporte Práctica 1 (PDF)</span></div>
+    </div>
+  </div>
+</header>
+<div class="gold-bar"></div>
+
+<main>
+
+  <div class="practica-intro">
+    <div class="p-label">🧪 Práctica 1 — Métodos Numéricos</div>
+    <p>En esta sesión implementarás los principales métodos numéricos para resolver EDOs de primer orden desde cero en MATLAB, los compararás con la solución analítica y con el solver <code>ode45</code> de MATLAB para evaluar su precisión y costo computacional.</p>
+    <div class="objetivos">
+      <div class="obj-item"><span class="oi">🎯</span>Implementar Euler explícito y RK4 desde cero sin usar funciones de MATLAB</div>
+      <div class="obj-item"><span class="oi">📊</span>Comparar precisión vs tamaño de paso h</div>
+      <div class="obj-item"><span class="oi">🏭</span>Aplicar al enfriamiento de leche pasteurizada</div>
+      <div class="obj-item"><span class="oi">📝</span>Redactar un reporte técnico con análisis de error</div>
+    </div>
+  </div>
+
+  <!-- Tres métodos -->
+  <div class="metodos-grid">
+    <div class="metodo-card eu">
+      <div class="m-label">Método 1</div>
+      <h2>Euler Explícito</h2>
+      <p>El más simple. Avanza en la dirección de la pendiente actual. Error local proporcional a h².</p>
+      <span class="orden">Orden 1 — Error O(h)</span>
+    </div>
+    <div class="metodo-card rk">
+      <div class="m-label">Método 2</div>
+      <h2>Runge-Kutta 4 (RK4)</h2>
+      <p>Promedia 4 evaluaciones de la pendiente. Mucho más preciso que Euler con el mismo h.</p>
+      <span class="orden">Orden 4 — Error O(h⁴)</span>
+    </div>
+    <div class="metodo-card od">
+      <div class="m-label">Método 3</div>
+      <h2>MATLAB ode45</h2>
+      <p>Solver adaptativo RK45. Ajusta h automáticamente según la tolerancia. El estándar industrial.</p>
+      <span class="orden">Adaptativo — Referencia</span>
+    </div>
+  </div>
+
+  <!-- EULER -->
+  <div class="content-block block-eu">
+    <h3>🟢 Método de Euler Explícito</h3>
+    <div class="formula-box">
+      <span class="fl">// Dado: y' = f(t,y),  y(t₀) = y₀</span><br>
+      <span class="fl">// Paso h, n pasos hasta t_final</span><br><br>
+      <span class="fh">\(y_{n+1} = y_n + h\,f(t_n,\,y_n)\)</span><br><br>
+      <span class="fk">tₙ₊₁ = tₙ + h</span><br>
+      <span class="fl">// Error de truncamiento local: O(h²)</span><br>
+      <span class="fl">// Error global: O(h) — orden 1</span>
+    </div>
+
+    <div class="matlab-block">
+      <div class="matlab-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="ml-label">euler_explicito.m — implementar desde cero</span>
+      </div>
+      <div class="matlab-code">
+<span class="ml-k">function</span> [t, y] = euler_explicito(f, t0, tf, y0, h)<br>
+<span class="ml-c">% EULER_EXPLICITO — Método de Euler de orden 1</span><br>
+<span class="ml-c">% Entradas: f = @(t,y) función, t0 y tf = intervalo</span><br>
+<span class="ml-c">%           y0 = condición inicial, h = tamaño de paso</span><br>
+<br>
+t = t0:h:tf;<br>
+n = <span class="ml-f">length</span>(t);<br>
+y = <span class="ml-f">zeros</span>(<span class="ml-n">1</span>, n);<br>
+y(<span class="ml-n">1</span>) = y0;<br>
+<br>
+<span class="ml-k">for</span> i = <span class="ml-n">1</span>:n-<span class="ml-n">1</span><br>
+&nbsp;&nbsp;y(i+<span class="ml-n">1</span>) = y(i) + h * f(t(i), y(i));<br>
+<span class="ml-k">end</span><br>
+<span class="ml-k">end</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RK4 -->
+  <div class="content-block block-rk">
+    <h3>🔵 Método Runge-Kutta de Orden 4 (RK4)</h3>
+    <div class="formula-box">
+      <span class="fh">\(k_1 = h\,f(t_n,\;y_n)\)</span><br>
+      <span class="fh">\(k_2 = h\,f\!\left(t_n+\tfrac{h}{2},\;y_n+\tfrac{k_1}{2}\right)\)</span><br>
+      <span class="fh">\(k_3 = h\,f\!\left(t_n+\tfrac{h}{2},\;y_n+\tfrac{k_2}{2}\right)\)</span><br>
+      <span class="fh">\(k_4 = h\,f(t_n+h,\;y_n+k_3)\)</span><br><br>
+      <span class="fk">\(y_{n+1} = y_n + \dfrac{k_1 + 2k_2 + 2k_3 + k_4}{6}\)</span><br><br>
+      <span class="fl">// Error de truncamiento local: O(h⁵)</span><br>
+      <span class="fl">// Error global: O(h⁴) — orden 4</span>
+    </div>
+
+    <div class="matlab-block">
+      <div class="matlab-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="ml-label">rk4.m — implementar desde cero</span>
+      </div>
+      <div class="matlab-code">
+<span class="ml-k">function</span> [t, y] = rk4(f, t0, tf, y0, h)<br>
+<span class="ml-c">% RK4 — Runge-Kutta de orden 4</span><br>
+t = t0:h:tf;<br>
+n = <span class="ml-f">length</span>(t);<br>
+y = <span class="ml-f">zeros</span>(<span class="ml-n">1</span>, n);<br>
+y(<span class="ml-n">1</span>) = y0;<br>
+<br>
+<span class="ml-k">for</span> i = <span class="ml-n">1</span>:n-<span class="ml-n">1</span><br>
+&nbsp;&nbsp;k1 = h * f(t(i),       y(i));<br>
+&nbsp;&nbsp;k2 = h * f(t(i) + h/<span class="ml-n">2</span>, y(i) + k1/<span class="ml-n">2</span>);<br>
+&nbsp;&nbsp;k3 = h * f(t(i) + h/<span class="ml-n">2</span>, y(i) + k2/<span class="ml-n">2</span>);<br>
+&nbsp;&nbsp;k4 = h * f(t(i) + h,   y(i) + k3);<br>
+&nbsp;&nbsp;y(i+<span class="ml-n">1</span>) = y(i) + (k1 + <span class="ml-n">2</span>*k2 + <span class="ml-n">2</span>*k3 + k4) / <span class="ml-n">6</span>;<br>
+<span class="ml-k">end</span><br>
+<span class="ml-k">end</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEMA -->
+  <div class="problema-card">
+    <div class="prob-label">🏭 Problema de Aplicación Agroindustrial</div>
+    <h3>Enfriamiento de leche pasteurizada (Ley de Newton)</h3>
+    <p>Un lote de leche sale del pasteurizador a <strong>T₀ = 85°C</strong>. La leche se enfría en un ambiente a <strong>T∞ = 4°C</strong>. La constante de enfriamiento es <strong>k = 0.0369 min⁻¹</strong>. La EDO que modela el proceso es:</p>
+    <div class="eq-display" style="margin:0.8rem 0;">
+      \[ \frac{dT}{dt} = -0.0369\,(T - 4), \qquad T(0) = 85^\circ\text{C} \]
+      \[ T_{\text{exacta}}(t) = 4 + 81\,e^{-0.0369\,t} \]
+    </div>
+    <div class="prob-datos">
+      <div class="prob-dato"><div class="pd-label">T₀</div><div class="pd-value">85°C</div></div>
+      <div class="prob-dato"><div class="pd-label">T∞</div><div class="pd-value">4°C</div></div>
+      <div class="prob-dato"><div class="pd-label">k</div><div class="pd-value">0.0369 min⁻¹</div></div>
+      <div class="prob-dato"><div class="pd-label">t_final</div><div class="pd-value">130 min</div></div>
+      <div class="prob-dato"><div class="pd-label">Meta T</div><div class="pd-value">10°C</div></div>
+    </div>
+  </div>
+
+  <!-- CÓDIGO COMPLETO COMPARACIÓN -->
+  <div class="content-block block-od">
+    <h3>🟤 Código Completo de Comparación</h3>
+    <div class="matlab-block">
+      <div class="matlab-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="ml-label">comparacion_metodos.m — código principal de la práctica</span>
+      </div>
+      <div class="matlab-code">
+<span class="ml-c">%% PRÁCTICA 1 — Métodos Numéricos para EDO</span><br>
+<span class="ml-c">%% Dra. María de la Luz López González — Ecuaciones Diferenciales</span><br>
+<span class="ml-c">%% Problema: Enfriamiento de leche pasteurizada</span><br>
+<br>
+<span class="ml-f">clear</span>; <span class="ml-f">clc</span>; <span class="ml-f">close</span> all<br>
+<br>
+<span class="ml-c">%% 1. Definición del problema</span><br>
+f = @(t,T) -<span class="ml-n">0.0369</span> * (T - <span class="ml-n">4</span>);  <span class="ml-c">% EDO: dT/dt = -k(T-T_inf)</span><br>
+t0 = <span class="ml-n">0</span>; tf = <span class="ml-n">130</span>; T0 = <span class="ml-n">85</span>;<br>
+T_exacta = @(t) <span class="ml-n">4</span> + <span class="ml-n">81</span>*<span class="ml-f">exp</span>(-<span class="ml-n">0.0369</span>*t);<br>
+<br>
+<span class="ml-c">%% 2. Resolver con tres valores de h</span><br>
+h_vals = [<span class="ml-n">10</span>, <span class="ml-n">5</span>, <span class="ml-n">1</span>];   <span class="ml-c">% tamaños de paso a comparar</span><br>
+colores = {<span class="ml-s">'r--'</span>, <span class="ml-s">'m-.'</span>, <span class="ml-s">'g:'</span>};<br>
+<br>
+<span class="ml-f">figure</span>(<span class="ml-n">1</span>); <span class="ml-f">hold</span> on;<br>
+t_ref = <span class="ml-n">0</span>:<span class="ml-n">0.1</span>:tf;<br>
+<span class="ml-f">plot</span>(t_ref, T_exacta(t_ref), <span class="ml-s">'k-'</span>, <span class="ml-s">'LineWidth'</span>, <span class="ml-n">2.5</span>, <span class="ml-s">'DisplayName'</span>, <span class="ml-s">'Exacta'</span>)<br>
+<br>
+<span class="ml-k">for</span> j = <span class="ml-n">1</span>:<span class="ml-f">length</span>(h_vals)<br>
+&nbsp;&nbsp;h = h_vals(j);<br>
+&nbsp;&nbsp;[t_eu, T_eu] = euler_explicito(f, t0, tf, T0, h);<br>
+&nbsp;&nbsp;[t_rk, T_rk] = rk4(f, t0, tf, T0, h);<br>
+&nbsp;&nbsp;<span class="ml-f">plot</span>(t_eu, T_eu, colores{j}, <span class="ml-s">'DisplayName'</span>, [<span class="ml-s">'Euler h='</span> <span class="ml-f">num2str</span>(h)])<br>
+&nbsp;&nbsp;<span class="ml-f">plot</span>(t_rk, T_rk, <span class="ml-s">'b'</span>, <span class="ml-s">'DisplayName'</span>, [<span class="ml-s">'RK4 h='</span> <span class="ml-f">num2str</span>(h)])<br>
+<span class="ml-k">end</span><br>
+<br>
+<span class="ml-c">%% ode45 (referencia adaptativa)</span><br>
+[t_od, T_od] = <span class="ml-f">ode45</span>(f, [t0 tf], T0);<br>
+<span class="ml-f">plot</span>(t_od, T_od, <span class="ml-s">'c-s'</span>, <span class="ml-s">'LineWidth'</span>, <span class="ml-n">1.5</span>, <span class="ml-s">'DisplayName'</span>, <span class="ml-s">'ode45'</span>)<br>
+<br>
+<span class="ml-f">yline</span>(<span class="ml-n">10</span>, <span class="ml-s">'k--'</span>, <span class="ml-s">'Meta: 10°C'</span>)<br>
+<span class="ml-f">xlabel</span>(<span class="ml-s">'Tiempo (min)'</span>); <span class="ml-f">ylabel</span>(<span class="ml-s">'Temperatura (°C)'</span>)<br>
+<span class="ml-f">title</span>(<span class="ml-s">'Comparación de métodos numéricos — Enfriamiento de leche'</span>)<br>
+<span class="ml-f">legend</span>(<span class="ml-s">'Location'</span>, <span class="ml-s">'northeast'</span>); <span class="ml-f">grid</span> on<br>
+<br>
+<span class="ml-c">%% 3. Análisis de error global</span><br>
+<span class="ml-f">figure</span>(<span class="ml-n">2</span>)<br>
+h_test = [<span class="ml-n">20</span>, <span class="ml-n">10</span>, <span class="ml-n">5</span>, <span class="ml-n">2</span>, <span class="ml-n">1</span>, <span class="ml-n">0.5</span>];<br>
+err_euler = <span class="ml-f">zeros</span>(<span class="ml-f">size</span>(h_test)); err_rk4 = err_euler;<br>
+<br>
+<span class="ml-k">for</span> j = <span class="ml-n">1</span>:<span class="ml-f">length</span>(h_test)<br>
+&nbsp;&nbsp;h = h_test(j);<br>
+&nbsp;&nbsp;[~, yE] = euler_explicito(f, t0, tf, T0, h);<br>
+&nbsp;&nbsp;[~, yR] = rk4(f, t0, tf, T0, h);<br>
+&nbsp;&nbsp;T_ex = T_exacta(t0:h:tf);<br>
+&nbsp;&nbsp;err_euler(j) = <span class="ml-f">max</span>(<span class="ml-f">abs</span>(yE - T_ex));<br>
+&nbsp;&nbsp;err_rk4(j) = <span class="ml-f">max</span>(<span class="ml-f">abs</span>(yR - T_ex));<br>
+<span class="ml-k">end</span><br>
+<br>
+<span class="ml-f">loglog</span>(h_test, err_euler, <span class="ml-s">'r-o'</span>, <span class="ml-s">'LineWidth'</span>, <span class="ml-n">2</span>, <span class="ml-s">'DisplayName'</span>, <span class="ml-s">'Euler'</span>)<br>
+<span class="ml-f">hold</span> on<br>
+<span class="ml-f">loglog</span>(h_test, err_rk4, <span class="ml-s">'b-s'</span>, <span class="ml-s">'LineWidth'</span>, <span class="ml-n">2</span>, <span class="ml-s">'DisplayName'</span>, <span class="ml-s">'RK4'</span>)<br>
+<span class="ml-f">xlabel</span>(<span class="ml-s">'Tamaño de paso h'</span>); <span class="ml-f">ylabel</span>(<span class="ml-s">'Error máximo global'</span>)<br>
+<span class="ml-f">title</span>(<span class="ml-s">'Error global vs tamaño de paso (escala log-log)'</span>)<br>
+<span class="ml-f">legend</span>; <span class="ml-f">grid</span> on
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA DE ERROR -->
+  <div class="content-block" style="border-top:4px solid var(--ug-gold);">
+    <h3 style="color:var(--ug-blue);">📊 Tabla de Error Esperado por Método y Paso h</h3>
+    <p style="font-size:0.82rem;margin-bottom:0.8rem;">Esta tabla sirve como guía de los valores de error que debes encontrar en tu práctica para el problema de enfriamiento:</p>
+    <table class="error-table">
+      <thead>
+        <tr><th>h (min)</th><th>Error Euler (°C)</th><th>Error RK4 (°C)</th><th>Error ode45 (°C)</th><th>Observación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>20</td><td class="peor">~8.5</td><td class="bueno">~0.003</td><td class="mejor">< 10⁻⁶</td><td>Euler inaceptable</td></tr>
+        <tr><td>10</td><td class="peor">~3.2</td><td class="bueno">~0.0002</td><td class="mejor">< 10⁻⁶</td><td>Euler inadecuado</td></tr>
+        <tr><td>5</td><td>~1.1</td><td class="mejor">< 0.00001</td><td class="mejor">< 10⁻⁶</td><td>RK4 muy bueno</td></tr>
+        <tr><td>1</td><td class="bueno">~0.04</td><td class="mejor">< 10⁻⁸</td><td class="mejor">< 10⁻⁶</td><td>Ambos aceptables</td></tr>
+        <tr><td>0.5</td><td class="mejor">~0.01</td><td class="mejor">< 10⁻¹⁰</td><td class="mejor">< 10⁻⁶</td><td>Euler aceptable</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REPORTE -->
+  <div class="reporte-card">
+    <div class="r-header">
+      <span class="r-badge">📄 Reporte Práctica 1</span>
+      <h3>Entrega: PDF antes del inicio del Día 6</h3>
+    </div>
+    <ol>
+      <li><strong>Portada</strong>: nombre, NUA, fecha, título de la práctica</li>
+      <li><strong>Introducción</strong> (1/2 cuartilla): ¿qué son los métodos numéricos y por qué son necesarios cuando no existe solución analítica?</li>
+      <li><strong>Desarrollo matemático</strong>: derivación del algoritmo de Euler y de RK4 a partir de la serie de Taylor</li>
+      <li><strong>Código MATLAB</strong>: incluir <code>euler_explicito.m</code>, <code>rk4.m</code> y <code>comparacion_metodos.m</code> completos y comentados</li>
+      <li><strong>Figura 1</strong>: comparación de soluciones (Euler, RK4, ode45 y exacta) con h = 5 y h = 10</li>
+      <li><strong>Figura 2</strong>: gráfica log-log de error global vs h para Euler y RK4</li>
+      <li><strong>Tabla de resultados</strong>: error para h = {20, 10, 5, 2, 1, 0.5} para ambos métodos</li>
+      <li><strong>Análisis</strong>: ¿qué pendiente tiene la recta en la gráfica log-log? ¿Confirma el orden de cada método?</li>
+      <li><strong>Conclusión agroindustrial</strong>: ¿qué método y qué h recomendarías usar en producción real para calcular tiempos de enfriamiento de leche?</li>
+    </ol>
+
+    <div style="margin-top:1rem;">
+      <p style="font-size:0.82rem;font-weight:700;color:#7A5F00;margin-bottom:0.5rem;">Rúbrica de evaluación (20% del curso):</p>
+      <table class="rubrica-table">
+        <thead><tr><th>Criterio</th><th>Excelente</th><th>Suficiente</th><th>Ponderación</th></tr></thead>
+        <tbody>
+          <tr><td>Código funcional y comentado</td><td>Corre sin errores, comentarios claros</td><td>Corre con errores menores</td><td class="pct">30%</td></tr>
+          <tr><td>Figuras y tabla de error</td><td>Etiquetadas con unidades e interpretación</td><td>Presentes sin interpretación</td><td class="pct">25%</td></tr>
+          <tr><td>Análisis log-log de orden</td><td>Calcula pendiente y verifica orden</td><td>Gráfica pero no analiza</td><td class="pct">25%</td></tr>
+          <tr><td>Conclusión agroindustrial</td><td>Recomendación fundamentada con números</td><td>Conclusión vaga</td><td class="pct">20%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p><span>Universidad de Guanajuato</span> · Campus Celaya-Salvatierra · Departamento de Ingenierías<br>
+  Dra. María de la Luz López González · Ecuaciones Diferenciales · Lic. en Ingeniería Agroindustrial · 2026</p>
+</footer>
+</body>
+</html>

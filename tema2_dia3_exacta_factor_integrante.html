@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 2 Día 3 — Exactas y Factor Integrante</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
+  :root {
+    --ug-blue:#004A87;--ug-blue-dark:#002F56;--ug-blue-light:#D2E4F5;
+    --ug-gold:#C8A000;--ug-gold-light:#F5E9B0;
+    --white:#FFFFFF;--gray-100:#F7F9FC;--gray-200:#E8EEF5;--gray-700:#3A3A3A;
+    --ex-color:#C05000;--ex-light:#FFF0E8;
+    --fi-color:#006080;--fi-light:#E0F4F8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Raleway',sans-serif;background:var(--gray-100);color:var(--gray-700);line-height:1.7;}
+
+  header{background:linear-gradient(135deg,var(--ug-blue-dark) 0%,var(--ex-color) 100%);color:var(--white);position:relative;overflow:hidden;}
+  header::before{content:'';position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(200,160,0,0.12);}
+  .header-inner{max-width:960px;margin:0 auto;padding:2rem 2rem 1.5rem;position:relative;z-index:1;}
+  .header-top{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;}
+  .logo-placeholder{width:64px;height:64px;background:var(--ug-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;color:var(--ug-blue-dark);flex-shrink:0;}
+  .header-inst .univ{font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ug-gold);display:block;}
+  .header-inst .dept{font-size:0.75rem;color:rgba(255,255,255,0.7);display:block;}
+  .badge-semana{display:inline-flex;align-items:center;gap:0.4rem;background:var(--ug-gold);color:var(--ug-blue-dark);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:2rem;margin-bottom:0.8rem;}
+  header h1{font-size:clamp(1.5rem,4vw,2.3rem);font-weight:900;line-height:1.15;margin-bottom:0.4rem;}
+  header h1 span{color:var(--ug-gold);}
+  .header-sub{font-size:0.9rem;color:rgba(255,255,255,0.75);font-weight:300;}
+  .header-meta{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,0.15);}
+  .meta-item{display:flex;flex-direction:column;gap:0.1rem;}
+  .meta-item .label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ug-gold);}
+  .meta-item .value{font-size:0.82rem;color:rgba(255,255,255,0.9);}
+  .gold-bar{height:4px;background:linear-gradient(90deg,var(--ug-gold),#FFD94A,var(--ug-gold));}
+
+  main{max-width:960px;margin:0 auto;padding:2rem;}
+
+  .metodo-tabs{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
+  .metodo-card{border-radius:12px;padding:1.5rem;}
+  .metodo-card.ex{background:linear-gradient(135deg,var(--ex-light),#FFE4D0);border:2px solid var(--ex-color);}
+  .metodo-card.fi{background:linear-gradient(135deg,var(--fi-light),#C0EAF0);border:2px solid var(--fi-color);}
+  .metodo-card .m-label{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.4rem;}
+  .metodo-card.ex .m-label{color:var(--ex-color);}
+  .metodo-card.fi .m-label{color:var(--fi-color);}
+  .metodo-card h2{font-size:1rem;font-weight:800;margin-bottom:0.5rem;}
+  .metodo-card.ex h2{color:var(--ex-color);}
+  .metodo-card.fi h2{color:var(--fi-color);}
+  .metodo-card p{font-size:0.8rem;line-height:1.5;color:var(--gray-700);}
+
+  .content-block{background:var(--white);border-radius:12px;padding:1.8rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,74,135,0.07);}
+  .block-ex{border-top:4px solid var(--ex-color);}
+  .block-fi{border-top:4px solid var(--fi-color);}
+  .content-block h3{font-size:0.95rem;font-weight:700;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--gray-200);display:flex;align-items:center;gap:0.5rem;}
+  .block-ex h3{color:var(--ex-color);}
+  .block-fi h3{color:var(--fi-color);}
+
+  .formula-box{background:#1E1E2E;border-radius:8px;padding:1rem 1.4rem;margin:0.8rem 0;font-family:'Source Code Pro',monospace;font-size:0.85rem;line-height:1.9;color:#CDD6F4;}
+  .fl{color:#6C7086;font-style:italic;} .fh{color:var(--ug-gold);font-weight:600;} .fk{color:#89DCEB;} .fn{color:#FAB387;}
+
+  .condicion-box{border-radius:8px;padding:1rem 1.4rem;margin:0.8rem 0;font-size:0.85rem;}
+  .condicion-box.ex-cond{background:var(--ex-light);border-left:4px solid var(--ex-color);}
+  .condicion-box.fi-cond{background:var(--fi-light);border-left:4px solid var(--fi-color);}
+  .condicion-box .cond-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;}
+  .condicion-box.ex-cond .cond-label{color:var(--ex-color);}
+  .condicion-box.fi-cond .cond-label{color:var(--fi-color);}
+
+  .pasos-list{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin:0.8rem 0;}
+  .pasos-list li{display:flex;gap:0.8rem;align-items:flex-start;background:var(--gray-100);border-radius:8px;padding:0.8rem 1rem;font-size:0.84rem;}
+  .step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;flex-shrink:0;}
+  .ex .step-num{background:var(--ex-color);color:var(--white);}
+  .fi .step-num{background:var(--fi-color);color:var(--white);}
+
+  .ejemplo-pasos{background:var(--gray-100);border-radius:10px;padding:1.2rem;margin:0.8rem 0;}
+  .ejemplo-pasos .ej-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem;}
+  .ex .ej-label{color:var(--ex-color);} .fi .ej-label{color:var(--fi-color);}
+  .ej-step{display:flex;gap:0.8rem;align-items:baseline;margin-bottom:0.4rem;font-size:0.83rem;}
+  .ej-step .paso{font-weight:700;white-space:nowrap;min-width:80px;}
+  .ex .ej-step .paso{color:var(--ex-color);} .fi .ej-step .paso{color:var(--fi-color);}
+
+  .matlab-block{background:#1E1E2E;border-radius:10px;overflow:hidden;margin:0.8rem 0;}
+  .matlab-header{background:#2D2D3F;padding:0.5rem 1rem;display:flex;align-items:center;gap:0.5rem;}
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .dot.r{background:#FF5F57;}.dot.y{background:#FEBC2E;}.dot.g{background:#28C840;}
+  .ml-label{font-size:0.7rem;color:#888;margin-left:auto;font-family:monospace;}
+  .matlab-code{padding:1rem 1.2rem;font-family:'Source Code Pro',monospace;font-size:0.8rem;line-height:1.7;color:#CDD6F4;}
+  .ml-c{color:#6C7086;}.ml-k{color:#89DCEB;font-weight:700;}.ml-s{color:#A6E3A1;}.ml-f{color:#89B4FA;}.ml-n{color:#FAB387;}
+
+  .fi-tipos{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin:0.8rem 0;}
+  .fi-tipo{background:var(--fi-light);border-radius:8px;padding:1rem;border:1px solid var(--fi-color);}
+  .fi-tipo h4{font-size:0.78rem;font-weight:700;color:var(--fi-color);margin-bottom:0.4rem;}
+  .fi-tipo p{font-size:0.78rem;line-height:1.5;}
+  .fi-tipo code{background:rgba(0,96,128,0.1);color:var(--fi-color);padding:0.1rem 0.4rem;border-radius:3px;font-family:'Source Code Pro',monospace;font-size:0.8rem;}
+
+  .agro-strip{background:linear-gradient(135deg,var(--ug-blue),#1A5FAF);color:var(--white);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;}
+  .agro-strip .a-label{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ug-gold);margin-bottom:0.8rem;}
+  .agro-items{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.8rem;}
+  .agro-item{background:rgba(255,255,255,0.1);border-radius:8px;padding:0.9rem;}
+  .agro-item .emoji{font-size:1.4rem;display:block;margin-bottom:0.3rem;}
+  .agro-item strong{font-size:0.8rem;display:block;color:var(--ug-gold);margin-bottom:0.2rem;}
+  .agro-item p{font-size:0.75rem;color:rgba(255,255,255,0.85);line-height:1.4;}
+
+  .section-title{display:flex;align-items:center;gap:0.8rem;margin-bottom:1.2rem;margin-top:1.5rem;}
+  .section-title .num{background:var(--ug-gold);color:var(--ug-blue-dark);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.9rem;flex-shrink:0;}
+  .section-title h2{font-size:1.1rem;font-weight:700;color:var(--ug-blue);text-transform:uppercase;letter-spacing:0.05em;}
+
+  footer{background:var(--ug-blue-dark);color:rgba(255,255,255,0.6);text-align:center;padding:1.2rem;font-size:0.75rem;margin-top:2rem;}
+  footer span{color:var(--ug-gold);}
+  code{font-family:'Source Code Pro',monospace;background:var(--gray-200);padding:0.1rem 0.4rem;border-radius:3px;font-size:0.82rem;}
+</style>
+
+<!-- MathJax para ecuaciones profesionales -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    tags: 'none',
+    macros: {}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<!-- Estilos para bloques de ecuaciones -->
+<style>
+
+.eq-display {
+  background: #FFFFFF;
+  border-left: 5px solid var(--ug-gold);
+  border-radius: 0 10px 10px 0;
+  padding: 1rem 1.5rem;
+  margin: 0.8rem 0;
+  overflow-x: auto;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,74,135,0.10);
+}
+.eq-label {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ug-blue);
+  margin-bottom: 0.3rem; display: block;
+}
+.eq-block-white {
+  background: #F0F6FF;
+  border: 1.5px solid var(--ug-blue-light);
+  border-left: 4px solid var(--ug-blue);
+  border-radius: 0 8px 8px 0;
+  padding: 0.8rem 1.2rem;
+  margin: 0.6rem 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="logo-placeholder">UG</div>
+      <div class="header-inst">
+        <span class="univ">Universidad de Guanajuato</span>
+        <span class="dept">Campus Celaya-Salvatierra · Departamento de Ingenierías</span>
+        <span class="dept">Lic. en Ingeniería Agroindustrial</span>
+      </div>
+    </div>
+    <div class="badge-semana">📅 Semana 1 · Día 3 · 5 horas</div>
+    <h1>Tema 2: Ecuación <span>Exacta</span><br>y Factor Integrante</h1>
+    <p class="header-sub">Dra. María de la Luz López González &nbsp;|&nbsp; Ecuaciones Diferenciales</p>
+    <div class="header-meta">
+      <div class="meta-item"><span class="label">Subtemas</span><span class="value">2.3 y 2.4</span></div>
+      <div class="meta-item"><span class="label">Duración</span><span class="value">5 horas</span></div>
+      <div class="meta-item"><span class="label">Herramienta</span><span class="value">MATLAB — verificación y solución simbólica</span></div>
+      <div class="meta-item"><span class="label">Entregable</span><span class="value">Tarea 3</span></div>
+    </div>
+  </div>
+</header>
+<div class="gold-bar"></div>
+
+<main>
+
+  <div class="metodo-tabs">
+    <div class="metodo-card ex">
+      <div class="m-label">Subtema 2.3</div>
+      <h2>Ecuación Exacta</h2>
+      <p>M(x,y)dx + N(x,y)dy = 0 es exacta si \(\dfrac{\partial M}{\partial y} = \dfrac{\partial N}{\partial x}\). Existe una función potencial F tal que dF = 0, con ∂F/∂x = M y ∂F/∂y = N.</p>
+    </div>
+    <div class="metodo-card fi">
+      <div class="m-label">Subtema 2.4</div>
+      <h2>Factor Integrante</h2>
+      <p>Si la EDO no es exacta, se multiplica por un factor μ(x) o μ(y) que la vuelve exacta. Se determina a partir de (∂M/∂y - ∂N/∂x)/N o (∂N/∂x - ∂M/∂y)/M.</p>
+    </div>
+  </div>
+
+  <!-- EXACTA -->
+  <div class="content-block block-ex ex">
+    <h3>🟠 2.3 Ecuación Exacta</h3>
+
+    <div class="condicion-box ex-cond">
+      <div class="cond-label">⚠️ Condición de Exactitud</div>
+      <strong>M(x,y)dx + N(x,y)dy = 0 es exacta si y solo si:</strong><br>
+      <code>\(\dfrac{\partial M}{\partial y} = \dfrac{\partial N}{\partial x}\)</code> &nbsp; en toda región R
+    </div>
+
+    <div class="formula-box">
+      <span class="fl">// Si es exacta, existe F(x,y) tal que:</span><br>
+      <span class="fh">\(\dfrac{\partial F}{\partial x} = M(x,y)\)</span> &nbsp; y &nbsp; <span class="fh">\(\dfrac{\partial F}{\partial y} = N(x,y)\)</span><br><br>
+      <span class="fl">// Solución implícita:</span><br>
+      <span class="fk">\(F(x,y) = C\)</span>
+    </div>
+
+    <ul class="pasos-list ex">
+      <li><div class="step-num">1</div><div>Identificar M(x,y) y N(x,y) de la ecuación M dx + N dy = 0</div></li>
+      <li><div class="step-num">2</div><div>Calcular ∂M/∂y y ∂N/∂x. Si son iguales → la ecuación es exacta</div></li>
+      <li><div class="step-num">3</div><div>Integrar M respecto a x: <code>F = ∫M dx + g(y)</code></div></li>
+      <li><div class="step-num">4</div><div>Derivar F respecto a y e igualar a N para encontrar g'(y)</div></li>
+      <li><div class="step-num">5</div><div>Integrar g'(y) para obtener g(y). Escribir la solución \(F(x,y) = C\)</div></li>
+    </ul>
+
+    <div class="ejemplo-pasos ex">
+      <div class="ej-label">Ejemplo resuelto — Balance de masa en proceso de mezcla</div>
+      <div class="ej-step"><span class="paso">EDO:</span><span>(2xy + 3)dx + (x² - 4y)dy = 0</span></div>
+      <div class="ej-step"><span class="paso">M, N:</span><span>M = 2xy+3 &nbsp; N = x²-4y</span></div>
+      <div class="ej-step"><span class="paso">Exacta:</span><span>∂M/∂y = 2x &nbsp;=&nbsp; ∂N/∂x = 2x ✓</span></div>
+      <div class="ej-step"><span class="paso">F = ∫M dx:</span><span>F = x²y + 3x + g(y)</span></div>
+      <div class="ej-step"><span class="paso">∂F/∂y = N:</span><span>x² + g'(y) = x²-4y → g'(y) = -4y</span></div>
+      <div class="ej-step"><span class="paso">g(y):</span><span>g(y) = -2y²</span></div>
+      <div class="ej-step"><span class="paso">Solución:</span><span>F = x²y + 3x - 2y² = C</span></div>
+    </div>
+
+    <div class="matlab-block">
+      <div class="matlab-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="ml-label">MATLAB — exacta.m</span>
+      </div>
+      <div class="matlab-code">
+<span class="ml-c">% Verificar exactitud y resolver simbólicamente</span><br>
+<span class="ml-k">syms</span> x y<br>
+M = <span class="ml-n">2</span>*x*y + <span class="ml-n">3</span>;<br>
+N = x^<span class="ml-n">2</span> - <span class="ml-n">4</span>*y;<br>
+<br>
+dMdy = <span class="ml-f">diff</span>(M, y);<br>
+dNdx = <span class="ml-f">diff</span>(N, x);<br>
+<span class="ml-f">disp</span>(<span class="ml-s">'∂M/∂y = '</span>); <span class="ml-f">disp</span>(dMdy)<br>
+<span class="ml-f">disp</span>(<span class="ml-s">'∂N/∂x = '</span>); <span class="ml-f">disp</span>(dNdx)<br>
+<br>
+<span class="ml-c">% Calcular función potencial F</span><br>
+F = <span class="ml-f">int</span>(M, x) + <span class="ml-f">int</span>(N - <span class="ml-f">diff</span>(<span class="ml-f">int</span>(M,x), y), y);<br>
+<span class="ml-f">disp</span>(<span class="ml-s">'F(x,y) = '</span>); <span class="ml-f">disp</span>(<span class="ml-f">simplify</span>(F))<br>
+<br>
+<span class="ml-c">% Graficar curvas de nivel F = C</span><br>
+f = @(x,y) x.^<span class="ml-n">2</span>.*y + <span class="ml-n">3</span>*x - <span class="ml-n">2</span>*y.^<span class="ml-n">2</span>;<br>
+[X,Y] = <span class="ml-f">meshgrid</span>(-<span class="ml-n">3</span>:<span class="ml-n">0.1</span>:<span class="ml-n">3</span>);<br>
+<span class="ml-f">contour</span>(X, Y, f(X,Y), <span class="ml-n">20</span>); <span class="ml-f">colorbar</span><br>
+<span class="ml-f">title</span>(<span class="ml-s">'Curvas de nivel \(F(x,y) = C\)'</span>); <span class="ml-f">grid</span> on
+      </div>
+    </div>
+  </div>
+
+  <!-- FACTOR INTEGRANTE -->
+  <div class="content-block block-fi fi">
+    <h3>🔵 2.4 Factor Integrante</h3>
+
+    <div class="condicion-box fi-cond">
+      <div class="cond-label">Cuando la EDO NO es exacta</div>
+      Se multiplica por μ para que μM dx + μN dy = 0 sea exacta.
+    </div>
+
+    <div class="fi-tipos">
+      <div class="fi-tipo">
+        <h4>μ = μ(x) cuando:</h4>
+        <p><code>\(\dfrac{\partial M/\partial y - \partial N/\partial x}{N} = f(x)\)</code><br>solo depende de x<br><br>
+        Entonces: <code>\(\mu(x) = e^{\int f(x)\,dx}\)</code></p>
+      </div>
+      <div class="fi-tipo">
+        <h4>μ = μ(y) cuando:</h4>
+        <p><code>\(\dfrac{\partial N/\partial x - \partial M/\partial y}{M} = g(y)\)</code><br>solo depende de y<br><br>
+        Entonces: <code>\(\mu(y) = e^{\int g(y)\,dy}\)</code></p>
+      </div>
+    </div>
+
+    <ul class="pasos-list fi">
+      <li><div class="step-num">1</div><div>Verificar que la EDO NO sea exacta: ∂M/∂y ≠ ∂N/∂x</div></li>
+      <li><div class="step-num">2</div><div>Calcular (∂M/∂y - ∂N/∂x)/N. Si solo depende de x → μ = μ(x)</div></li>
+      <li><div class="step-num">3</div><div>Calcular (∂N/∂x - ∂M/∂y)/M. Si solo depende de y → μ = μ(y)</div></li>
+      <li><div class="step-num">4</div><div>Calcular μ integrando y multiplicar toda la EDO por μ</div></li>
+      <li><div class="step-num">5</div><div>Resolver la EDO exacta resultante con el método anterior</div></li>
+    </ul>
+
+    <div class="ejemplo-pasos fi">
+      <div class="ej-label">Ejemplo resuelto — Cinética enzimática en bioreactor</div>
+      <div class="ej-step"><span class="paso">EDO:</span><span>(xy - 1)dx + (x² - xy)dy = 0 &nbsp; (no exacta)</span></div>
+      <div class="ej-step"><span class="paso">M, N:</span><span>M = xy-1 &nbsp;|&nbsp; N = x²-xy</span></div>
+      <div class="ej-step"><span class="paso">∂M/∂y:</span><span>x &nbsp;≠&nbsp; ∂N/∂x = 2x-y → no exacta</span></div>
+      <div class="ej-step"><span class="paso">(∂M/∂y - ∂N/∂x)/N:</span><span>(x - (2x-y))/(x²-xy) = (-x+y)/(x(x-y)) = -1/x</span></div>
+      <div class="ej-step"><span class="paso">μ(x):</span><span>e^∫(-1/x)dx = e^(-ln x) = 1/x</span></div>
+      <div class="ej-step"><span class="paso">Nueva EDO:</span><span>(y - 1/x)dx + (x - y)dy = 0 → exacta ✓</span></div>
+      <div class="ej-step"><span class="paso">Solución:</span><span>xy - ln|x| - y²/2 = C</span></div>
+    </div>
+
+    <div class="matlab-block">
+      <div class="matlab-header">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="ml-label">MATLAB — factor_integrante.m</span>
+      </div>
+      <div class="matlab-code">
+<span class="ml-c">% Verificar exactitud y calcular factor integrante</span><br>
+<span class="ml-k">syms</span> x y<br>
+M = x*y - <span class="ml-n">1</span>;<br>
+N = x^<span class="ml-n">2</span> - x*y;<br>
+<br>
+expr = (<span class="ml-f">diff</span>(M,y) - <span class="ml-f">diff</span>(N,x)) / N;<br>
+<span class="ml-f">disp</span>(<span class="ml-s">'(∂M/∂y - ∂N/∂x)/N = '</span>); <span class="ml-f">disp</span>(<span class="ml-f">simplify</span>(expr))<br>
+<br>
+<span class="ml-c">% Factor integrante \(\mu(x) = e^{\int f(x)\,dx}\)</span><br>
+f_x = -<span class="ml-n">1</span>/x;<br>
+mu = <span class="ml-f">exp</span>(<span class="ml-f">int</span>(f_x, x));<br>
+<span class="ml-f">disp</span>(<span class="ml-s">'Factor integrante μ(x) = '</span>); <span class="ml-f">disp</span>(mu)<br>
+<br>
+<span class="ml-c">% Multiplicar y resolver EDO exacta resultante</span><br>
+M2 = <span class="ml-f">simplify</span>(mu * M);<br>
+N2 = <span class="ml-f">simplify</span>(mu * N);<br>
+F = <span class="ml-f">int</span>(M2, x) + <span class="ml-f">int</span>(N2 - <span class="ml-f">diff</span>(<span class="ml-f">int</span>(M2,x),y), y);<br>
+<span class="ml-f">disp</span>(<span class="ml-s">'Solución \(F(x,y) = C\):'</span>); <span class="ml-f">disp</span>(<span class="ml-f">simplify</span>(F))
+      </div>
+    </div>
+  </div>
+
+  <!-- APLICACIONES -->
+  <div class="agro-strip">
+    <div class="a-label">🏭 Aplicaciones Agroindustriales</div>
+    <div class="agro-items">
+      <div class="agro-item">
+        <span class="emoji">⚗️</span>
+        <strong>Balance de masa en mezcla</strong>
+        <p>EDO exacta describe flujos de entrada/salida en tanques de mezcla continua para jarabes o salmueras</p>
+      </div>
+      <div class="agro-item">
+        <span class="emoji">🧬</span>
+        <strong>Cinética enzimática</strong>
+        <p>Factor integrante en modelos de inhibición enzimática en fermentadores de producción de etanol</p>
+      </div>
+      <div class="agro-item">
+        <span class="emoji">💧</span>
+        <strong>Flujo potencial</strong>
+        <p>Ecuaciones exactas modelan flujo irrotacional en sistemas de riego y distribución de agua en plantas</p>
+      </div>
+      <div class="agro-item">
+        <span class="emoji">🌡️</span>
+        <strong>Termodinámica de procesos</strong>
+        <p>Diferenciales exactos en funciones de estado: entalpía, entropía en pasteurización UHT</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p><span>Universidad de Guanajuato</span> · Campus Celaya-Salvatierra · Departamento de Ingenierías<br>
+  Dra. María de la Luz López González · Ecuaciones Diferenciales · Lic. en Ingeniería Agroindustrial · 2026</p>
+</footer>
+</body>
+</html>
