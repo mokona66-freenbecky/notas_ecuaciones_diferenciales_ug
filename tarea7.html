@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarea 7</title>
+<script>MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
+:root{--ug-blue:#004A87;--ug-blue-dark:#002F56;--ug-gold:#C8A000;--ug-gold-light:#F5E9B0;--white:#FFFFFF;--gray-100:#F7F9FC;--gray-200:#E8EEF5;--gray-700:#3A3A3A;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Raleway',sans-serif;background:var(--gray-100);color:var(--gray-700);line-height:1.7;}
+header{color:#fff;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(200,160,0,0.12);}
+.hi{max-width:860px;margin:0 auto;padding:2rem 2rem 1.5rem;position:relative;z-index:1;}
+.ht{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
+.logo{width:58px;height:58px;background:var(--ug-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:var(--ug-blue-dark);flex-shrink:0;}
+.univ{font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ug-gold);display:block;}
+.dept{font-size:0.72rem;color:rgba(255,255,255,0.7);display:block;}
+.badge{display:inline-flex;align-items:center;gap:0.4rem;background:var(--ug-gold);color:var(--ug-blue-dark);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.8rem;border-radius:2rem;margin-bottom:0.7rem;}
+header h1{font-size:clamp(1.3rem,3.5vw,1.9rem);font-weight:900;line-height:1.2;margin-bottom:0.3rem;}
+header h1 em{color:var(--ug-gold);font-style:normal;}
+.hs{font-size:0.85rem;color:rgba(255,255,255,0.75);}
+.ms{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.15);}
+.mi .lbl{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ug-gold);}
+.mi .val{font-size:0.8rem;color:rgba(255,255,255,0.9);}
+.gb{height:4px;background:linear-gradient(90deg,var(--ug-gold),#FFD94A,var(--ug-gold));}
+main{max-width:860px;margin:0 auto;padding:2rem;}
+.ins{background:linear-gradient(135deg,var(--ug-blue),var(--ug-blue-dark));color:#fff;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;}
+.ins .il{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ug-gold);margin-bottom:0.3rem;}
+.ins p{font-size:0.85rem;color:rgba(255,255,255,0.9);line-height:1.6;}
+.inc{background:var(--white);border-radius:12px;padding:1.5rem 1.8rem;margin-bottom:1.2rem;box-shadow:0 2px 8px rgba(0,74,135,0.07);}
+.in{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.4rem;}
+.inc h3{font-size:0.95rem;font-weight:700;color:var(--gray-700);margin-bottom:0.8rem;}
+.eq{background:var(--white);border-left:5px solid var(--ug-gold);border-radius:0 8px 8px 0;padding:0.8rem 1.2rem;margin:0.8rem 0;overflow-x:auto;text-align:center;box-shadow:0 1px 6px rgba(0,74,135,0.08);}
+.egrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.6rem;margin:0.8rem 0;}
+.ei{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:8px;padding:0.8rem 1rem;text-align:center;}
+.ei .lt{font-weight:700;color:var(--ug-blue);display:block;margin-bottom:0.3rem;font-size:0.72rem;text-transform:uppercase;}
+.ml{background:linear-gradient(135deg,#1E1E2E,#2D2D3F);border-radius:10px;padding:1.2rem 1.5rem;margin-top:0.8rem;}
+.ml .mll{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#A6E3A1;margin-bottom:0.5rem;}
+.ml p{font-size:0.82rem;color:#CDD6F4;line-height:1.6;}
+.ml code{background:rgba(255,255,255,0.1);color:#89B4FA;padding:0.1rem 0.4rem;border-radius:3px;font-family:'Source Code Pro',monospace;font-size:0.8rem;}
+.eb{background:linear-gradient(135deg,var(--ug-gold-light),#FFF8D6);border:2px solid var(--ug-gold);border-radius:12px;padding:1rem 1.5rem;margin-top:1.5rem;display:flex;align-items:center;gap:1rem;}
+.ebi{font-size:2rem;flex-shrink:0;}
+.ebl{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A00;}
+.ebt p{font-size:0.88rem;font-weight:600;color:#5A4000;margin-top:0.2rem;}
+footer{background:var(--ug-blue-dark);color:rgba(255,255,255,0.6);text-align:center;padding:1rem;font-size:0.72rem;margin-top:2rem;}
+footer span{color:var(--ug-gold);}
+p{font-size:0.88rem;line-height:1.7;}
+ul,ol{padding-left:1.3rem;font-size:0.86rem;line-height:1.8;}
+li{margin-bottom:0.3rem;}
+
+header{background:linear-gradient(135deg,var(--ug-blue-dark),#7A3000);}
+</style>
+</head>
+<body>
+<header>
+  <div class="hi">
+    <div class="ht">
+      <div class="logo">UG</div>
+      <div><span class="univ">Universidad de Guanajuato</span><span class="dept">Campus Celaya-Salvatierra &middot; Lic. en Ingenier&iacute;a Agroindustrial</span></div>
+    </div>
+    <div class="badge">Tarea 7 &middot; Semana 3 &middot; D&iacute;a 11</div>
+    <h1>Series de Fourier y <em>Variable Compleja</em></h1>
+    <p class="hs">Dra. Mar&iacute;a de la Luz L&oacute;pez Gonz&aacute;lez &middot; Ecuaciones Diferenciales</p>
+    <div class="ms">
+      <div class="mi"><div class="lbl">Publicaci&oacute;n</div><div class="val">Cierre del D&iacute;a 11</div></div>
+      <div class="mi"><div class="lbl">Entrega</div><div class="val">Inicio del D&iacute;a 12</div></div>
+      <div class="mi"><div class="lbl">Temas</div><div class="val">5.1 y 5.2</div></div>
+    </div>
+  </div>
+</header>
+<div class="gb"></div>
+<main>
+  <div class="ins">
+    <div class="il">Instrucciones</div>
+    <p>Muestra el procedimiento completo en cada inciso. El c&oacute;digo MATLAB o Python se entrega como archivo adjunto (.m o .py). Formato: PDF o cuaderno escaneado legible.</p>
+  </div>
+  
+<div class="inc" style="border-left:5px solid #7A3000;">
+  <div class="in" style="color:#7A3000;">Inciso 1 &middot; Coeficientes de Fourier</div>
+  <h3>Calcula \( a_0 \), \( a_n \) y \( b_n \) para cada funci&oacute;n. Escribe la serie de Fourier completa.</h3>
+  <div class="eq">\[ f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty}\left[a_n\cos\!\left(\frac{n\pi x}{L}\right) + b_n\sin\!\left(\frac{n\pi x}{L}\right)\right] \]</div>
+  <div class="egrid">
+    <div class="ei"><span class="lt">a)</span>\( f(x) = x \) en \([-\pi,\,\pi]\)</div>
+    <div class="ei"><span class="lt">b)</span>\( f(x) = |x| \) en \([-\pi,\,\pi]\)</div>
+    <div class="ei"><span class="lt">c)</span>\( f(x) = \begin{cases} 1 & 0 &lt; x &lt; \pi \\ -1 & -\pi &lt; x &lt; 0 \end{cases} \)</div>
+  </div>
+</div>
+<div class="inc" style="border-left:5px solid #004A87;">
+  <div class="in" style="color:#004A87;">Inciso 2 &middot; MATLAB &mdash; Convergencia y fen&oacute;meno de Gibbs</div>
+  <h3>Grafica la aproximaci&oacute;n de Fourier con N = 3, 10 y 50 t&eacute;rminos para cada funci&oacute;n.</h3>
+  <div class="ml"><div class="mll">Indicaciones</div><p>&bull; Usa <code>subplot(3,1,n)</code> para los 3 valores de N.<br>&bull; Superpone la funci&oacute;n original en cada subgr&aacute;fica.<br>&bull; En el inciso c) comenta el fen&oacute;meno de Gibbs cerca de las discontinuidades.</p></div>
+</div>
+<div class="inc" style="border-left:5px solid #1A7A4A;">
+  <div class="in" style="color:#1A7A4A;">Inciso 3 &middot; Funciones pares e impares</div>
+  <h3>Determina si cada funci&oacute;n es par, impar o ninguna. Simplifica la serie de Fourier.</h3>
+  <div class="egrid">
+    <div class="ei"><span class="lt">a)</span>\( f(x) = x^3 - x \)</div>
+    <div class="ei"><span class="lt">b)</span>\( f(x) = \cos(x) + x^2 \)</div>
+    <div class="ei"><span class="lt">c)</span>\( f(x) = \sin(x)\cos(x) \)</div>
+  </div>
+  <p style="margin-top:0.6rem;">Recuerda: si \( f \) es par &Rightarrow; \( b_n = 0 \); si es impar &Rightarrow; \( a_n = 0 \).</p>
+</div>
+  <div class="eb">
+    <div class="ebi">&#x1F4EC;</div>
+    <div class="ebt">
+      <div class="ebl">Fecha y forma de entrega</div>
+      <p>Inicio del D&iacute;a 12 v&iacute;a Teams &middot; PDF o cuaderno escaneado &middot; C&oacute;digo como archivo adjunto</p>
+    </div>
+  </div>
+</main>
+<footer><p><span>Universidad de Guanajuato</span> &middot; Campus Celaya-Salvatierra &middot; Dra. Mar&iacute;a de la Luz L&oacute;pez Gonz&aacute;lez &middot; Ecuaciones Diferenciales &middot; 2026</p></footer>
+</body>
+</html>

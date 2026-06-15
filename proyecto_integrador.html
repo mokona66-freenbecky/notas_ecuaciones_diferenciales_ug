@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto Integrador &mdash;</title>
+<script>MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
+:root{--ug-blue:#004A87;--ug-blue-dark:#002F56;--ug-gold:#C8A000;--ug-gold-light:#F5E9B0;--white:#FFFFFF;--gray-100:#F7F9FC;--gray-200:#E8EEF5;--gray-700:#3A3A3A;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Raleway',sans-serif;background:var(--gray-100);color:var(--gray-700);line-height:1.7;}
+header{color:#fff;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(200,160,0,0.12);}
+.hi{max-width:900px;margin:0 auto;padding:2rem 2rem 1.5rem;position:relative;z-index:1;}
+.ht{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
+.logo{width:58px;height:58px;background:var(--ug-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:var(--ug-blue-dark);flex-shrink:0;}
+.univ{font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ug-gold);display:block;}
+.dept{font-size:0.72rem;color:rgba(255,255,255,0.7);display:block;}
+.badge{display:inline-flex;align-items:center;gap:0.4rem;background:var(--ug-gold);color:var(--ug-blue-dark);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.8rem;border-radius:2rem;margin-bottom:0.7rem;}
+header h1{font-size:clamp(1.3rem,3.5vw,1.9rem);font-weight:900;line-height:1.2;margin-bottom:0.3rem;}
+header h1 em{color:var(--ug-gold);font-style:normal;}
+.hs{font-size:0.85rem;color:rgba(255,255,255,0.75);}
+.ms{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.15);}
+.mi .lbl{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ug-gold);}
+.mi .val{font-size:0.8rem;color:rgba(255,255,255,0.9);}
+.gb{height:4px;background:linear-gradient(90deg,var(--ug-gold),#FFD94A,var(--ug-gold));}
+main{max-width:900px;margin:0 auto;padding:2rem;}
+.card{background:var(--white);border-radius:12px;padding:1.5rem 1.8rem;margin-bottom:1.2rem;box-shadow:0 2px 8px rgba(0,74,135,0.07);}
+.card-label{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.4rem;}
+.card h3{font-size:0.95rem;font-weight:700;color:var(--gray-700);margin-bottom:0.8rem;}
+.card h2{font-size:1.05rem;font-weight:800;margin-bottom:0.8rem;}
+.eq{background:var(--white);border-left:5px solid var(--ug-gold);border-radius:0 8px 8px 0;padding:0.8rem 1.2rem;margin:0.8rem 0;overflow-x:auto;text-align:center;box-shadow:0 1px 6px rgba(0,74,135,0.08);}
+.egrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.6rem;margin:0.8rem 0;}
+.ei{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:8px;padding:0.8rem 1rem;text-align:center;}
+.ei .lt{font-weight:700;color:var(--ug-blue);display:block;margin-bottom:0.3rem;font-size:0.72rem;text-transform:uppercase;}
+.info-box{border-radius:10px;padding:1rem 1.4rem;margin:0.8rem 0;}
+.ml{background:linear-gradient(135deg,#1E1E2E,#2D2D3F);border-radius:10px;padding:1.2rem 1.5rem;margin:0.8rem 0;}
+.ml .mll{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#A6E3A1;margin-bottom:0.5rem;}
+.ml p{font-size:0.82rem;color:#CDD6F4;line-height:1.6;}
+.ml code{background:rgba(255,255,255,0.1);color:#89B4FA;padding:0.1rem 0.4rem;border-radius:3px;font-family:'Source Code Pro',monospace;font-size:0.8rem;}
+.py{background:linear-gradient(135deg,#1A1A2E,#16213E);border-radius:10px;padding:1.2rem 1.5rem;margin:0.8rem 0;}
+.py .pyl{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#FFD43B;margin-bottom:0.5rem;}
+.py p{font-size:0.82rem;color:#CDD6F4;line-height:1.6;}
+.py code{background:rgba(255,255,255,0.1);color:#4EC9B0;padding:0.1rem 0.4rem;border-radius:3px;font-family:'Source Code Pro',monospace;font-size:0.8rem;}
+.rubrica{width:100%;border-collapse:collapse;font-size:0.82rem;margin:0.8rem 0;}
+.rubrica thead tr{background:var(--ug-blue);color:#fff;}
+.rubrica th{padding:0.6rem 0.9rem;text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;}
+.rubrica td{padding:0.6rem 0.9rem;border-bottom:1px solid var(--gray-200);vertical-align:top;}
+.rubrica tr:nth-child(even) td{background:var(--gray-100);}
+.pct{font-weight:700;color:var(--ug-blue);}
+.banner{border-radius:12px;padding:1rem 1.5rem;margin-top:1.5rem;display:flex;align-items:center;gap:1rem;}
+.banner-gold{background:linear-gradient(135deg,var(--ug-gold-light),#FFF8D6);border:2px solid var(--ug-gold);}
+.banner-blue{background:linear-gradient(135deg,var(--ug-blue),var(--ug-blue-dark));color:#fff;}
+.bicon{font-size:2rem;flex-shrink:0;}
+.blbl{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.banner-gold .blbl{color:#8A6A00;}
+.banner-blue .blbl{color:var(--ug-gold);}
+.banner-gold .btxt{font-size:0.88rem;font-weight:600;color:#5A4000;margin-top:0.2rem;}
+.banner-blue .btxt{font-size:0.88rem;font-weight:600;color:rgba(255,255,255,0.9);margin-top:0.2rem;}
+.tema-list{list-style:none;display:flex;flex-direction:column;gap:0.5rem;margin:0.8rem 0;}
+.tema-list li{display:flex;gap:0.8rem;align-items:flex-start;background:var(--gray-100);border-radius:8px;padding:0.7rem 1rem;font-size:0.84rem;}
+.tema-list .tnum{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;flex-shrink:0;color:#fff;}
+footer{background:var(--ug-blue-dark);color:rgba(255,255,255,0.6);text-align:center;padding:1rem;font-size:0.72rem;margin-top:2rem;}
+footer span{color:var(--ug-gold);}
+p{font-size:0.88rem;line-height:1.7;}
+ul,ol{padding-left:1.3rem;font-size:0.86rem;line-height:1.8;}
+li{margin-bottom:0.3rem;}
+strong{color:var(--ug-blue-dark);}
+
+header{background:linear-gradient(135deg,var(--ug-blue-dark),#004A87);}</style>
+</head>
+<body>
+<header>
+  <div class="hi">
+    <div class="ht">
+      <div class="logo">UG</div>
+      <div><span class="univ">Universidad de Guanajuato</span><span class="dept">Campus Celaya-Salvatierra &middot; Lic. en Ingenier&iacute;a Agroindustrial</span></div>
+    </div>
+    <div class="badge">&#x1F3AF; Proyecto Integrador &middot; Semanas 1-3</div>
+    <h1>Proyecto Integrador &mdash; <em>Modelado de Proceso Agroindustrial</em></h1>
+    <p class="hs">Dra. Mar&iacute;a de la Luz L&oacute;pez Gonz&aacute;lez &middot; Ecuaciones Diferenciales</p>
+    <div class="ms"><div class="mi"><div class="lbl">Ponderaci&oacute;n</div><div class="val">10% del curso</div></div><div class="mi"><div class="lbl">Modalidad</div><div class="val">Individual o parejas</div></div><div class="mi"><div class="lbl">Entrega final</div><div class="val">D&iacute;a 14</div></div><div class="mi"><div class="lbl">Presentaci&oacute;n</div><div class="val">D&iacute;a 15</div></div></div>
+  </div>
+</header>
+<div class="gb"></div>
+<main>
+<div class="card" style="border-left:5px solid var(--ug-blue);">
+  <div class="card-label" style="color:var(--ug-blue);">&#x1F3AF; Descripci&oacute;n general</div>
+  <h2>Modelar matem&aacute;ticamente un proceso agroindustrial real usando EDO o EDP, resolverlo anal&iacute;ticamente, simular con MATLAB o Python y presentar los resultados.</h2>
+  <p>El proyecto integra todos los temas del curso y representa el <strong>10% de la calificaci&oacute;n final</strong>. Puede desarrollarse de forma individual o en parejas.</p>
+</div>
+
+<div class="card" style="border-left:5px solid #C8A000;">
+  <div class="card-label" style="color:#8A6A00;">&#x1F9EA; Opciones de temas por nivel</div>
+  <table class="rubrica">
+    <thead><tr><th>Nivel</th><th>Tema</th><th>Tipo de ED</th><th>Herramienta</th></tr></thead>
+    <tbody>
+      <tr><td><strong>&#x2B50; B&aacute;sico</strong></td><td>Enfriamiento de leche pasteurizada (Ley de Newton)</td><td>EDO 1er orden lineal</td><td>MATLAB <code>ode45</code></td></tr>
+      <tr><td><strong>&#x2B50; B&aacute;sico</strong></td><td>Cin&eacute;tica de secado de granos (modelo de Lewis)</td><td>EDO 1er orden separable</td><td>MATLAB <code>dsolve</code></td></tr>
+      <tr><td><strong>&#x2B50;&#x2B50; Intermedio</strong></td><td>Din&aacute;mica de fermentador batch (Bernoulli)</td><td>EDO Bernoulli / log&iacute;stico</td><td>MATLAB + gr&aacute;ficas</td></tr>
+      <tr><td><strong>&#x2B50;&#x2B50; Intermedio</strong></td><td>Control de nivel en tanque de proceso</td><td>Sistema de EDO + Laplace</td><td>MATLAB Symbolic</td></tr>
+      <tr><td><strong>&#x2B50;&#x2B50;&#x2B50; Avanzado</strong></td><td>Distribuci&oacute;n de temperatura en secador de t&uacute;nel</td><td>EDP &mdash; Ecuaci&oacute;n del calor 2D</td><td>Python numpy + animaci&oacute;n</td></tr>
+      <tr><td><strong>&#x2B50;&#x2B50;&#x2B50; Avanzado</strong></td><td>Difusi&oacute;n de humedad en deshidrataci&oacute;n osm&oacute;tica</td><td>EDP &mdash; Ecuaci&oacute;n de difusi&oacute;n</td><td>Python scipy + matplotlib</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:0.8rem;">Tambi&eacute;n puedes proponer tu propio tema con aprobaci&oacute;n de la docente antes del D&iacute;a 8.</p>
+</div>
+
+<div class="card" style="border-left:5px solid #1A7A4A;">
+  <div class="card-label" style="color:#1A7A4A;">&#x1F4CB; Estructura del reporte escrito</div>
+  <ul class="tema-list">
+    <li><div class="tnum" style="background:var(--ug-blue);">1</div><div><strong>Introducci&oacute;n</strong> &mdash; Descripci&oacute;n del proceso agroindustrial, importancia, par&aacute;metros reales del sistema (1 cuartilla m&iacute;nimo)</div></li>
+    <li><div class="tnum" style="background:#1A7A4A;">2</div><div><strong>Modelo matem&aacute;tico</strong> &mdash; Planteamiento de la EDO o EDP con hip&oacute;tesis, condiciones iniciales/frontera y par&aacute;metros f&iacute;sicos con unidades</div></li>
+    <li><div class="tnum" style="background:#C05000;">3</div><div><strong>Soluci&oacute;n anal&iacute;tica</strong> &mdash; Desarrollo paso a paso del m&eacute;todo de soluci&oacute;n empleado, verificaci&oacute;n por sustituci&oacute;n</div></li>
+    <li><div class="tnum" style="background:#6B0080;">4</div><div><strong>Implementaci&oacute;n computacional</strong> &mdash; C&oacute;digo en MATLAB o Python completamente comentado con docstrings y encabezado documentado</div></li>
+    <li><div class="tnum" style="background:#7A3000;">5</div><div><strong>Diagrama de flujo</strong> &mdash; Del algoritmo computacional con s&iacute;mbolos est&aacute;ndar (inicio, proceso, decisi&oacute;n, fin)</div></li>
+    <li><div class="tnum" style="background:#005A80;">6</div><div><strong>Resultados y visualizaci&oacute;n</strong> &mdash; Gr&aacute;ficas con unidades, etiquetas, t&iacute;tulo y leyenda. M&iacute;nimo 3 figuras significativas</div></li>
+    <li><div class="tnum" style="background:#006040;">7</div><div><strong>An&aacute;lisis e interpretaci&oacute;n</strong> &mdash; Qu&eacute; significa el resultado en el contexto del proceso real. Comparaci&oacute;n con datos de literatura si aplica</div></li>
+    <li><div class="tnum" style="background:#1A7A4A;">8</div><div><strong>Conclusiones</strong> &mdash; Qu&eacute; aprendiste, limitaciones del modelo y propuesta de mejora o trabajo futuro (m&iacute;nimo media cuartilla)</div></li>
+    <li><div class="tnum" style="background:var(--ug-blue);">9</div><div><strong>Referencias</strong> &mdash; M&iacute;nimo 3 fuentes acad&eacute;micas en formato APA 7. Incluir al menos una en ingl&eacute;s</div></li>
+  </ul>
+</div>
+
+<div class="card" style="border-left:5px solid #C05000;">
+  <div class="card-label" style="color:#C05000;">&#x1F4BB; Requisitos del c&oacute;digo</div>
+  <ul>
+    <li>Encabezado con: nombre del autor, fecha, descripci&oacute;n del programa, par&aacute;metros de entrada y salida</li>
+    <li>Comentarios en cada bloque de c&oacute;digo explicando <em>qu&eacute; hace</em> y <em>por qu&eacute;</em></li>
+    <li>Funciones separadas para: definici&oacute;n de la EDO, soluci&oacute;n num&eacute;rica y visualizaci&oacute;n</li>
+    <li>Diagrama de flujo del algoritmo incluido en el reporte PDF</li>
+    <li>El c&oacute;digo debe ejecutarse sin errores con un solo comando (<code>run proyecto.m</code> o <code>python proyecto.py</code>)</li>
+  </ul>
+</div>
+
+<div class="card" style="border-left:5px solid #6B0080;">
+  <div class="card-label" style="color:#6B0080;">&#x1F3A4; Presentaci&oacute;n oral &mdash; D&iacute;a 15</div>
+  <ul>
+    <li>Duraci&oacute;n: <strong>15 minutos</strong> de presentaci&oacute;n + 5 minutos de preguntas</li>
+    <li>Apoyarse en diapositivas o directamente en el c&oacute;digo corriendo en tiempo real</li>
+    <li>Todos los integrantes del equipo deben participar y ser capaces de responder preguntas sobre cualquier parte del trabajo</li>
+    <li>Demostrar el c&oacute;digo funcionando en la computadora durante la presentaci&oacute;n</li>
+  </ul>
+</div>
+
+<div class="card" style="border-left:5px solid var(--ug-blue);">
+  <div class="card-label" style="color:var(--ug-blue);">&#x1F4CB; R&uacute;brica de evaluaci&oacute;n (10% del curso)</div>
+  <table class="rubrica">
+    <thead><tr><th>Criterio</th><th>Excelente (100%)</th><th>Suficiente (70%)</th><th>Insuficiente (50%)</th><th>%</th></tr></thead>
+    <tbody>
+      <tr><td>Planteamiento del modelo</td><td>EDO/EDP correcta con hip&oacute;tesis y par&aacute;metros reales</td><td>EDO correcta con algunas omisiones</td><td>EDO incorrecta o sin condiciones</td><td class="pct">15%</td></tr>
+      <tr><td>Soluci&oacute;n anal&iacute;tica</td><td>Desarrollo completo paso a paso verificado</td><td>Desarrollo con errores menores</td><td>No obtiene soluci&oacute;n anal&iacute;tica</td><td class="pct">20%</td></tr>
+      <tr><td>C&oacute;digo y documentaci&oacute;n</td><td>Funcional, comentado, con docstrings y encabezado</td><td>Funcional con pocos comentarios</td><td>No funciona o sin comentarios</td><td class="pct">20%</td></tr>
+      <tr><td>Diagrama de flujo</td><td>Completo, s&iacute;mbolos correctos, legible</td><td>Incompleto o s&iacute;mbolos incorrectos</td><td>Ausente</td><td class="pct">10%</td></tr>
+      <tr><td>Visualizaci&oacute;n y resultados</td><td>3+ gr&aacute;ficas claras, etiquetadas, interpretadas</td><td>Gr&aacute;ficas presentes sin interpretaci&oacute;n</td><td>Sin gr&aacute;ficas o incorrectas</td><td class="pct">15%</td></tr>
+      <tr><td>Interpretaci&oacute;n agroindustrial</td><td>Relaciona resultados con el proceso real y propone mejoras</td><td>Relaciona vagamente</td><td>No hay interpretaci&oacute;n</td><td class="pct">10%</td></tr>
+      <tr><td>Presentaci&oacute;n oral</td><td>Explica con claridad, responde preguntas, demo en vivo</td><td>Explica con apoyo, responde parcialmente</td><td>No puede explicar el trabajo</td><td class="pct">10%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card" style="border-left:5px solid #1A7A4A;">
+  <div class="card-label" style="color:#1A7A4A;">&#x1F4C5; Fechas importantes</div>
+  <ul class="tema-list">
+    <li><div class="tnum" style="background:#C8A000;">D8</div><div><strong>Elecci&oacute;n del tema</strong> &mdash; Informar a la docente el tema elegido y el nivel seleccionado</div></li>
+    <li><div class="tnum" style="background:#C05000;">D12</div><div><strong>Avance obligatorio</strong> &mdash; Entregar secciones 1, 2 y 3 del reporte (introducci&oacute;n, modelo y soluci&oacute;n anal&iacute;tica)</div></li>
+    <li><div class="tnum" style="background:#6B0080;">D14</div><div><strong>Entrega final</strong> &mdash; Reporte PDF completo + c&oacute;digo (.m o .py) v&iacute;a Teams antes de las 8:00 AM</div></li>
+    <li><div class="tnum" style="background:var(--ug-blue);">D15</div><div><strong>Presentaciones orales</strong> &mdash; 15 min por proyecto. Orden de presentaci&oacute;n se sortea el D&iacute;a 14</div></li>
+  </ul>
+</div>
+
+<div class="banner banner-blue">
+  <div class="bicon">&#x1F4CC;</div>
+  <div><div class="blbl">Nota importante</div><p class="btxt">Si no se presenta avance el D&iacute;a 12, la calificaci&oacute;n m&aacute;xima del proyecto ser&aacute; 70. La presentaci&oacute;n oral es obligatoria para acreditar este rubro.</p></div>
+</div></main>
+<footer><p><span>Universidad de Guanajuato</span> &middot; Campus Celaya-Salvatierra &middot; Dra. Mar&iacute;a de la Luz L&oacute;pez Gonz&aacute;lez &middot; Ecuaciones Diferenciales &middot; 2026</p></footer>
+</body>
+</html>

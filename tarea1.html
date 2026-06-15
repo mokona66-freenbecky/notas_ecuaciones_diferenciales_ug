@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarea 1 — Clasificación de EDO</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
+:root{--ug-blue:#004A87;--ug-blue-dark:#002F56;--ug-blue-light:#D2E4F5;--ug-gold:#C8A000;--ug-gold-light:#F5E9B0;--white:#FFFFFF;--gray-100:#F7F9FC;--gray-200:#E8EEF5;--gray-700:#3A3A3A;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Raleway',sans-serif;background:var(--gray-100);color:var(--gray-700);line-height:1.7;}
+header{background:linear-gradient(135deg,var(--ug-blue-dark),var(--ug-blue));color:#fff;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(200,160,0,0.12);}
+.header-inner{max-width:860px;margin:0 auto;padding:2rem 2rem 1.5rem;position:relative;z-index:1;}
+.header-top{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;}
+.logo{width:58px;height:58px;background:var(--ug-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:var(--ug-blue-dark);flex-shrink:0;}
+.inst .univ{font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ug-gold);display:block;}
+.inst .dept{font-size:0.72rem;color:rgba(255,255,255,0.7);display:block;}
+.badge{display:inline-flex;align-items:center;gap:0.4rem;background:var(--ug-gold);color:var(--ug-blue-dark);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.8rem;border-radius:2rem;margin-bottom:0.7rem;}
+header h1{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:900;line-height:1.2;margin-bottom:0.3rem;}
+header h1 span{color:var(--ug-gold);}
+.header-sub{font-size:0.85rem;color:rgba(255,255,255,0.75);}
+.meta-strip{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.15);}
+.meta-item .lbl{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ug-gold);}
+.meta-item .val{font-size:0.8rem;color:rgba(255,255,255,0.9);}
+.gold-bar{height:4px;background:linear-gradient(90deg,var(--ug-gold),#FFD94A,var(--ug-gold));}
+main{max-width:860px;margin:0 auto;padding:2rem;}
+.instrucciones{background:linear-gradient(135deg,var(--ug-blue),var(--ug-blue-dark));color:#fff;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;}
+.instrucciones .i-label{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--ug-gold);margin-bottom:0.3rem;}
+.instrucciones p{font-size:0.85rem;color:rgba(255,255,255,0.9);line-height:1.6;}
+.inciso{background:var(--white);border-radius:12px;padding:1.5rem 1.8rem;margin-bottom:1.2rem;box-shadow:0 2px 8px rgba(0,74,135,0.07);}
+.inc1{border-left:5px solid var(--ug-blue);}
+.inc2{border-left:5px solid var(--ug-gold);}
+.inc3{border-left:5px solid #1A7A4A;}
+.inc4{border-left:5px solid #7A1A6A;}
+.inciso-num{font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.4rem;}
+.inc1 .inciso-num{color:var(--ug-blue);}
+.inc2 .inciso-num{color:#8A6A00;}
+.inc3 .inciso-num{color:#1A7A4A;}
+.inc4 .inciso-num{color:#7A1A6A;}
+.inciso h3{font-size:0.95rem;font-weight:700;color:var(--gray-700);margin-bottom:0.8rem;}
+.eq-display{background:var(--white);border-left:5px solid var(--ug-gold);border-radius:0 8px 8px 0;padding:0.8rem 1.2rem;margin:0.8rem 0;overflow-x:auto;text-align:center;box-shadow:0 1px 6px rgba(0,74,135,0.08);}
+.eq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.6rem;margin:0.8rem 0;}
+.eq-item{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:8px;padding:0.8rem 1rem;font-size:0.84rem;text-align:center;}
+.eq-item .letra{font-weight:700;color:var(--ug-blue);display:block;margin-bottom:0.3rem;font-size:0.75rem;text-transform:uppercase;}
+.nota-matlab{background:linear-gradient(135deg,#1E1E2E,#2D2D3F);border-radius:10px;padding:1.2rem 1.5rem;margin-top:0.8rem;}
+.nota-matlab .nm-label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#A6E3A1;margin-bottom:0.5rem;}
+.nota-matlab p{font-size:0.82rem;color:#CDD6F4;line-height:1.6;}
+.nota-matlab code{background:rgba(255,255,255,0.1);color:#89B4FA;padding:0.1rem 0.4rem;border-radius:3px;font-family:'Source Code Pro',monospace;font-size:0.8rem;}
+.entrega-banner{background:linear-gradient(135deg,var(--ug-gold-light),#FFF8D6);border:2px solid var(--ug-gold);border-radius:12px;padding:1rem 1.5rem;margin-top:1.5rem;display:flex;align-items:center;gap:1rem;}
+.eb-icon{font-size:2rem;flex-shrink:0;}
+.eb-text .eb-label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#8A6A00;}
+.eb-text p{font-size:0.88rem;font-weight:600;color:#5A4000;margin-top:0.2rem;}
+footer{background:var(--ug-blue-dark);color:rgba(255,255,255,0.6);text-align:center;padding:1rem;font-size:0.72rem;margin-top:2rem;}
+footer span{color:var(--ug-gold);}
+p{font-size:0.88rem;line-height:1.7;}
+ul,ol{padding-left:1.3rem;font-size:0.86rem;line-height:1.8;}
+li{margin-bottom:0.2rem;}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="logo">UG</div>
+      <div class="inst">
+        <span class="univ">Universidad de Guanajuato</span>
+        <span class="dept">Campus Celaya-Salvatierra &middot; Lic. en Ingeniería Agroindustrial</span>
+      </div>
+    </div>
+    <div class="badge">&#x1F4DD; Tarea 1 &middot; Semana 1 &middot; Día 1</div>
+    <h1>Definición y <span>Clasificación</span> de EDO</h1>
+    <p class="header-sub">Dra. María de la Luz López González &middot; Ecuaciones Diferenciales</p>
+    <div class="meta-strip">
+      <div class="meta-item"><div class="lbl">Publicación</div><div class="val">Cierre del Día 1</div></div>
+      <div class="meta-item"><div class="lbl">Entrega</div><div class="val">Inicio del Día 2</div></div>
+      <div class="meta-item"><div class="lbl">Formato</div><div class="val">PDF o cuaderno escaneado</div></div>
+      <div class="meta-item"><div class="lbl">Temas</div><div class="val">1.1 — 1.4</div></div>
+    </div>
+  </div>
+</header>
+<div class="gold-bar"></div>
+<main>
+  <div class="instrucciones">
+    <div class="i-label">&#x1F4CB; Instrucciones generales</div>
+    <p>Resuelve cada inciso mostrando el procedimiento completo. Incluye la justificación en los incisos que lo soliciten. El inciso de MATLAB debe entregarse con código y gráficas generadas como archivo .m adjunto.</p>
+  </div>
+
+  <div class="inciso inc1">
+    <div class="inciso-num">Inciso 1 &middot; Clasificación de EDO</div>
+    <h3>Clasifica las siguientes 10 ecuaciones diferenciales indicando: tipo (EDO/EDP), orden, grado y linealidad. Justifica cada respuesta.</h3>
+    <div class="eq-grid">
+      <div class="eq-item"><span class="letra">a)</span>\( y'' + 3y' - 2y = 0 \)</div>
+      <div class="eq-item"><span class="letra">b)</span>\( (y')^3 + y = x^2 \)</div>
+      <div class="eq-item"><span class="letra">c)</span>\( \dfrac{\partial^2 u}{\partial x^2} = \dfrac{\partial u}{\partial t} \)</div>
+      <div class="eq-item"><span class="letra">d)</span>\( y \cdot y'' = 1 \)</div>
+      <div class="eq-item"><span class="letra">e)</span>\( (y'')^2 + y' = e^x \)</div>
+      <div class="eq-item"><span class="letra">f)</span>\( \dfrac{dy}{dx} = \sqrt{y} \)</div>
+      <div class="eq-item"><span class="letra">g)</span>\( y''' - y = \cos(x) \)</div>
+      <div class="eq-item"><span class="letra">h)</span>\( x\,y'' + y = 0 \)</div>
+      <div class="eq-item"><span class="letra">i)</span>\( (y')^2 - y^2 = 0 \)</div>
+      <div class="eq-item"><span class="letra">j)</span>\( \dfrac{d^2y}{dt^2} + \omega^2 y = A\sin(\omega t) \)</div>
+    </div>
+  </div>
+
+  <div class="inciso inc2">
+    <div class="inciso-num">Inciso 2 &middot; Modelado agroindustrial</div>
+    <h3>Plantea la EDO que modela el siguiente proceso e identifica su clasificación completa.</h3>
+    <p>Un producto lácteo pasteurizado sale del equipo a <strong>85&deg;C</strong> y debe enfriarse hasta <strong>4&deg;C</strong> en un ambiente a <strong>2&deg;C</strong>. La tasa de cambio de temperatura es proporcional a la diferencia entre la temperatura del producto y la del ambiente.</p>
+    <div class="eq-display">
+      \[ \frac{dT}{dt} = -k\,(T - T_\infty), \qquad T(0) = 85\,^{\circ}\text{C}, \quad T_\infty = 2\,^{\circ}\text{C} \]
+    </div>
+    <p>Identifica: tipo, orden, grado, linealidad y si es homogénea o no homogénea.</p>
+  </div>
+
+  <div class="inciso inc3">
+    <div class="inciso-num">Inciso 3 &middot; Teorema de Existencia y Unicidad</div>
+    <h3>Verifica si el siguiente PVI satisface las condiciones del Teorema de Picard. ¿Tiene solución única? Justifica con detalle.</h3>
+    <div class="eq-display">
+      \[ y' = y^{2/3}, \qquad y(0) = 0 \]
+    </div>
+    <p>Para tu análisis considera:</p>
+    <ul>
+      <li>¿Es \( f(x,y) = y^{2/3} \) continua en una región que contiene al punto \( (0,0) \)?</li>
+      <li>¿Existe y es continua \( \dfrac{\partial f}{\partial y} \) en esa región?</li>
+      <li>¿Qué concluyes sobre la unicidad de la solución? ¿Puedes encontrar más de una?</li>
+    </ul>
+  </div>
+
+  <div class="inciso inc4">
+    <div class="inciso-num">Inciso 4 &middot; MATLAB — Campo de dirección</div>
+    <h3>Traza el campo de dirección de la siguiente EDO y agrega 3 curvas solución con condiciones iniciales distintas de tu elección.</h3>
+    <div class="eq-display">
+      \[ \frac{dy}{dx} = x^2 - y \]
+    </div>
+    <div class="nota-matlab">
+      <div class="nm-label">&#x1F4BB; Funciones sugeridas en MATLAB</div>
+      <p>
+        &bull; Usa <code>meshgrid</code> y <code>quiver</code> para el campo de dirección.<br>
+        &bull; Usa <code>ode45</code> con distintos valores de <code>y(0)</code> para las curvas solución.<br>
+        &bull; Etiqueta los ejes, agrega título y leyenda indicando las condiciones iniciales.
+      </p>
+    </div>
+  </div>
+
+  <div class="entrega-banner">
+    <div class="eb-icon">&#x1F4EC;</div>
+    <div class="eb-text">
+      <div class="eb-label">Fecha y forma de entrega</div>
+      <p>Entregar al inicio del Día 2 vía Teams &middot; PDF o cuaderno escaneado legible &middot; Código MATLAB como archivo .m adjunto</p>
+    </div>
+  </div>
+</main>
+<footer>
+  <p><span>Universidad de Guanajuato</span> &middot; Campus Celaya-Salvatierra &middot; Dra. María de la Luz López González &middot; Ecuaciones Diferenciales &middot; 2026</p>
+</footer>
+</body>
+</html>
