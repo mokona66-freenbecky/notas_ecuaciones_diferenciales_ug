@@ -1,0 +1,435 @@
+<div style="font-family:Arial,Helvetica,sans-serif;color:#22303f;background:#ffffff;max-width:900px;margin:0 auto;line-height:1.55;">
+
+<!-- HERO -->
+<div style="background:#173a5e;color:#ffffff;padding:26px 24px;border-radius:8px;margin-bottom:20px;">
+  <span style="display:inline-block;background:#1f9e8e;color:#ffffff;padding:3px 12px;border-radius:14px;font-size:12px;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">IIA2304 &middot; Probabilidad y Estad&iacute;stica</span>
+  <h1 style="margin:0 0 8px;font-size:24px;font-weight:bold;color:#ffffff;">Gu&iacute;a Interactiva de Estad&iacute;stica Descriptiva</h1>
+  <p style="margin:0;color:#cfe0ee;font-size:15px;">De la teor&iacute;a a la pr&aacute;ctica en Ciencia de Datos e Ingenier&iacute;a Industrial. Ejemplos resueltos, gr&aacute;ficas y preguntas tipo examen.</p>
+</div>
+
+<!-- TOC -->
+<div style="background:#0f2942;color:#ffffff;padding:16px 22px;border-radius:8px;margin-bottom:28px;">
+  <b style="color:#8fd6c4;">En esta gu&iacute;a:</b><br>
+  <a href="#sec1" style="color:#cfe0ee;text-decoration:none;">1. Tendencia central</a> &nbsp;&middot;&nbsp;
+  <a href="#sec2" style="color:#cfe0ee;text-decoration:none;">2. Dispersi&oacute;n</a> &nbsp;&middot;&nbsp;
+  <a href="#sec3" style="color:#cfe0ee;text-decoration:none;">3. Cuartiles y Outliers (Tukey)</a> &nbsp;&middot;&nbsp;
+  <a href="#sec4" style="color:#cfe0ee;text-decoration:none;">4. Asimetr&iacute;a y curtosis</a> &nbsp;&middot;&nbsp;
+  <a href="#sec5" style="color:#cfe0ee;text-decoration:none;">5. Casos de estudio</a> &nbsp;&middot;&nbsp;
+  <a href="#sec6" style="color:#cfe0ee;text-decoration:none;">6. Excel y R</a> &nbsp;&middot;&nbsp;
+  <a href="#sec7" style="color:#cfe0ee;text-decoration:none;">7. Pr&aacute;ctica para el examen</a>
+</div>
+
+<!-- ===================== SECCION 1 ===================== -->
+<div id="sec1" style="margin-bottom:34px;padding-bottom:24px;border-bottom:2px solid #dbe4ea;">
+<h2 style="color:#173a5e;font-size:20px;border-left:5px solid #1f9e8e;padding-left:10px;margin:0 0 6px;">1. Medidas de tendencia central</h2>
+<p style="color:#5b6b7a;font-size:14px;margin-top:0;margin-bottom:16px;">Buscan el "centro de gravedad" de una distribuci&oacute;n: un valor &uacute;nico que resume d&oacute;nde se concentran los datos. Elegir la medida correcta no es un detalle t&eacute;cnico menor &mdash; de ello depende si una decisi&oacute;n de negocio o de ingenier&iacute;a refleja la realidad o la distorsiona.</p>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Media aritm&eacute;tica (x&#772;)</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">x&#772; = &Sigma;x&#7522; / n</div>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Qu&eacute; es:</b> el promedio de todas las observaciones &mdash; se suman todos los valores y se dividen entre el n&uacute;mero total de datos (n).</p>
+  <p style="margin:6px 0 0;font-size:14px;"><b>C&oacute;mo se interpreta:</b> es el "punto de equilibrio" matem&aacute;tico de los datos: si cada observaci&oacute;n fuera un peso f&iacute;sico sobre una regla, la media es el punto donde la regla se balancea.</p>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Cu&aacute;ndo usarla:</b> cuando los datos son razonablemente sim&eacute;tricos y no hay valores extremos. Es la base de casi todos los modelos estad&iacute;sticos e inferenciales posteriores.</p>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Mediana (x&#771;)</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">Percentil 50</div>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Qu&eacute; es:</b> el valor que queda exactamente a la mitad cuando los datos se ordenan de menor a mayor. Si n es par, es el promedio de los dos valores centrales.</p>
+  <p style="margin:6px 0 0;font-size:14px;"><b>C&oacute;mo se interpreta:</b> el 50% de las observaciones est&aacute;n por debajo de ella y el 50% por encima &mdash; no le importa "qu&eacute; tan extremos" son los valores de los extremos, solo su posici&oacute;n.</p>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Cu&aacute;ndo usarla:</b> cuando hay asimetr&iacute;a marcada o valores at&iacute;picos (outliers) que podr&iacute;an distorsionar el promedio.</p>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Moda (Mo)</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">m&aacute;x. frecuencia</div>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Qu&eacute; es:</b> el valor (o valores) que se repite con mayor frecuencia. Una distribuci&oacute;n puede ser unimodal, bimodal o multimodal.</p>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Cu&aacute;ndo usarla:</b> con datos cualitativos/categ&oacute;ricos, o para identificar el escenario operativo m&aacute;s com&uacute;n (p. ej. el tiempo de ciclo que m&aacute;s se repite en una l&iacute;nea de ensamble).</p>
+</div>
+
+<table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;">
+<thead><tr><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Caracter&iacute;stica</th><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Media aritm&eacute;tica</th><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Mediana</th></tr></thead>
+<tbody>
+<tr><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Definici&oacute;n</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Centro de masa de la magnitud de los datos</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Centro de posici&oacute;n de los datos</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Sensibilidad a outliers</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Muy alta; se desplaza hacia las colas</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Baja; medida robusta</td></tr>
+<tr><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Distribuci&oacute;n &oacute;ptima</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Sim&eacute;tricas</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Sesgadas</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:8px 10px;">Robustez</td><td style="padding:8px 10px;">Baja</td><td style="padding:8px 10px;">Alta; preserva la centralidad ante anomal&iacute;as</td></tr>
+</tbody>
+</table>
+
+<h4 style="color:#173a5e;margin-bottom:6px;">Ejemplo resuelto &mdash; Tiempos de entrenamiento ML (n = 20)</h4>
+<p style="font-family:Consolas,monospace;background:#eef4f8;padding:8px 10px;border-radius:4px;font-size:13px;">12, 15, 14, 13, <b style="color:#c0392b;">45</b>, 16, 12, 14, 15, 13, 17, 14, 16, 15, 13, 14, 12, 16, 15, 14 (min)</p>
+
+<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;text-align:center;">
+<tr>
+<td style="border:1px solid #dbe4ea;padding:10px;"><b style="color:#173a5e;">Media</b><br><span style="font-size:16px;">15.75 min</span><br><span style="color:#5b6b7a;font-size:12px;">se ve "inflada" por el 45</span></td>
+<td style="border:1px solid #dbe4ea;padding:10px;"><b style="color:#173a5e;">Mediana</b><br><span style="font-size:16px;">14.0 min</span><br><span style="color:#5b6b7a;font-size:12px;">refleja mejor lo t&iacute;pico</span></td>
+<td style="border:1px solid #dbe4ea;padding:10px;"><b style="color:#173a5e;">Moda</b><br><span style="font-size:16px;">14 min</span><br><span style="color:#5b6b7a;font-size:12px;">se repite 5 veces</span></td>
+</tr>
+</table>
+
+<div style="background:#e5f6f3;border-left:4px solid #1f9e8e;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b style="color:#173a5e;">Aplicaci&oacute;n en ingenier&iacute;a:</b> se prefiere la <b>mediana</b> sobre la media cuando la distribuci&oacute;n presenta asimetr&iacute;a marcada, ya que unas pocas fallas prematuras o retardos extremos desplazar&iacute;an la media de forma artificial. En el ejemplo, si se elimina el outlier de 45&nbsp;min, la media real baja a <b>14.21&nbsp;min</b> &mdash; mucho m&aacute;s parecida a la mediana.</div>
+</div>
+
+<!-- ===================== SECCION 2 ===================== -->
+<div id="sec2" style="margin-bottom:34px;padding-bottom:24px;border-bottom:2px solid #dbe4ea;">
+<h2 style="color:#173a5e;font-size:20px;border-left:5px solid #1f9e8e;padding-left:10px;margin:0 0 6px;">2. Medidas de dispersi&oacute;n y variabilidad</h2>
+<p style="color:#5b6b7a;font-size:14px;margin-top:0;margin-bottom:16px;">Dos conjuntos de datos pueden tener la misma media y ser radicalmente distintos en su comportamiento. La dispersi&oacute;n mide qu&eacute; tan "esparcidos" est&aacute;n los datos respecto al centro.</p>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Rango</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">Rango = x_m&aacute;x &minus; x_m&iacute;n</div>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Qu&eacute; es:</b> la medida m&aacute;s simple &mdash; la distancia entre el valor m&aacute;s alto y el m&aacute;s bajo.</p>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Limitaci&oacute;n:</b> depende solo de dos observaciones (los extremos), por lo que es extremadamente sensible a outliers.</p>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Varianza muestral (s&sup2;) &mdash; Correcci&oacute;n de Bessel</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">s&sup2; = &Sigma;(x&#7522; &minus; x&#772;)&sup2; / (n &minus; 1)</div>
+  <p style="margin:6px 0 0;font-size:14px;">La media muestral consume un grado de libertad al estimar la media poblacional. Dividir entre <code style="background:#eef2f5;border:1px solid #dbe4ea;padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:13px;color:#167468;">n</code> subestimar&iacute;a la varianza; el ajuste a <code style="background:#eef2f5;border:1px solid #dbe4ea;padding:1px 5px;border-radius:4px;font-family:Consolas,monospace;font-size:13px;color:#167468;">n&minus;1</code> corrige ese sesgo.</p>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Desviaci&oacute;n est&aacute;ndar (s)</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">s = &radic;s&sup2;</div>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Qu&eacute; es:</b> la ra&iacute;z cuadrada de la varianza. Regresa a las <b>unidades originales</b> (minutos, mm, segundos), mientras que la varianza queda en unidades al cuadrado.</p>
+  <p style="margin:6px 0 0;font-size:14px;"><b>C&oacute;mo se interpreta:</b> una s peque&ntilde;a = proceso consistente; una s grande = proceso variable/impredecible.</p>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Coeficiente de variaci&oacute;n (CV)</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">CV = (s / x&#772;) &times; 100%</div>
+  <p style="margin:6px 0 0;font-size:14px;">Normaliza la dispersi&oacute;n como porcentaje de la media, permitiendo comparar variabilidad entre variables con unidades distintas (mm de un eje frente a kW de consumo).</p>
+</div>
+
+<h4 style="color:#173a5e;margin-bottom:6px;">Ejemplo resuelto &mdash; mismo dataset de tiempos de entrenamiento ML</h4>
+<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;">
+<thead><tr><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Medida</th><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Con outlier (45 min)</th><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Sin outlier</th></tr></thead>
+<tbody>
+<tr><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Media</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">15.75 min</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">14.21 min</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Desviaci&oacute;n est&aacute;ndar (s)</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">7.03 min</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">1.47 min</td></tr>
+<tr><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">Coeficiente de variaci&oacute;n</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">44.7%</td><td style="padding:8px 10px;border-bottom:1px solid #dbe4ea;">10.4%</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:8px 10px;">Rango</td><td style="padding:8px 10px;">33 min (12 a 45)</td><td style="padding:8px 10px;">5 min (12 a 17)</td></tr>
+</tbody>
+</table>
+
+<div style="background:#e9f2fa;border-left:4px solid #173a5e;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b style="color:#173a5e;">&iquest;Por qu&eacute; n&minus;1 y no n?</b> Al usar x&#772; (estimada de la propia muestra) en lugar de la media poblacional real, los cuadrados de las desviaciones tienden a ser ligeramente menores. Dividir entre n&minus;1 "infla" el resultado lo justo para compensar ese sesgo &mdash; es la Correcci&oacute;n de Bessel.</div>
+<div style="background:#fdf1e3;border-left:4px solid #e08e2b;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b style="color:#173a5e;">Lectura del ejemplo:</b> una sola corrida de 45 minutos multiplica por m&aacute;s de 4 veces la desviaci&oacute;n est&aacute;ndar reportada y dispara el CV de "muy estable" (10.4%) a "altamente variable" (44.7%).</div>
+</div>
+
+<!-- ===================== SECCION 3 ===================== -->
+<div id="sec3" style="margin-bottom:34px;padding-bottom:24px;border-bottom:2px solid #dbe4ea;">
+<h2 style="color:#173a5e;font-size:20px;border-left:5px solid #1f9e8e;padding-left:10px;margin:0 0 6px;">3. Cuartiles, percentiles y detecci&oacute;n de anomal&iacute;as</h2>
+<p style="color:#5b6b7a;font-size:14px;margin-top:0;margin-bottom:16px;">Adem&aacute;s del centro y la dispersi&oacute;n general, es &uacute;til saber en qu&eacute; posici&oacute;n relativa cae cada dato dentro del conjunto ordenado.</p>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Percentil (P&#8342;)</h4>
+  <p style="margin:6px 0 0;font-size:14px;"><b>Qu&eacute; es:</b> el valor debajo del cual se encuentra el k% de las observaciones, una vez ordenados los datos. <b>Ejemplo:</b> P90 = 250&nbsp;ms en latencia de API significa que el 90% de las peticiones respondi&oacute; en 250&nbsp;ms o menos.</p>
+</div>
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Cuartiles (Q1, Q2, Q3)</h4>
+  <p style="margin:6px 0 0;font-size:14px;">Los tres percentiles que dividen los datos en cuatro partes iguales. <b>Q1</b> = P25 &middot; <b>Q2</b> = P50 = mediana &middot; <b>Q3</b> = P75.</p>
+</div>
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+  <h4 style="margin:0 0 6px;color:#173a5e;font-size:15px;">Rango intercuart&iacute;lico (IQR)</h4>
+  <div style="font-family:Georgia,serif;background:#eef4f8;border-left:3px solid #1f9e8e;padding:8px 12px;margin:8px 0;border-radius:4px;font-size:15px;">IQR = Q3 &minus; Q1</div>
+  <p style="margin:6px 0 0;font-size:14px;">Mide la amplitud del 50% central de los datos, ignorando el 25% m&aacute;s bajo y el 25% m&aacute;s alto &mdash; mucho m&aacute;s robusto que el rango total.</p>
+</div>
+
+<div style="background:#e9f2fa;border-left:4px solid #173a5e;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b style="color:#173a5e;">Percentiles clave en el Reto:</b> P10 y P90, y sobre todo <b>P95</b>, indispensable en SLA de sistemas: el promedio puede verse "aceptable" mientras el P95 revela que el 5% de los casos experimenta una condici&oacute;n cr&iacute;tica.</div>
+
+<h4 style="color:#173a5e;margin:20px 0 6px;">C&aacute;lculo paso a paso &mdash; tiempos de entrenamiento ML (n=20)</h4>
+<ol style="font-size:14px;padding-left:20px;">
+<li style="margin-bottom:8px;"><b>Ordenar los datos:</b> 12,12,12,13,13,13,14,14,14,14,14,15,15,15,15,16,16,16,17,<b style="color:#c0392b;">45</b></li>
+<li style="margin-bottom:8px;"><b>Ubicar la posici&oacute;n de cada cuartil</b> (posici&oacute;n=(n+1)&times;percentil): Q1 interpola a <b>13</b>; Q2 (mediana) a <b>14</b>; Q3 a <b>15.75</b>.</li>
+<li style="margin-bottom:8px;"><b>Calcular el IQR:</b> IQR = 15.75 &minus; 13 = <b>2.75</b></li>
+<li style="margin-bottom:8px;"><b>Calcular las vallas de Tukey:</b> Valla inf. = 13 &minus; 1.5(2.75) = <b>8.875</b> &nbsp;|&nbsp; Valla sup. = 15.75 + 1.5(2.75) = <b>19.875</b></li>
+<li style="margin-bottom:8px;"><b>Definir los bigotes:</b> bigote inferior hasta el dato real m&aacute;s peque&ntilde;o dentro de la valla (12); bigote superior hasta el m&aacute;s grande dentro de la valla (17).</li>
+<li style="margin-bottom:8px;"><b>Marcar los outliers:</b> fuera de [8.875, 19.875] &rarr; solo <b>45</b> cumple la condici&oacute;n.</li>
+</ol>
+
+<h4 style="color:#173a5e;margin:20px 0 6px;">C&oacute;mo se construye la gr&aacute;fica de caja y bigotes (boxplot)</h4>
+<p style="font-size:14px;color:#5b6b7a;margin-top:0;">Cada parte de la caja proviene directamente de los cinco valores calculados arriba. As&iacute; se ve con los datos reales del Caso 1:</p>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px;margin:14px 0;">
+  <svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;">
+    <line x1="90" y1="50" x2="74.7" y2="88" stroke="#5b6b7a" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <line x1="180" y1="50" x2="87.1" y2="88" stroke="#5b6b7a" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <line x1="270" y1="50" x2="99.5" y2="88" stroke="#5b6b7a" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <line x1="360" y1="50" x2="121.1" y2="88" stroke="#5b6b7a" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <line x1="450" y1="50" x2="136.6" y2="88" stroke="#5b6b7a" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <text x="90" y="26" font-size="14" fill="#173a5e" text-anchor="middle" font-weight="700">Bigote inf.</text>
+    <text x="90" y="42" font-size="13" fill="#5b6b7a" text-anchor="middle">12 min</text>
+    <text x="180" y="26" font-size="14" fill="#173a5e" text-anchor="middle" font-weight="700">Q1 (25%)</text>
+    <text x="180" y="42" font-size="13" fill="#5b6b7a" text-anchor="middle">13 min</text>
+    <text x="270" y="26" font-size="14" fill="#c0392b" text-anchor="middle" font-weight="700">Mediana</text>
+    <text x="270" y="42" font-size="13" fill="#5b6b7a" text-anchor="middle">14 min</text>
+    <text x="360" y="26" font-size="14" fill="#173a5e" text-anchor="middle" font-weight="700">Q3 (75%)</text>
+    <text x="360" y="42" font-size="13" fill="#5b6b7a" text-anchor="middle">15.75 min</text>
+    <text x="450" y="26" font-size="14" fill="#173a5e" text-anchor="middle" font-weight="700">Bigote sup.</text>
+    <text x="450" y="42" font-size="13" fill="#5b6b7a" text-anchor="middle">17 min</text>
+    <line x1="74.7" y1="125" x2="87.1" y2="125" stroke="#167468" stroke-width="3"/>
+    <line x1="121.1" y1="125" x2="136.6" y2="125" stroke="#167468" stroke-width="3"/>
+    <line x1="74.7" y1="105" x2="74.7" y2="145" stroke="#167468" stroke-width="3"/>
+    <line x1="136.6" y1="105" x2="136.6" y2="145" stroke="#167468" stroke-width="3"/>
+    <rect x="87.1" y="90" width="34" height="70" fill="#1f9e8e" fill-opacity="0.35" stroke="#167468" stroke-width="3"/>
+    <line x1="99.5" y1="90" x2="99.5" y2="160" stroke="#c0392b" stroke-width="3.5"/>
+    <circle cx="482.9" cy="125" r="9" fill="#c0392b" fill-opacity="0.85" stroke="#8a291d" stroke-width="2"/>
+    <line x1="560" y1="50" x2="482.9" y2="115" stroke="#c0392b" stroke-width="1.2" stroke-dasharray="3,3"/>
+    <text x="560" y="26" font-size="14" fill="#c0392b" text-anchor="middle" font-weight="700">Outlier</text>
+    <text x="560" y="42" font-size="13" fill="#c0392b" text-anchor="middle">45 min</text>
+    <line x1="35" y1="200" x2="530" y2="200" stroke="#aebfcb" stroke-width="1.8"/>
+    <line x1="50.0" y1="200" x2="50.0" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="50.0" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">10</text>
+    <line x1="111.8" y1="200" x2="111.8" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="111.8" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">15</text>
+    <line x1="173.7" y1="200" x2="173.7" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="173.7" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">20</text>
+    <line x1="235.5" y1="200" x2="235.5" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="235.5" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">25</text>
+    <line x1="297.4" y1="200" x2="297.4" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="297.4" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">30</text>
+    <line x1="359.2" y1="200" x2="359.2" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="359.2" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">35</text>
+    <line x1="421.1" y1="200" x2="421.1" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="421.1" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">40</text>
+    <line x1="482.9" y1="200" x2="482.9" y2="208" stroke="#aebfcb" stroke-width="1.5"/><text x="482.9" y="226" font-size="12.5" fill="#5b6b7a" text-anchor="middle">45</text>
+    <text x="282" y="250" font-size="14.5" fill="#173a5e" text-anchor="middle" font-weight="600">Tiempo de entrenamiento (minutos)</text>
+  </svg>
+</div>
+
+<div style="background:#e5f6f3;border-left:4px solid #1f9e8e;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b style="color:#173a5e;">C&oacute;mo leer la caja:</b> la <b>caja verde</b> abarca el 50% central de los datos (Q1 a Q3); la l&iacute;nea roja es la <b>mediana</b>; los bigotes se extienden hasta el dato real m&aacute;s extremo dentro de las vallas de Tukey; y el punto rojo aislado es el <b>outlier</b> (45 min).</div>
+
+<h4 style="color:#173a5e;margin:20px 0 6px;">La regla de 1.5&times;IQR de John Tukey</h4>
+<ol style="font-size:14px;padding-left:20px;">
+<li style="margin-bottom:8px;"><b>Ordenamiento:</b> organizar los datos de forma ascendente.</li>
+<li style="margin-bottom:8px;"><b>C&aacute;lculo de cuartiles:</b> identificar Q1 (25%) y Q3 (75%).</li>
+<li style="margin-bottom:8px;"><b>C&aacute;lculo del IQR:</b> Q3 &minus; Q1.</li>
+<li style="margin-bottom:8px;"><b>Vallas:</b> Valla inferior = Q1 &minus; 1.5&times;IQR &nbsp;|&nbsp; Valla superior = Q3 + 1.5&times;IQR</li>
+<li style="margin-bottom:8px;"><b>Detecci&oacute;n:</b> cualquier valor fuera de este rango se cataloga como outlier.</li>
+</ol>
+<div style="background:#fdf1e3;border-left:4px solid #e08e2b;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b style="color:#173a5e;">&iquest;Por qu&eacute; 1.5?</b> Tukey lo defini&oacute; como un equilibrio pragm&aacute;tico: 1.0 generar&iacute;a demasiados falsos positivos; 3.0 solo detectar&iacute;a outliers extremos.</div>
+</div>
+
+<!-- ===================== SECCION 4 ===================== -->
+<div id="sec4" style="margin-bottom:34px;padding-bottom:24px;border-bottom:2px solid #dbe4ea;">
+<h2 style="color:#173a5e;font-size:20px;border-left:5px solid #1f9e8e;padding-left:10px;margin:0 0 6px;">4. Morfolog&iacute;a de la distribuci&oacute;n: asimetr&iacute;a y curtosis</h2>
+<p style="color:#5b6b7a;font-size:14px;margin-top:0;margin-bottom:16px;">Comparaci&oacute;n visual de los tres tipos de cada concepto, lado a lado.</p>
+
+<h4 style="color:#173a5e;">Coeficiente de asimetr&iacute;a (Fisher-Pearson)</h4>
+<table style="width:100%;border-collapse:collapse;margin:10px 0;">
+<tr>
+<td style="width:33%;text-align:center;padding:6px;border:1px solid #dbe4ea;">
+<svg viewBox="0 0 216 126" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+<line x1="8" y1="118" x2="208" y2="118" stroke="#aebfcb" stroke-width="1"/>
+<path d="M 8.0,118 L 8.0,118.0 L 10.0,117.9 L 12.0,117.9 L 14.1,117.9 L 16.1,117.9 L 18.1,117.8 L 20.1,117.8 L 22.1,117.7 L 24.2,117.6 L 26.2,117.4 L 28.2,117.3 L 30.2,117.1 L 32.2,116.8 L 34.3,116.5 L 36.3,116.1 L 38.3,115.6 L 40.3,114.9 L 42.3,114.2 L 44.4,113.3 L 46.4,112.3 L 48.4,111.0 L 50.4,109.6 L 52.4,107.9 L 54.5,106.0 L 56.5,103.7 L 58.5,101.2 L 60.5,98.3 L 62.5,95.2 L 64.6,91.6 L 66.6,87.8 L 68.6,83.5 L 70.6,79.0 L 72.6,74.1 L 74.7,69.0 L 76.7,63.6 L 78.7,58.0 L 80.7,52.2 L 82.7,46.4 L 84.8,40.6 L 86.8,34.8 L 88.8,29.2 L 90.8,23.8 L 92.8,18.8 L 94.9,14.2 L 96.9,10.4 L 98.9,8.0 L 100.9,8.6 L 102.9,14.3 L 105.0,27.3 L 107.0,47.0 L 109.0,69.8 L 111.0,90.4 L 113.1,104.8 L 115.1,112.9 L 117.1,116.4 L 119.1,117.6 L 121.1,117.9 L 208.0,118.0 L 208.0,118 Z" fill="#7d5ba6" fill-opacity="0.75" stroke="#5c3d80" stroke-width="1.5"/>
+</svg>
+<b style="color:#7d5ba6;font-size:13px;">Sesgo negativo</b><br><span style="font-size:12px;color:#5b6b7a;">cola larga a la izquierda</span>
+</td>
+<td style="width:33%;text-align:center;padding:6px;border:1px solid #dbe4ea;">
+<svg viewBox="0 0 216 126" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+<line x1="8" y1="118" x2="208" y2="118" stroke="#aebfcb" stroke-width="1"/>
+<path d="M 8.0,118 L 8.0,118.0 L 10.0,117.9 L 12.0,117.9 L 14.1,117.9 L 16.1,117.9 L 18.1,117.8 L 20.1,117.8 L 22.1,117.7 L 24.2,117.6 L 26.2,117.5 L 28.2,117.3 L 30.2,117.1 L 32.2,116.9 L 34.3,116.6 L 36.3,116.2 L 38.3,115.7 L 40.3,115.2 L 42.3,114.5 L 44.4,113.7 L 46.4,112.7 L 48.4,111.6 L 50.4,110.2 L 52.4,108.7 L 54.5,106.9 L 56.5,104.8 L 58.5,102.5 L 60.5,99.9 L 62.5,96.9 L 64.6,93.7 L 66.6,90.1 L 68.6,86.2 L 70.6,82.0 L 72.6,77.5 L 74.7,72.7 L 76.7,67.8 L 78.7,62.6 L 80.7,57.3 L 82.7,51.9 L 84.8,46.5 L 86.8,41.2 L 88.8,36.0 L 90.8,31.0 L 92.8,26.4 L 94.9,22.1 L 96.9,18.3 L 98.9,15.0 L 100.9,12.2 L 102.9,10.1 L 105.0,8.7 L 107.0,8.0 L 109.0,8.0 L 111.0,8.7 L 113.1,10.1 L 115.1,12.2 L 117.1,15.0 L 119.1,18.3 L 121.1,22.1 L 123.2,26.4 L 125.2,31.0 L 127.2,36.0 L 129.2,41.2 L 131.2,46.5 L 133.3,51.9 L 135.3,57.3 L 137.3,62.6 L 139.3,67.8 L 141.3,72.7 L 143.4,77.5 L 145.4,82.0 L 147.4,86.2 L 149.4,90.1 L 151.4,93.7 L 153.5,96.9 L 155.5,99.9 L 157.5,102.5 L 159.5,104.8 L 161.5,106.9 L 163.6,108.7 L 165.6,110.2 L 167.6,111.6 L 169.6,112.7 L 171.6,113.7 L 173.7,114.5 L 175.7,115.2 L 177.7,115.7 L 179.7,116.2 L 181.7,116.6 L 183.8,116.9 L 185.8,117.1 L 187.8,117.3 L 189.8,117.5 L 191.8,117.6 L 193.9,117.7 L 195.9,117.8 L 197.9,117.8 L 199.9,117.9 L 201.9,117.9 L 204.0,117.9 L 206.0,117.9 L 208.0,118.0 L 208.0,118 Z" fill="#1f9e8e" fill-opacity="0.75" stroke="#167468" stroke-width="1.5"/>
+</svg>
+<b style="color:#167468;font-size:13px;">Sim&eacute;trica</b><br><span style="font-size:12px;color:#5b6b7a;">asimetr&iacute;a &asymp; 0</span>
+</td>
+<td style="width:33%;text-align:center;padding:6px;border:1px solid #dbe4ea;">
+<svg viewBox="0 0 216 126" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+<line x1="8" y1="118" x2="208" y2="118" stroke="#aebfcb" stroke-width="1"/>
+<path d="M 8.0,118 L 8.0,118.0 L 10.0,118.0 L 12.0,118.0 L 14.1,118.0 L 16.1,118.0 L 18.1,118.0 L 20.1,118.0 L 22.1,118.0 L 24.2,118.0 L 26.2,118.0 L 28.2,118.0 L 30.2,118.0 L 32.2,118.0 L 34.3,118.0 L 36.3,118.0 L 38.3,118.0 L 40.3,118.0 L 42.3,118.0 L 44.4,118.0 L 46.4,118.0 L 48.4,118.0 L 50.4,118.0 L 52.4,118.0 L 54.5,118.0 L 56.5,118.0 L 58.5,118.0 L 60.5,118.0 L 62.5,118.0 L 64.6,118.0 L 66.6,118.0 L 68.6,118.0 L 70.6,118.0 L 72.6,118.0 L 74.7,118.0 L 76.7,118.0 L 78.7,118.0 L 80.7,118.0 L 82.7,118.0 L 84.8,118.0 L 86.8,118.0 L 88.8,118.0 L 90.8,118.0 L 92.8,118.0 L 94.9,117.9 L 96.9,117.6 L 98.9,116.4 L 100.9,112.9 L 102.9,104.8 L 105.0,90.4 L 107.0,69.8 L 109.0,47.0 L 111.0,27.3 L 113.1,14.3 L 115.1,8.6 L 117.1,8.0 L 119.1,10.4 L 121.1,14.2 L 123.2,18.8 L 125.2,23.8 L 127.2,29.2 L 129.2,34.8 L 131.2,40.6 L 133.3,46.4 L 135.3,52.2 L 137.3,58.0 L 139.3,63.6 L 141.3,69.0 L 143.4,74.1 L 145.4,79.0 L 147.4,83.5 L 149.4,87.8 L 151.4,91.6 L 153.5,95.2 L 155.5,98.3 L 157.5,101.2 L 159.5,103.7 L 161.5,106.0 L 163.6,107.9 L 165.6,109.6 L 167.6,111.0 L 169.6,112.3 L 171.6,113.3 L 173.7,114.2 L 175.7,114.9 L 177.7,115.6 L 179.7,116.1 L 181.7,116.5 L 183.8,116.8 L 185.8,117.1 L 187.8,117.3 L 189.8,117.4 L 191.8,117.6 L 193.9,117.7 L 195.9,117.8 L 197.9,117.8 L 199.9,117.9 L 201.9,117.9 L 204.0,117.9 L 206.0,117.9 L 208.0,118.0 L 208.0,118 Z" fill="#e08e2b" fill-opacity="0.75" stroke="#a1650f" stroke-width="1.5"/>
+</svg>
+<b style="color:#a1650f;font-size:13px;">Sesgo positivo</b><br><span style="font-size:12px;color:#5b6b7a;">cola larga a la derecha</span>
+</td>
+</tr>
+</table>
+<p style="font-size:13px;color:#5b6b7a;">En sesgo <b>negativo</b>: x&#772; &lt; x&#771; &lt; Mo. En <b>sim&eacute;trica</b>: x&#772; &asymp; x&#771; &asymp; Mo. En sesgo <b>positivo</b> (patr&oacute;n del caso ML/latencia): Mo &lt; x&#771; &lt; x&#772;.</p>
+
+<h4 style="color:#173a5e;margin-top:22px;">Exceso de curtosis (apuntamiento y peso de colas)</h4>
+<table style="width:100%;border-collapse:collapse;margin:10px 0;">
+<tr>
+<td style="width:33%;text-align:center;padding:6px;border:1px solid #dbe4ea;">
+<svg viewBox="0 0 216 126" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+<line x1="8" y1="118" x2="208" y2="118" stroke="#aebfcb" stroke-width="1"/>
+<path d="M 8.0,118 L 8.0,118.0 L 10.0,118.0 L 12.0,118.0 L 14.1,118.0 L 16.1,118.0 L 18.1,118.0 L 20.1,118.0 L 22.1,118.0 L 24.2,118.0 L 26.2,118.0 L 28.2,118.0 L 30.2,118.0 L 32.2,118.0 L 34.3,118.0 L 36.3,118.0 L 38.3,118.0 L 40.3,118.0 L 42.3,118.0 L 44.4,118.0 L 46.4,118.0 L 48.4,118.0 L 50.4,118.0 L 52.4,118.0 L 54.5,118.0 L 56.5,118.0 L 58.5,118.0 L 60.5,118.0 L 62.5,118.0 L 64.6,118.0 L 66.6,118.0 L 68.6,118.0 L 70.6,118.0 L 72.6,118.0 L 74.7,117.6 L 76.7,115.7 L 78.7,109.7 L 80.7,97.6 L 82.7,80.0 L 84.8,60.2 L 86.8,42.3 L 88.8,28.4 L 90.8,19.0 L 92.8,13.3 L 94.9,10.3 L 96.9,8.8 L 98.9,8.3 L 100.9,8.1 L 102.9,8.0 L 105.0,8.0 L 107.0,8.0 L 109.0,8.0 L 111.0,8.0 L 113.1,8.0 L 115.1,8.1 L 117.1,8.3 L 119.1,8.8 L 121.1,10.3 L 123.2,13.3 L 125.2,19.0 L 127.2,28.4 L 129.2,42.3 L 131.2,60.2 L 133.3,80.0 L 135.3,97.6 L 137.3,109.7 L 139.3,115.7 L 141.3,117.6 L 208.0,118.0 L 208.0,118 Z" fill="#2e6da4" fill-opacity="0.75" stroke="#1e4a6e" stroke-width="1.5"/>
+</svg>
+<b style="color:#1e4a6e;font-size:13px;">Platic&uacute;rtica</b><br><span style="font-size:12px;color:#5b6b7a;">g&#8322; &lt; 0, aplanada</span>
+</td>
+<td style="width:33%;text-align:center;padding:6px;border:1px solid #dbe4ea;">
+<svg viewBox="0 0 216 126" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+<line x1="8" y1="118" x2="208" y2="118" stroke="#aebfcb" stroke-width="1"/>
+<path d="M 8.0,118 L 8.0,118.0 L 10.0,118.0 L 12.0,118.0 L 14.1,118.0 L 16.1,118.0 L 18.1,118.0 L 20.1,118.0 L 22.1,118.0 L 24.2,118.0 L 26.2,118.0 L 28.2,118.0 L 30.2,118.0 L 32.2,118.0 L 34.3,118.0 L 36.3,118.0 L 38.3,118.0 L 40.3,117.9 L 42.3,117.9 L 44.4,117.8 L 46.4,117.7 L 48.4,117.6 L 50.4,117.5 L 52.4,117.2 L 54.5,116.9 L 56.5,116.4 L 58.5,115.8 L 60.5,115.0 L 62.5,114.0 L 64.6,112.6 L 66.6,110.9 L 68.6,108.8 L 70.6,106.2 L 72.6,103.1 L 74.7,99.4 L 76.7,95.1 L 78.7,90.1 L 80.7,84.5 L 82.7,78.3 L 84.8,71.5 L 86.8,64.4 L 88.8,56.9 L 90.8,49.3 L 92.8,41.7 L 94.9,34.4 L 96.9,27.6 L 98.9,21.5 L 100.9,16.3 L 102.9,12.2 L 105.0,9.4 L 107.0,8.0 L 109.0,8.0 L 111.0,9.4 L 113.1,12.2 L 115.1,16.3 L 117.1,21.5 L 119.1,27.6 L 121.1,34.4 L 123.2,41.7 L 125.2,49.3 L 127.2,56.9 L 129.2,64.4 L 131.2,71.5 L 133.3,78.3 L 135.3,84.5 L 137.3,90.1 L 139.3,95.1 L 141.3,99.4 L 143.4,103.1 L 145.4,106.2 L 147.4,108.8 L 149.4,110.9 L 151.4,112.6 L 153.5,114.0 L 155.5,115.0 L 157.5,115.8 L 159.5,116.4 L 161.5,116.9 L 163.6,117.2 L 165.6,117.5 L 167.6,117.6 L 169.6,117.7 L 171.6,117.8 L 173.7,117.9 L 175.7,117.9 L 177.7,118.0 L 208.0,118.0 L 208.0,118 Z" fill="#1f9e8e" fill-opacity="0.75" stroke="#167468" stroke-width="1.5"/>
+</svg>
+<b style="color:#167468;font-size:13px;">Mesoc&uacute;rtica</b><br><span style="font-size:12px;color:#5b6b7a;">g&#8322; &asymp; 0, tipo normal</span>
+</td>
+<td style="width:33%;text-align:center;padding:6px;border:1px solid #dbe4ea;">
+<svg viewBox="0 0 216 126" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+<line x1="8" y1="118" x2="208" y2="118" stroke="#aebfcb" stroke-width="1"/>
+<path d="M 8.0,118 L 8.0,115.9 L 10.0,115.7 L 12.0,115.5 L 14.1,115.3 L 16.1,115.1 L 18.1,114.9 L 20.1,114.6 L 22.1,114.3 L 24.2,114.0 L 26.2,113.7 L 28.2,113.3 L 30.2,112.9 L 32.2,112.5 L 34.3,112.0 L 36.3,111.5 L 38.3,111.0 L 40.3,110.4 L 42.3,109.7 L 44.4,109.0 L 46.4,108.3 L 48.4,107.4 L 50.4,106.6 L 52.4,105.6 L 54.5,104.5 L 56.5,103.4 L 58.5,102.2 L 60.5,100.9 L 62.5,99.4 L 64.6,97.8 L 66.6,96.1 L 68.6,94.3 L 70.6,92.3 L 72.6,90.2 L 74.7,87.8 L 76.7,85.3 L 78.7,82.5 L 80.7,79.5 L 82.7,76.3 L 84.8,72.8 L 86.8,69.0 L 88.8,64.8 L 90.8,60.4 L 92.8,55.5 L 94.9,50.3 L 96.9,44.6 L 98.9,38.4 L 100.9,31.7 L 102.9,24.4 L 105.0,16.5 L 107.0,8.0 L 109.0,8.0 L 111.0,16.5 L 113.1,24.4 L 115.1,31.7 L 117.1,38.4 L 119.1,44.6 L 121.1,50.3 L 123.2,55.5 L 125.2,60.4 L 127.2,64.8 L 129.2,69.0 L 131.2,72.8 L 133.3,76.3 L 135.3,79.5 L 137.3,82.5 L 139.3,85.3 L 141.3,87.8 L 143.4,90.2 L 145.4,92.3 L 147.4,94.3 L 149.4,96.1 L 151.4,97.8 L 153.5,99.4 L 155.5,100.9 L 157.5,102.2 L 159.5,103.4 L 161.5,104.5 L 163.6,105.6 L 165.6,106.6 L 167.6,107.4 L 169.6,108.3 L 171.6,109.0 L 173.7,109.7 L 175.7,110.4 L 177.7,111.0 L 179.7,111.5 L 181.7,112.0 L 183.8,112.5 L 185.8,112.9 L 187.8,113.3 L 189.8,113.7 L 191.8,114.0 L 193.9,114.3 L 195.9,114.6 L 197.9,114.9 L 199.9,115.1 L 201.9,115.3 L 204.0,115.5 L 206.0,115.7 L 208.0,115.9 L 208.0,118 Z" fill="#c0392b" fill-opacity="0.75" stroke="#8a291d" stroke-width="1.5"/>
+</svg>
+<b style="color:#8a291d;font-size:13px;">Leptoc&uacute;rtica</b><br><span style="font-size:12px;color:#5b6b7a;">g&#8322; &gt; 0, colas pesadas</span>
+</td>
+</tr>
+</table>
+
+<div style="background:#fbe9e7;border-left:4px solid #c0392b;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b style="color:#173a5e;">Leptoc&uacute;rtica en ingenier&iacute;a:</b> representa un alto riesgo de eventos "cisne negro" &mdash; fallos catastr&oacute;ficos infrecuentes pero m&aacute;s probables de lo que predice una distribuci&oacute;n normal.</div>
+</div>
+
+<!-- ===================== SECCION 5 ===================== -->
+<div id="sec5" style="margin-bottom:34px;padding-bottom:24px;border-bottom:2px solid #dbe4ea;">
+<h2 style="color:#173a5e;font-size:20px;border-left:5px solid #1f9e8e;padding-left:10px;margin:0 0 6px;">5. Casos de estudio del Reto Estad&iacute;stico</h2>
+<p style="color:#5b6b7a;font-size:14px;margin-top:0;margin-bottom:16px;">El rigor estad&iacute;stico distingue una decisi&oacute;n t&eacute;cnica fundamentada de una mera intuici&oacute;n operativa.</p>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 10px;border-radius:14px;margin-bottom:8px;background:#e0ecf9;color:#173a5e;">Ciencia de Datos &middot; Caso 1</span>
+<h4 style="margin:0 0 6px;color:#173a5e;">Tiempos de entrenamiento ML (20 corridas)</h4>
+<p style="font-size:14px;">La observaci&oacute;n de 45 min es una anomal&iacute;a evidente que desplaza la media hacia la derecha, inflando falsamente el costo proyectado de GPU. <b>Decisi&oacute;n ejecutiva:</b> reportar la mediana.</p>
+</div>
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 10px;border-radius:14px;margin-bottom:8px;background:#e0ecf9;color:#173a5e;">Ciencia de Datos &middot; Caso 2</span>
+<h4 style="margin:0 0 6px;color:#173a5e;">Latencia de API</h4>
+<p style="font-size:14px;">Los promedios ocultan la degradaci&oacute;n del servicio. El an&aacute;lisis de <b>P90 y P95</b> es vital para cumplir SLA: el P95 revela que el 5% de los usuarios experimenta latencia cr&iacute;tica.</p>
+</div>
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:12px;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 10px;border-radius:14px;margin-bottom:8px;background:#fdecdc;color:#a15a0a;">Ingenier&iacute;a Industrial &middot; Caso 1</span>
+<h4 style="margin:0 0 6px;color:#173a5e;">Piezas maquinadas &mdash; control de calidad</h4>
+<p style="font-size:14px;">Tolerancia: 25.00&plusmn;0.10&nbsp;mm. Tukey detecta anomal&iacute;as en 25.10 y 25.30&nbsp;mm. 25.10 a&uacute;n est&aacute; en tolerancia comercial; <b>25.30&nbsp;mm es un fallo de calidad rotundo</b>.</p>
+</div>
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 10px;border-radius:14px;margin-bottom:8px;background:#fdecdc;color:#a15a0a;">Ingenier&iacute;a Industrial &middot; Caso 2</span>
+<h4 style="margin:0 0 6px;color:#173a5e;">Ensamble manual (ciclo 17)</h4>
+<p style="font-size:14px;">Se detecta un ciclo de 30&nbsp;s frente a la media de 45&nbsp;s. El dato es espurio (omisi&oacute;n de pasos): se remueve para calcular un tiempo est&aacute;ndar realista.</p>
+</div>
+</div>
+
+<!-- ===================== SECCION 6 ===================== -->
+<div id="sec6" style="margin-bottom:34px;padding-bottom:24px;border-bottom:2px solid #dbe4ea;">
+<h2 style="color:#173a5e;font-size:20px;border-left:5px solid #1f9e8e;padding-left:10px;margin:0 0 6px;">6. Implementaci&oacute;n en Excel y R</h2>
+
+<h4 style="color:#173a5e;">F&oacute;rmulas de Excel (rango A2:A21)</h4>
+<table style="width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;">
+<thead><tr><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Concepto</th><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">F&oacute;rmula</th><th style="background:#173a5e;color:#ffffff;padding:8px 10px;text-align:left;">Observaci&oacute;n</th></tr></thead>
+<tbody>
+<tr><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Media</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=PROMEDIO(A2:A21)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Sensible a extremos</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Mediana</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=MEDIANA(A2:A21)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Robusta</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Moda</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=MODA.UNO(A2:A21)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Valor m&aacute;s frecuente</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Varianza muestral</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=VAR.S(A2:A21)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Usa n&minus;1</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Desv. est&aacute;ndar</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=DESVEST.M(A2:A21)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Dispersi&oacute;n absoluta</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Asimetr&iacute;a</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=COEFICIENTE.ASIMETRIA.N(A2:A21)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Sesgo Fisher-Pearson</td></tr>
+<tr><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Curtosis</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=CURTOSIS(A2:A21)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Exceso de curtosis</td></tr>
+<tr style="background:#f3f7fa;"><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">Cuartiles</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;font-family:Consolas,monospace;">=CUARTIL.EXC(A2:A21,1)</td><td style="padding:7px 10px;border-bottom:1px solid #dbe4ea;">M&aacute;s preciso</td></tr>
+<tr><td style="padding:7px 10px;">Percentiles</td><td style="padding:7px 10px;font-family:Consolas,monospace;">=PERCENTIL.EXC(A2:A21,0.95)</td><td style="padding:7px 10px;">Latencias SLA</td></tr>
+</tbody>
+</table>
+
+<h4 style="color:#173a5e;margin-top:20px;">Script de an&aacute;lisis descriptivo robusto en R</h4>
+<pre style="background:#0f2942;color:#dbe9f5;padding:14px 16px;border-radius:8px;font-family:Consolas,monospace;font-size:13px;overflow-x:auto;line-height:1.6;"><span style="color:#7fb3d5;"># e1071 permite calcular asimetr&iacute;a y curtosis con correcciones muestrales</span>
+<span style="color:#e08e2b;">if</span>(!require(e1071)) install.packages(<span style="color:#8fd6c4;">"e1071"</span>)
+library(e1071)
+
+tiempos_entrenamiento &lt;- c(12,15,14,13,45,16,12,14,15,13,17,14,16,15,13,14,12,16,15,14)
+
+media_muestral   &lt;- mean(tiempos_entrenamiento)
+mediana_muestral &lt;- median(tiempos_entrenamiento)
+desv_est         &lt;- sd(tiempos_entrenamiento)
+varianza         &lt;- var(tiempos_entrenamiento)   <span style="color:#7fb3d5;"># aplica n-1 autom&aacute;ticamente</span>
+
+<span style="color:#7fb3d5;"># M&eacute;todo de Tukey (type=6 da paridad con Excel)</span>
+q1 &lt;- quantile(tiempos_entrenamiento, 0.25, type = 6)
+q3 &lt;- quantile(tiempos_entrenamiento, 0.75, type = 6)
+iqr_val  &lt;- q3 - q1
+valla_inf &lt;- q1 - 1.5 * iqr_val
+valla_sup &lt;- q3 + 1.5 * iqr_val
+
+<span style="color:#7fb3d5;"># type=2 aplica la correcci&oacute;n muestral de Fisher-Pearson</span>
+sesgo           &lt;- skewness(tiempos_entrenamiento, type = 2)
+exceso_curtosis &lt;- kurtosis(tiempos_entrenamiento, type = 2)
+
+boxplot(tiempos_entrenamiento, main=<span style="color:#8fd6c4;">"Boxplot (Outliers de Tukey)"</span>, col=<span style="color:#8fd6c4;">"steelblue"</span>)</pre>
+
+<div style="background:#e9f2fa;border-left:4px solid #173a5e;border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;"><b>Tip:</b> habilita primero "Herramientas para an&aacute;lisis" desde Archivo &gt; Opciones &gt; Complementos para acceder a funciones estad&iacute;sticas avanzadas en la pesta&ntilde;a Datos.</div>
+</div>
+
+<!-- ===================== SECCION 7 ===================== -->
+<div id="sec7" style="margin-bottom:20px;">
+<h2 style="color:#173a5e;font-size:20px;border-left:5px solid #1f9e8e;padding-left:10px;margin:0 0 6px;">7. Pr&aacute;ctica para el examen</h2>
+<p style="color:#5b6b7a;font-size:14px;margin-top:0;margin-bottom:16px;">Dos ejercicios nuevos completamente resueltos y un banco de preguntas tipo examen. Intenta resolver cada uno <b>antes</b> de dar clic en "Ver respuesta".</p>
+
+<h4 style="color:#173a5e;margin-bottom:6px;">Ejercicio resuelto A &mdash; Control de calidad de piezas maquinadas</h4>
+<p style="font-size:13px;color:#5b6b7a;margin-top:0;">Tolerancia del cliente: 25.00 &plusmn; 0.10 mm. 20 piezas medidas (mm):</p>
+<p style="font-family:Consolas,monospace;background:#eef4f8;padding:8px 10px;border-radius:4px;font-size:13px;">24.98, 25.01, 24.99, 25.02, 25.00, 24.97, 25.03, 25.00, 24.99, 25.01, 25.02, 24.98, 25.00, 25.01, 24.99, 25.02, 25.00, <b style="color:#c0392b;">25.10</b>, <b style="color:#c0392b;">25.30</b>, 24.99</p>
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin:10px 0;">
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">a) Calcula media, mediana y desviaci&oacute;n est&aacute;ndar. b) Calcula Q1, Q3, IQR y las vallas de Tukey. c) &iquest;Qu&eacute; piezas son outliers y qu&eacute; har&iacute;as con cada una?</p>
+<details>
+<summary style="cursor:pointer;background:#173a5e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta y procedimiento</summary>
+<div style="margin-top:10px;padding:12px 14px;background:#eef4f8;border-left:3px solid #173a5e;border-radius:6px;font-size:14px;">
+<b>a)</b> Media = 25.0205 mm &middot; Mediana = 25.00 mm &middot; s = 0.0711 mm. La media est&aacute; ligeramente arriba de la mediana (sesgo positivo leve).<br><br>
+<b>b)</b> Q1 = 24.99 mm &middot; Q3 = 25.02 mm &rarr; IQR = 0.03 mm. Valla inferior = 24.945 mm &middot; Valla superior = 25.065 mm.<br><br>
+<b>c)</b> 25.10 y 25.30 mm caen fuera de la valla superior &rarr; ambos son outliers estad&iacute;sticos. 25.10 mm a&uacute;n est&aacute; en tolerancia comercial; <b>25.30 mm excede la tolerancia</b> &mdash; es un fallo de calidad real. Se recomienda investigar la causa especial y recalibrar si se repite.
+</div>
+</details>
+</div>
+
+<h4 style="color:#173a5e;margin-bottom:6px;margin-top:24px;">Ejercicio resuelto B &mdash; Tiempos de ciclo en ensamble manual</h4>
+<p style="font-size:13px;color:#5b6b7a;margin-top:0;">20 ciclos cronometrados (segundos):</p>
+<p style="font-family:Consolas,monospace;background:#eef4f8;padding:8px 10px;border-radius:4px;font-size:13px;">46, 44, 45, 47, 43, 45, 46, 44, 45, 46, 44, 45, 47, 43, 45, 46, 45, <b style="color:#c0392b;">30</b>, 44, 46</p>
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:8px;padding:14px 16px;margin:10px 0;">
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">a) Calcula media y mediana. &iquest;Cu&aacute;l describe mejor el tiempo est&aacute;ndar? b) Calcula el CV con y sin el dato de 30&nbsp;s. c) Con Tukey, &iquest;30&nbsp;s es outlier?</p>
+<details>
+<summary style="cursor:pointer;background:#173a5e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta y procedimiento</summary>
+<div style="margin-top:10px;padding:12px 14px;background:#eef4f8;border-left:3px solid #173a5e;border-radius:6px;font-size:14px;">
+<b>a)</b> Media = 44.30 s &middot; Mediana = 45.0 s. La mediana describe mejor el proceso; el ciclo de 30 s arrastra la media hacia abajo aunque no representa el desempe&ntilde;o normal.<br><br>
+<b>b)</b> Con outlier: s=3.56 s &rarr; CV&asymp;8.0%. Sin outlier: media=45.05 s, s=1.18 s &rarr; CV&asymp;2.6%. El CV se reduce a un tercio al remover el dato espurio.<br><br>
+<b>c)</b> Q1=44 s, Q3=46 s &rarr; IQR=2 s. Valla inferior = 44&minus;1.5(2) = <b>41 s</b>. Como 30 &lt; 41, se confirma como outlier.
+</div>
+</details>
+</div>
+
+<h4 style="color:#173a5e;margin:26px 0 10px;">Banco de preguntas tipo examen</h4>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">Conceptual</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">1. &iquest;Por qu&eacute; la mediana es m&aacute;s robusta que la media ante valores at&iacute;picos?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;">Porque la mediana solo depende de la <b>posici&oacute;n</b> del valor central, no de su magnitud. La media usa el valor num&eacute;rico de cada observaci&oacute;n, por lo que un solo valor extremo puede desplazarla significativamente.</div></details>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">C&aacute;lculo</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">2. Un conjunto tiene Q1=20 y Q3=32. &iquest;Cu&aacute;les son las vallas de Tukey? Si aparece un dato de 51, &iquest;es outlier?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;">IQR=12. Valla superior=32+1.5(12)=<b>50</b>. Valla inferior=20&minus;18=<b>2</b>. Como 51&gt;50, <b>s&iacute; es outlier</b> (por poco margen).</div></details>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">Conceptual</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">3. &iquest;Diferencia entre varianza y desviaci&oacute;n est&aacute;ndar? &iquest;Por qu&eacute; se reporta casi siempre esta &uacute;ltima?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;">La varianza es el promedio de las desviaciones <b>al cuadrado</b>, en unidades al cuadrado (dif&iacute;ciles de interpretar). La desviaci&oacute;n est&aacute;ndar es su ra&iacute;z cuadrada y regresa a las unidades originales.</div></details>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">C&aacute;lculo</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">4. En el boxplot del Caso 1, la caja va de 13 a 15.75 min. &iquest;Qu&eacute; porcentaje de los datos representa la caja (entre Q1 y Q3)?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;">El <b>50%</b> central de los datos, por definici&oacute;n: la caja siempre representa el rango intercuart&iacute;lico (Q1=25% a Q3=75%).</div></details>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">Conceptual</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">5. Un histograma tiene pico m&aacute;s alto y colas m&aacute;s largas que la normal. &iquest;C&oacute;mo se clasifica su curtosis y qu&eacute; implica en ingenier&iacute;a?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;"><b>Leptoc&uacute;rtica</b> (g&#8322;&gt;0). Implica mayor riesgo de eventos "cisne negro": fallas poco frecuentes pero m&aacute;s probables de lo que predice la normal.</div></details>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">C&aacute;lculo</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">6. Media=100, desviaci&oacute;n est&aacute;ndar=8. &iquest;CV? &iquest;Qu&eacute; significa frente a otro proceso con CV=25%?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;">CV=(8/100)&times;100%=<b>8%</b>. Como 8%&lt;25%, este proceso es mucho m&aacute;s estable/consistente que el segundo.</div></details>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">Conceptual</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">7. &iquest;Por qu&eacute; se reporta el percentil 95 (P95) en vez de solo el promedio, en el caso de latencia de API?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;">Porque el promedio puede parecer aceptable mientras un 5% de usuarios experimenta latencia mucho m&aacute;s alta. El P95 expone esa "cola" que el promedio esconde, cr&iacute;tico para SLA.</div></details>
+</div>
+
+<div style="background:#ffffff;border:1px solid #dbe4ea;border-radius:10px;padding:14px 18px;margin:12px 0;">
+<span style="display:inline-block;font-size:11px;font-weight:bold;text-transform:uppercase;padding:2px 9px;border-radius:14px;margin-bottom:8px;background:#eef4f8;color:#173a5e;">C&aacute;lculo</span>
+<p style="font-weight:bold;color:#173a5e;font-size:14px;margin:0 0 10px;">8. Dataset sim&eacute;trico: media=mediana=moda=50. Se agrega un dato de 500. &iquest;C&oacute;mo cambia la relaci&oacute;n y qu&eacute; asimetr&iacute;a se genera?</p>
+<details><summary style="cursor:pointer;background:#1f9e8e;color:#fff;padding:6px 14px;border-radius:16px;font-weight:bold;font-size:13px;display:inline-block;">Ver respuesta</summary><div style="margin-top:10px;padding:12px 14px;background:#eef8f6;border-left:3px solid #1f9e8e;border-radius:6px;font-size:14px;">La media aumenta mucho; la mediana cambia poco; la moda no cambia. Queda <b>Moda &lt; Mediana &lt; Media</b> &rarr; <b>asimetr&iacute;a positiva</b>, igual que en el caso de tiempos ML.</div></details>
+</div>
+
+<div style="background:#e5f6f3;border-left:4px solid #1f9e8e;border-radius:6px;padding:12px 16px;margin-top:20px;font-size:14px;"><b style="color:#173a5e;">Consejo para el examen:</b> con cualquier conjunto de datos, sigue siempre el mismo orden: (1) ordena, (2) media/mediana/moda, (3) varianza y desviaci&oacute;n est&aacute;ndar, (4) Q1/Q3/IQR y vallas de Tukey, (5) identifica outliers, y (6) interpreta la decisi&oacute;n. Ese es el flujo de todos los casos de este Reto.</div>
+</div>
+
+<div style="padding:16px 10px;background:#0f2942;color:#9fb6c9;font-size:12px;text-align:center;border-radius:8px;">IIA2304 &middot; Probabilidad y Estad&iacute;stica &mdash; Material interactivo de apoyo &middot; Ciencia de Datos e Ingenier&iacute;a Industrial</div>
+
+</div>
