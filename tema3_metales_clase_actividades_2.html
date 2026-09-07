@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 3 · Aplicación de los materiales — Metales, tierras raras y baterías</title>
+<style>
+  :root{
+    --bg:#f7f5f0;
+    --panel:#ffffff;
+    --ink:#1f2a2e;
+    --ink-soft:#4b5a5f;
+    --teal:#1f6f6b;
+    --teal-dark:#134f4c;
+    --teal-pale:#e4f1ef;
+    --copper:#b5651d;
+    --copper-pale:#f6e6d8;
+    --line:#dde3e0;
+    --ferrous:#5b6b8c;
+    --nonferrous:#1f6f6b;
+    --rare:#b5651d;
+    --ok:#2f7d4f;
+    --warn:#a13e3e;
+    --radius:14px;
+    --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans: "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); line-height:1.6; font-size:16px;
+  }
+  h1,h2,h3,h4{font-family:var(--serif); color:var(--teal-dark); line-height:1.25;}
+  h1{font-size:2.1rem; margin:0 0 .3rem;}
+  h2{font-size:1.55rem; border-bottom:3px solid var(--teal-pale); padding-bottom:.4rem; margin-top:0;}
+  h3{font-size:1.2rem; color:var(--copper); margin-bottom:.4rem;}
+  h4{font-size:1.02rem; color:var(--teal-dark); margin-bottom:.3rem;}
+  p{margin:.6rem 0;}
+  a{color:var(--teal);}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 22px;}
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; font-weight:700;
+    color:var(--copper); font-family:var(--sans);
+  }
+  /* NAV */
+  nav.topnav{
+    position:sticky; top:0; z-index:50; background:rgba(247,245,240,.96);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  nav.topnav .inner{
+    max-width:1080px; margin:0 auto; padding:10px 22px; display:flex; gap:6px;
+    flex-wrap:wrap; align-items:center;
+  }
+  nav.topnav .brand{font-family:var(--serif); font-weight:700; color:var(--teal-dark); margin-right:12px; font-size:.95rem;}
+  nav.topnav a{
+    text-decoration:none; font-size:.83rem; color:var(--ink-soft); padding:7px 11px;
+    border-radius:999px; font-weight:600; white-space:nowrap;
+  }
+  nav.topnav a:hover{background:var(--teal-pale); color:var(--teal-dark);}
+  /* HERO */
+  header.hero{
+    background:linear-gradient(180deg,#0f4a47 0%, #1f6f6b 70%, #24807b 100%);
+    color:#eef7f5; padding:52px 0 40px;
+  }
+  header.hero .wrap{display:flex; flex-direction:column; gap:10px;}
+  header.hero .eyebrow{color:#ffd9ae;}
+  header.hero h1{color:#fff; max-width:760px;}
+  header.hero p.lead{max-width:680px; color:#d9ece9; font-size:1.05rem;}
+  .metabar{display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:.85rem; color:#cfe9e5;}
+  .metabar span{background:rgba(255,255,255,.1); padding:6px 12px; border-radius:999px;}
+  /* SECTION */
+  section{padding:46px 0;}
+  section.alt{background:#f1efe8;}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:0 1px 2px rgba(0,0,0,.03);
+  }
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+  /* FLIP CARDS */
+  .flip-row{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:18px 0;}
+  @media(max-width:820px){.flip-row{grid-template-columns:1fr;}}
+  .flip{perspective:1200px; height:190px; cursor:pointer;}
+  .flip-inner{position:relative; width:100%; height:100%; transition:transform .55s; transform-style:preserve-3d;}
+  .flip.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{
+    position:absolute; inset:0; border-radius:12px; padding:16px; backface-visibility:hidden;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .flip-front{background:var(--teal); color:#fff;}
+  .flip-front .tag{font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; opacity:.85;}
+  .flip-front h4{color:#fff; font-size:1.15rem; margin:.3rem 0 0;}
+  .flip-back{background:#fff; border:2px solid var(--teal); color:var(--ink); transform:rotateY(180deg); font-size:.88rem;}
+  .flip-hint{font-size:.72rem; opacity:.8; margin-top:8px;}
+
+  /* Periodic-ish grid */
+  .pt-wrap{overflow-x:auto; padding-bottom:6px;}
+  .pt-grid{
+    display:grid; grid-template-columns:repeat(18, 42px); grid-auto-rows:42px; gap:3px;
+    margin:16px 0; min-width:790px;
+  }
+  .pt-cell{
+    border-radius:5px; font-size:.62rem; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; color:#fff; cursor:pointer; border:1px solid rgba(0,0,0,.08);
+    transition:transform .12s;
+  }
+  .pt-cell:hover{transform:scale(1.12); z-index:2; box-shadow:0 3px 8px rgba(0,0,0,.25);}
+  .pt-cell b{font-size:.86rem; line-height:1;}
+  .pt-cell.ferroso{background:var(--ferrous);}
+  .pt-cell.noferroso{background:var(--nonferrous);}
+  .pt-cell.raro{background:var(--rare);}
+  .pt-cell.nometal{background:#c8c2b4; color:#4c463a;}
+  .pt-cell.blank{background:transparent; border:none; cursor:default;}
+  .pt-legend{display:flex; gap:16px; flex-wrap:wrap; font-size:.82rem; margin-top:8px;}
+  .pt-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .pt-legend i{width:13px; height:13px; border-radius:3px; display:inline-block;}
+  #pt-info{
+    margin-top:14px; min-height:70px; background:var(--teal-pale); border-radius:10px; padding:12px 16px;
+    font-size:.92rem; border-left:4px solid var(--teal);
+  }
+
+  /* battery diagram */
+  .battery-toggle{display:flex; gap:10px; margin-bottom:14px;}
+  .battery-toggle button{
+    border:2px solid var(--teal); background:#fff; color:var(--teal); font-weight:700;
+    padding:9px 18px; border-radius:999px; cursor:pointer; font-size:.85rem;
+  }
+  .battery-toggle button.active{background:var(--teal); color:#fff;}
+  .batt-diagram{
+    background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px; text-align:center;
+  }
+  .batt-svg-caption{font-size:.85rem; color:var(--ink-soft); margin-top:10px;}
+  #modo-label{font-weight:700; color:var(--copper);}
+
+  /* worksheet tables */
+  table.ws{width:100%; border-collapse:collapse; margin:14px 0; font-size:.9rem;}
+  table.ws th, table.ws td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top;}
+  table.ws th{background:var(--teal-pale); color:var(--teal-dark); font-family:var(--serif);}
+  table.ws input[type=text], table.ws select, table.ws textarea{
+    width:100%; border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-family:var(--sans); font-size:.87rem;
+  }
+  table.ws textarea{resize:vertical; min-height:44px;}
+
+  .reflect{
+    background:var(--copper-pale); border-left:4px solid var(--copper); border-radius:10px;
+    padding:14px 18px; margin:16px 0;
+  }
+  .reflect h4{color:var(--copper);}
+  .reflect textarea{width:100%; min-height:70px; margin-top:8px; border:1px solid #e0c39c; border-radius:8px; padding:8px; font-family:var(--sans);}
+
+  .callout{
+    border-radius:12px; padding:14px 18px; margin:16px 0; font-size:.92rem;
+  }
+  .callout.canvas{background:#eef3fc; border-left:4px solid #3a5ea8;}
+  .callout.safety{background:#fdecec; border-left:4px solid var(--warn);}
+  .callout.tip{background:var(--teal-pale); border-left:4px solid var(--teal);}
+
+  .pill-badge{
+    display:inline-block; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+    padding:3px 10px; border-radius:999px; background:var(--teal); color:#fff; margin-bottom:8px;
+  }
+  .pill-badge.act2{background:var(--copper);}
+  .pill-badge.act3{background:var(--ferrous);}
+
+  .rubric{width:100%; border-collapse:collapse; font-size:.85rem; margin-top:10px;}
+  .rubric th,.rubric td{border:1px solid var(--line); padding:7px 9px;}
+  .rubric th{background:#f1efe8;}
+
+  .steps{counter-reset:step; list-style:none; padding:0; margin:16px 0;}
+  .steps li{
+    counter-increment:step; position:relative; padding:10px 0 10px 46px; margin-bottom:6px;
+    border-bottom:1px dashed var(--line);
+  }
+  .steps li::before{
+    content:counter(step); position:absolute; left:0; top:8px; width:30px; height:30px;
+    background:var(--teal); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:.9rem;
+  }
+
+  details.acc{background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin:10px 0;}
+  details.acc summary{cursor:pointer; font-weight:700; color:var(--teal-dark);}
+
+  .refs{font-size:.86rem; color:var(--ink-soft);}
+  .refs p{padding-left:2em; text-indent:-2em; margin:.5rem 0;}
+
+  footer{background:var(--teal-dark); color:#cfe9e5; padding:26px 0; font-size:.82rem; text-align:center;}
+
+  .toolbar-note{font-size:.78rem; color:var(--ink-soft); font-style:italic;}
+  .btn-check{
+    background:var(--teal); color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;
+    font-weight:700; font-size:.85rem; margin-top:10px;
+  }
+  .btn-check:hover{background:var(--teal-dark);}
+  #check-result1, #check-result-alloy{margin-top:8px; font-weight:700; font-size:.85rem;}
+
+  .obj-list{list-style:none; padding:0; margin:0;}
+  .obj-list li{padding:5px 0 5px 26px; position:relative;}
+  .obj-list li::before{content:"⚙"; position:absolute; left:0; color:var(--copper);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="inner">
+    <span class="brand">Tema 3 · Reto en el uso de materiales</span>
+    <a href="#clase">Clase</a>
+    <a href="#clasificacion">3.1 Clasificación</a>
+    <a href="#tierras-raras">Tierras raras</a>
+    <a href="#baterias">Baterías</a>
+    <a href="#actividad1">Actividad 1</a>
+    <a href="#actividad2">Actividad 2</a>
+    <a href="#actividad3">Actividad 3</a>
+    <a href="#referencias">Referencias</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Ingeniería Industrial Administrativa · 5° semestre · Universidad de Celaya</span>
+    <h1>Tema 3. Aplicación de los materiales — Metales, tierras raras y almacenamiento de energía</h1>
+    <p class="lead">Subtema 3.1: Puros, ferrosos, no ferrosos y sus aleaciones. Esta clase conecta la clasificación de los metales con dos casos de alto impacto industrial: las tierras raras y las baterías, y se acompaña de tres actividades diseñadas para Canvas Instructure.</p>
+    <div class="metabar">
+      <span>📘 Newell (2011). <em>Ciencia de Materiales: Aplicaciones en Ingeniería</em>, cap. 4</span>
+      <span>📰 Revista <em>Conocimiento</em> (2007)</span>
+      <span>⏱ Sesión de clase + 3 actividades independientes/laboratorio</span>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= CLASE ======================= -->
+<section id="clase">
+  <div class="wrap">
+    <span class="eyebrow">Clase</span>
+    <h2>¿Por qué le importan los metales a un ingeniero industrial-administrativo?</h2>
+    <p>Como futuro responsable de procesos, compras, calidad o cadena de suministro, usted no diseñará aleaciones —pero sí decidirá <strong>qué material comprar, de dónde, a qué costo y con qué riesgo de abasto</strong>. Los metales representan la mayoría del valor de las materias primas industriales: desde el acero estructural hasta el cobre de un motor eléctrico o el neodimio de un imán. Entender su clasificación, su disponibilidad y su reciclabilidad es una competencia directamente aplicable a la selección de materiales, la sustentabilidad y el análisis de costo-beneficio.</p>
+
+    <ul class="obj-list">
+      <li>Distinguir metales puros, ferrosos, no ferrosos y sus aleaciones, y reconocer ejemplos industriales de cada uno.</li>
+      <li>Ubicar las tierras raras en la tabla periódica y explicar por qué son "críticas" para la industria moderna.</li>
+      <li>Explicar, a nivel de principio, cómo una batería almacena y libera energía, y qué metales intervienen.</li>
+      <li>Argumentar, con criterios técnicos y de sustentabilidad, si un material puede sustituirse o reciclarse.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================== 3.1 CLASIFICACION ================== -->
+<section class="alt" id="clasificacion">
+  <div class="wrap">
+    <span class="eyebrow">Subtema 3.1</span>
+    <h2>Puros, ferrosos, no ferrosos y sus aleaciones</h2>
+    <p>Un metal <strong>puro</strong> está formado por un solo elemento metálico (Fe, Al, Cu, Au...). En la práctica industrial casi nunca se usa así: se mezcla con otros elementos para formar una <strong>aleación</strong>, una mezcla de dos o más metales (o de un metal con un no metal, como el carbono) diseñada para obtener propiedades que el metal puro no tiene por sí solo (Newell, 2011).</p>
+
+    <p class="toolbar-note">Toque cada tarjeta para ver la definición, un ejemplo industrial y su relación con el temario del curso.</p>
+    <div class="flip-row" id="flipRow">
+      <div class="flip" data-flip="0">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="tag">Categoría 1</span><h4>Metales ferrosos</h4><p style="font-size:.8rem; margin-top:6px;">Base: hierro (Fe)</p></div>
+          <div class="flip-face flip-back">
+            <strong>Contienen hierro como elemento base.</strong> Incluyen aceros y hierros fundidos (colados). Se clasifican por su contenido de carbono y elementos de aleación (sistema AISI/SAE). Ejemplos: acero al carbono (vigas, tornillería), acero inoxidable (≥12% Cr, instrumental médico, línea blanca), hierro fundido (bloques de motor).
+            <div class="flip-hint">Toque de nuevo para regresar</div>
+          </div>
+        </div>
+      </div>
+      <div class="flip" data-flip="1">
+        <div class="flip-inner">
+          <div class="flip-face flip-front" style="background:var(--copper);"><span class="tag">Categoría 2</span><h4>Metales no ferrosos</h4><p style="font-size:.8rem; margin-top:6px;">Sin hierro como base</p></div>
+          <div class="flip-face flip-back">
+            <strong>No contienen hierro como elemento principal.</strong> Se subdividen en ligeros (Al, Ti, Mg — aeroespacial, empaques), pesados/industriales comunes (Cu, Zn, Pb, Ni, Sn — electricidad, plomería, galvanizado) y preciosos (Au, Ag, Pt — electrónica, catálisis, joyería). Ventaja frecuente: mejor relación resistencia/peso o resistencia a la corrosión que el acero.
+            <div class="flip-hint">Toque de nuevo para regresar</div>
+          </div>
+        </div>
+      </div>
+      <div class="flip" data-flip="2">
+        <div class="flip-inner">
+          <div class="flip-face flip-front" style="background:var(--ferrous);"><span class="tag">Categoría 3</span><h4>Aleaciones</h4><p style="font-size:.8rem; margin-top:6px;">Mezcla de 2+ elementos</p></div>
+          <div class="flip-face flip-back">
+            <strong>Mezcla intencional de un metal con otro(s) elemento(s)</strong> para modificar dureza, resistencia a la corrosión, conductividad, etc. Ejemplos: <em>acero</em> (Fe+C), <em>latón</em> (Cu+Zn), <em>bronce</em> (Cu+Sn), aleaciones de aluminio (Al+Mg, Al+Cu, Al+Si). El aluminio de una lata de refresco, por ejemplo, ya es una aleación Al-Mg (Newell, 2011).
+            <div class="flip-hint">Toque de nuevo para regresar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Nomenclatura AISI/SAE del acero</h3>
+        <p style="font-size:.88rem;">El primer dígito indica el elemento de aleación primario; los dos últimos, el porcentaje de carbono ×100.</p>
+        <table class="ws">
+          <tr><th>Código</th><th>Tipo</th></tr>
+          <tr><td>1xxx</td><td>Acero al carbono</td></tr>
+          <tr><td>2xxx</td><td>Acero al níquel</td></tr>
+          <tr><td>3xxx</td><td>Acero al níquel-cromo</td></tr>
+          <tr><td>4xxx</td><td>Acero al molibdeno</td></tr>
+          <tr><td>5xxx</td><td>Acero al cromo</td></tr>
+        </table>
+        <p style="font-size:.82rem; color:var(--ink-soft);">Ejemplo: un acero "1045" es al carbono con 0.45% de C. (Newell, 2011, tabla 4-5).</p>
+      </div>
+      <div class="card">
+        <h3>Nomenclatura de aleaciones de aluminio (forja)</h3>
+        <table class="ws">
+          <tr><th>Serie</th><th>Elemento aleante</th><th>Propósito</th></tr>
+          <tr><td>1xxx</td><td>—(99% Al)</td><td>Conductividad, resistencia a corrosión</td></tr>
+          <tr><td>2xxx</td><td>Cobre</td><td>Resistencia y maquinabilidad</td></tr>
+          <tr><td>5xxx</td><td>Magnesio</td><td>Dureza y resistencia a la corrosión</td></tr>
+          <tr><td>6xxx</td><td>Mg + Si</td><td>Tratable térmicamente</td></tr>
+          <tr><td>7xxx</td><td>Mg + Zn</td><td>Alta resistencia (aeroespacial)</td></tr>
+        </table>
+        <p style="font-size:.82rem; color:var(--ink-soft);">(Newell, 2011, tabla 4-6).</p>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <strong>Dato de ciclo de vida:</strong> los metales son la clase de materiales más fácil de reciclar: se pueden refundir y reformar sin perder sus propiedades esenciales. En 2005, Estados Unidos recicló más de 71 millones de toneladas de metal, cerca de 80% proveniente de hierro y acero (Newell, 2011).
+    </div>
+  </div>
+</section>
+
+<!-- ================== TABLA PERIODICA INTERACTIVA ================== -->
+<section id="tabla-periodica">
+  <div class="wrap">
+    <h2>Ubicando los metales en la tabla periódica</h2>
+    <p>Toque cualquier elemento para ver su categoría de uso industrial. Esta vista resalta metales ferrosos/base, no ferrosos comunes, tierras raras y no metales de referencia.</p>
+    <div class="pt-wrap">
+      <div class="pt-grid" id="ptGrid"></div>
+    </div>
+    <div class="pt-legend">
+      <span><i style="background:var(--ferrous)"></i>Base férrea / aleantes de acero</span>
+      <span><i style="background:var(--nonferrous)"></i>No ferroso común</span>
+      <span><i style="background:var(--rare)"></i>Tierra rara / metal crítico</span>
+      <span><i style="background:#c8c2b4"></i>No metal (referencia)</span>
+    </div>
+    <div id="pt-info">Seleccione un elemento para ver su ficha de uso industrial.</div>
+  </div>
+</section>
+
+<!-- ================== TIERRAS RARAS ================== -->
+<section class="alt" id="tierras-raras">
+  <div class="wrap">
+    <span class="eyebrow">Caso de estudio</span>
+    <h2>Tierras raras: pequeños en cantidad, enormes en impacto</h2>
+    <p>Las "tierras raras" son 17 elementos: los 15 lantánidos (La–Lu) más el escandio (Sc) y el itrio (Y). No son geológicamente escasas, pero rara vez aparecen concentradas en depósitos explotables, y su separación química es costosa y contaminante —de ahí su nombre y su relevancia estratégica (Newell, 2011). Más del 60% de la producción mundial se concentra en un solo país, lo que las convierte en un tema central de riesgo de cadena de suministro para cualquier administrador industrial.</p>
+
+    <div class="grid3">
+      <div class="card">
+        <h3>Neodimio (Nd)</h3>
+        <p style="font-size:.87rem;"><strong>Uso:</strong> imanes permanentes NdFeB, los más potentes disponibles comercialmente. Se usan en motores de vehículos eléctricos, turbinas eólicas de accionamiento directo, discos duros y audífonos.</p>
+        <p style="font-size:.87rem;"><strong>¿Reemplazable?</strong> Parcialmente: existen motores de inducción o de reluctancia conmutada que no requieren imanes de tierras raras, aunque suelen ser menos eficientes. El reciclaje de imanes de discos duros y motores es una vía de sustentabilidad creciente.</p>
+      </div>
+      <div class="card">
+        <h3>Europio y terbio (Eu, Tb)</h3>
+        <p style="font-size:.87rem;"><strong>Uso:</strong> fósforos que producen los colores rojo y verde en pantallas LED/LCD y en focos fluorescentes compactos.</p>
+        <p style="font-size:.87rem;"><strong>¿Reemplazable?</strong> Hay investigación activa en fósforos alternativos con nitruros; mientras tanto, el reciclaje de focos y pantallas fuera de uso es la estrategia más viable a corto plazo.</p>
+      </div>
+      <div class="card">
+        <h3>Lantano y cerio (La, Ce)</h3>
+        <p style="font-size:.87rem;"><strong>Uso:</strong> catalizadores de craqueo catalítico en refinación de petróleo, pulido óptico de vidrio y electrodos de baterías níquel-hidruro metálico (NiMH) en vehículos híbridos.</p>
+        <p style="font-size:.87rem;"><strong>¿Reemplazable?</strong> Las baterías de iones de litio —que no requieren La— están desplazando a las NiMH en vehículos nuevos; existen catalizadores zeolíticos alternativos en desarrollo para refinación.</p>
+      </div>
+    </div>
+
+    <div class="reflect">
+      <h4>Pregunta de reflexión</h4>
+      <p>Si su empresa dependiera de imanes de neodimio para un producto clave y el precio se triplicara de un año a otro por una restricción de exportación, ¿qué estrategias —de diseño, de abasto o de reciclaje— podría evaluar antes de trasladar el costo al cliente?</p>
+      <textarea placeholder="Escriba su respuesta aquí (uso personal / puede copiarla a Canvas)."></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================== CRISTALOGRAFIA - PUENTE ================== -->
+<section id="cristalografia-puente">
+  <div class="wrap">
+    <h2>Un puente con el Tema 1: la estructura por dentro de estos metales</h2>
+    <p>Recuerde del Tema 1 que la mayoría de los metales cristalizan en redes <strong>BCC</strong> (hierro α, cromo, tungsteno), <strong>FCC</strong> (aluminio, cobre, níquel, hierro γ, oro) o <strong>HCP</strong> (magnesio, titanio, zinc). Esa estructura interna explica, en gran parte, por qué el aluminio es tan dúctil (FCC, muchos planos de deslizamiento) o por qué el acero al carbono se endurece al enfriarse rápidamente (transformación de la red FCC a una estructura distorsionada llamada martensita). En la <a href="#actividad3">Actividad 3</a> construirá modelos físicos de estas redes con palillos de dientes y plastilina para visualizarlo en 3D.</p>
+  </div>
+</section>
+
+<!-- ================== BATERIAS ================== -->
+<section class="alt" id="baterias">
+  <div class="wrap">
+    <span class="eyebrow">Caso de estudio</span>
+    <h2>Baterías: metales que almacenan energía</h2>
+    <p>Una batería convierte energía química en energía eléctrica mediante una reacción de <strong>reducción-oxidación (redox)</strong>. Tiene tres partes esenciales: el <strong>ánodo</strong> (electrodo negativo, se oxida y libera electrones), el <strong>cátodo</strong> (electrodo positivo, se reduce y acepta electrones) y el <strong>electrolito</strong> (medio que permite el paso de iones, pero no de electrones, entre ambos electrodos).</p>
+
+    <div class="battery-toggle">
+      <button id="btnDescarga" class="active" onclick="setModoBateria('descarga')">🔋 Descarga (uso)</button>
+      <button id="btnCarga" onclick="setModoBateria('carga')">🔌 Carga</button>
+    </div>
+
+    <div class="batt-diagram">
+      <svg viewBox="0 0 640 260" width="100%" height="260" id="battSvg">
+        <!-- cell body -->
+        <rect x="60" y="40" width="180" height="150" rx="10" fill="#e9e2d3" stroke="#8a8072" stroke-width="2"/>
+        <rect x="400" y="40" width="180" height="150" rx="10" fill="#e2ecea" stroke="#8a8072" stroke-width="2"/>
+        <text x="150" y="30" text-anchor="middle" font-size="14" fill="#4b5a5f" font-weight="700" id="lblAnodo">ÁNODO (–)</text>
+        <text x="490" y="30" text-anchor="middle" font-size="14" fill="#4b5a5f" font-weight="700" id="lblCatodo">CÁTODO (+)</text>
+        <!-- electrolyte -->
+        <rect x="240" y="40" width="160" height="150" fill="#cfe6e2" opacity="0.6"/>
+        <text x="320" y="120" text-anchor="middle" font-size="12" fill="#134f4c">ELECTROLITO</text>
+        <text x="320" y="138" text-anchor="middle" font-size="11" fill="#134f4c" id="lblIon">ion ⟶</text>
+        <!-- external circuit -->
+        <path d="M150 40 L150 15 L490 15 L490 40" stroke="#b5651d" stroke-width="3" fill="none" id="circuitTop"/>
+        <circle cx="320" cy="15" r="9" fill="#fff" stroke="#b5651d" stroke-width="2"/>
+        <text x="320" y="19" text-anchor="middle" font-size="10" fill="#b5651d">e⁻</text>
+        <text x="330" y="10" font-size="10" fill="#b5651d" id="lblCircuito">circuito externo →</text>
+        <!-- labels bottom -->
+        <text x="150" y="210" text-anchor="middle" font-size="12" fill="#4b5a5f" id="lblAnodoDesc">se oxida</text>
+        <text x="490" y="210" text-anchor="middle" font-size="12" fill="#4b5a5f" id="lblCatodoDesc">se reduce</text>
+      </svg>
+      <div class="batt-svg-caption">
+        Modo actual: <span id="modo-label">DESCARGA</span> — <span id="modo-explicacion">la reacción redox ocurre de forma espontánea; los electrones fluyen del ánodo al cátodo por el circuito externo (por eso encienden el foco o mueven el motor), mientras los iones se mueven por el electrolito para mantener el balance de carga.</span>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:20px;">
+      <div class="card">
+        <h3>Primarias vs. secundarias</h3>
+        <p style="font-size:.87rem;"><strong>Primarias (no recargables):</strong> alcalinas Zn-MnO₂. La reacción química no es reversible de forma práctica.</p>
+        <p style="font-size:.87rem;"><strong>Secundarias (recargables):</strong> iones de litio (Li-ion), níquel-hidruro metálico (NiMH), plomo-ácido. Al aplicar corriente externa se fuerza la reacción inversa, "recargando" la energía química.</p>
+      </div>
+      <div class="card">
+        <h3>¿Qué metales hay dentro de una batería de litio?</h3>
+        <p style="font-size:.87rem;">Cátodo: óxidos de litio-metal (LiCoO₂, LiFePO₄, NMC con Ni-Mn-Co). Ánodo: grafito (carbono). Colectores de corriente: cobre (ánodo) y aluminio (cátodo). Los iones Li⁺ "viajan" entre los electrodos al cargar y descargar —por eso se le llama batería de "silla mecedora" (rocking-chair battery).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================== REFLEXION GENERAL ================== -->
+<section id="reflexion-general">
+  <div class="wrap">
+    <h2>Preguntas de reflexión — cierre de clase</h2>
+    <div class="reflect">
+      <h4>1. Clasificación aplicada</h4>
+      <p>Elija un producto que use todos los días (celular, bicicleta, auto). Identifique al menos un componente metálico ferroso y uno no ferroso, y justifique por qué se eligió cada metal para esa función.</p>
+      <textarea placeholder="Su respuesta..."></textarea>
+    </div>
+    <div class="reflect">
+      <h4>2. Tierras raras y ética de la cadena de suministro</h4>
+      <p>La extracción de tierras raras genera residuos radiactivos y contaminación de agua en algunas regiones. ¿Qué responsabilidad tiene, en su opinión, un ingeniero industrial-administrativo que compra estos materiales, aunque no participe directamente en su extracción?</p>
+      <textarea placeholder="Su respuesta..."></textarea>
+    </div>
+    <div class="reflect">
+      <h4>3. Baterías y ciclo de vida</h4>
+      <p>Compare, en términos de metales críticos y reciclabilidad, una batería de plomo-ácido (auto convencional) contra una batería de iones de litio (vehículo eléctrico). ¿Cuál representa mayor reto de reciclaje y por qué?</p>
+      <textarea placeholder="Su respuesta..."></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= -->
+<!-- ACTIVIDAD 1 -->
+<!-- ======================================================= -->
+<section class="alt" id="actividad1">
+  <div class="wrap">
+    <span class="pill-badge">Actividad 1 · Individual o parejas</span>
+    <h2>Tabla de clasificación de metales de la tabla periódica y sus usos</h2>
+
+    <div class="callout canvas">
+      <strong>Instrucciones para Canvas Instructure:</strong> publique esta sección como una <em>Assignment</em> de tipo "Text Entry" o "File Upload". El estudiante completa la tabla interactiva de abajo como apoyo de estudio y después transcribe sus respuestas finales (con al menos 12 metales) a un documento o al cuadro de texto de Canvas para entrega y calificación. Tiempo estimado: 45–60 min.
+    </div>
+
+    <p><strong>Instrucciones:</strong> complete la tabla eligiendo, para cada metal, su categoría y anotando dos usos industriales reales. Use el temario, el libro de Newell (cap. 1 y 4) y una fuente confiable adicional (USGS, un artículo técnico, etc.).</p>
+
+    <table class="ws" id="tablaAct1">
+      <tr><th style="width:14%">Metal</th><th style="width:20%">Categoría</th><th>Usos industriales (mínimo 2)</th></tr>
+      <tr><td>Hierro (Fe)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea placeholder="Ej. Estructuras, maquinaria..."></textarea></td></tr>
+      <tr><td>Aluminio (Al)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Cobre (Cu)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Titanio (Ti)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Zinc (Zn)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Níquel (Ni)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Plomo (Pb)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Oro (Au)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Cromo (Cr)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Neodimio (Nd)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Magnesio (Mg)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+      <tr><td>Estaño (Sn)</td>
+        <td><select><option value="">Seleccione…</option><option>Ferroso</option><option>No ferroso</option><option>Tierra rara</option></select></td>
+        <td><textarea></textarea></td></tr>
+    </table>
+    <button class="btn-check" onclick="checkAct1()">Autoevaluar categorías</button>
+    <div id="check-result1"></div>
+
+    <h3 style="margin-top:26px;">Rúbrica sugerida (10 pts)</h3>
+    <table class="rubric">
+      <tr><th>Criterio</th><th>Excelente (2)</th><th>Suficiente (1)</th><th>Insuficiente (0)</th></tr>
+      <tr><td>Clasificación correcta (ferroso/no ferroso/tierra rara)</td><td>≥11 de 12 correctas</td><td>7–10 correctas</td><td>&lt;7 correctas</td></tr>
+      <tr><td>Usos industriales</td><td>2 usos reales y específicos por metal</td><td>Usos genéricos o incompletos</td><td>Usos ausentes o incorrectos</td></tr>
+      <tr><td>Fuentes citadas (APA)</td><td>≥2 fuentes correctamente citadas</td><td>1 fuente</td><td>Sin citar</td></tr>
+      <tr><td>Reflexión adicional (opcional +2)</td><td>Argumento propio sobre disponibilidad/costo</td><td>Comentario breve</td><td>—</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ======================================================= -->
+<!-- ACTIVIDAD 2 -->
+<!-- ======================================================= -->
+<section id="actividad2">
+  <div class="wrap">
+    <span class="pill-badge act2">Actividad 2 · Investigación individual</span>
+    <h2>Tierras raras: 3 aplicaciones y su posibilidad de reemplazo o proceso sostenible</h2>
+
+    <div class="callout canvas">
+      <strong>Instrucciones para Canvas Instructure:</strong> publique como <em>Assignment</em> tipo "File Upload" (PDF o Word) o "Text Entry". Sugerencia de entregable: la tabla completa + las dos preguntas de reflexión, en máximo 2 páginas. Tiempo estimado: 90 min (incluye investigación).
+    </div>
+
+    <p><strong>Instrucciones:</strong> investigue <strong>tres aplicaciones industriales</strong> de tierras raras (puede usar las vistas en clase u otras distintas: Nd, La, Ce, Eu, Tb, Y, Dy, Sm...). Para cada una, complete la tabla y analice si el elemento puede sustituirse o si existe/podría existir un proceso más sostenible.</p>
+
+    <table class="ws">
+      <tr><th>Aplicación industrial</th><th>Tierra rara usada</th><th>Función que cumple</th><th>¿Reemplazable? (Sí/Parcial/No)</th><th>Alternativa o proceso sostenible propuesto</th></tr>
+      <tr><td><textarea placeholder="Ej. Imán de motor eléctrico"></textarea></td><td><input type="text" placeholder="Ej. Nd"></td><td><textarea></textarea></td><td>
+        <select><option value="">Seleccione…</option><option>Sí</option><option>Parcial</option><option>No</option></select>
+      </td><td><textarea></textarea></td></tr>
+      <tr><td><textarea></textarea></td><td><input type="text"></td><td><textarea></textarea></td><td>
+        <select><option value="">Seleccione…</option><option>Sí</option><option>Parcial</option><option>No</option></select>
+      </td><td><textarea></textarea></td></tr>
+      <tr><td><textarea></textarea></td><td><input type="text"></td><td><textarea></textarea></td><td>
+        <select><option value="">Seleccione…</option><option>Sí</option><option>Parcial</option><option>No</option></select>
+      </td><td><textarea></textarea></td></tr>
+    </table>
+
+    <div class="reflect">
+      <h4>Pregunta de reflexión 1</h4>
+      <p>De sus tres aplicaciones, ¿cuál representa el mayor riesgo para una empresa mexicana si se interrumpiera el suministro de esa tierra rara? Argumente con base en costo, disponibilidad de sustitutos y tiempo de adaptación.</p>
+      <textarea></textarea>
+    </div>
+    <div class="reflect">
+      <h4>Pregunta de reflexión 2</h4>
+      <p>Proponga una acción concreta de economía circular (reciclaje, reúso, rediseño) que una empresa podría implementar para reducir su dependencia de tierras raras vírgenes en al menos una de sus aplicaciones.</p>
+      <textarea></textarea>
+    </div>
+
+    <h3 style="margin-top:26px;">Rúbrica sugerida (10 pts)</h3>
+    <table class="rubric">
+      <tr><th>Criterio</th><th>Puntos</th></tr>
+      <tr><td>Tres aplicaciones distintas, correctamente identificadas con su tierra rara</td><td>3</td></tr>
+      <tr><td>Análisis técnico de posibilidad de reemplazo</td><td>3</td></tr>
+      <tr><td>Propuesta de proceso/alternativa sostenible, viable y justificada</td><td>2</td></tr>
+      <tr><td>Preguntas de reflexión con argumento propio</td><td>1.5</td></tr>
+      <tr><td>Referencias en formato APA</td><td>0.5</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ======================================================= -->
+<!-- ACTIVIDAD 3 -->
+<!-- ======================================================= -->
+<section class="alt" id="actividad3">
+  <div class="wrap">
+    <span class="pill-badge act3">Actividad 3 · Laboratorio / equipos de 2–3</span>
+    <h2>Modelos cristalinos con palillos y plastilina, baterías, y diseño de una mezcla exotérmica autocalentable</h2>
+
+    <div class="callout canvas">
+      <strong>Instrucciones para Canvas Instructure:</strong> publique como <em>Assignment</em> tipo "File Upload" con soporte para imágenes/video (fotos de los modelos armados) más un documento con las partes B y C. Sugiera al estudiante subir 3 fotos (SC, BCC, FCC) y un archivo con las respuestas escritas. Tiempo estimado: 2 sesiones de laboratorio.
+    </div>
+
+    <h3>Parte A · Modelos físicos de estructuras cristalinas</h3>
+    <p>Construya con <strong>plastilina (esferas = átomos)</strong> y <strong>palillos de dientes (aristas de la celda)</strong> los tres arreglos cristalinos vistos en el Tema 1.</p>
+
+    <ol class="steps">
+      <li><strong>Cúbica simple (SC):</strong> forme 8 esferas de plastilina de igual tamaño (átomos en los vértices) y únalas con 12 palillos formando un cubo. Solo hay átomos en las esquinas.</li>
+      <li><strong>Cúbica centrada en el cuerpo (BCC):</strong> repita el cubo de 8 esferas en los vértices y agregue una esfera adicional en el centro geométrico del cubo (sin palillo, o con palillos diagonales imaginarios para mostrar la posición). Ejemplo real: hierro α, cromo, tungsteno.</li>
+      <li><strong>Cúbica centrada en las caras (FCC):</strong> arme el cubo de 8 vértices y agregue 6 esferas adicionales, una en el centro de cada cara del cubo. Ejemplo real: aluminio, cobre, hierro γ, oro.</li>
+      <li>Fotografíe cada modelo desde un ángulo que muestre claramente la posición de los átomos adicionales (centro del cuerpo o centro de las caras).</li>
+      <li>Complete la tabla comparativa siguiente y súbala junto con sus fotografías a Canvas.</li>
+    </ol>
+
+    <table class="ws">
+      <tr><th>Estructura</th><th>Átomos por celda unitaria</th><th>Ejemplo de metal real</th><th>Una propiedad que explica esta estructura</th></tr>
+      <tr><td>Cúbica simple (SC)</td><td><input type="text" placeholder="Calcule"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+      <tr><td>BCC</td><td><input type="text" placeholder="Calcule"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+      <tr><td>FCC</td><td><input type="text" placeholder="Calcule"></td><td><input type="text"></td><td><textarea></textarea></td></tr>
+    </table>
+
+    <details class="acc">
+      <summary>Pista para el cálculo de átomos por celda (toque para expandir)</summary>
+      <p style="font-size:.87rem;">Un átomo en un vértice se comparte entre 8 celdas vecinas (aporta 1/8). Un átomo en el centro de una cara se comparte entre 2 celdas (aporta 1/2). Un átomo en el centro del cuerpo pertenece por completo a esa celda (aporta 1).</p>
+    </details>
+
+    <h3 style="margin-top:30px;">Parte B · Baterías: cómo se recargan y cómo almacenan energía</h3>
+    <p>Con base en el diagrama interactivo de la sección de clase (<a href="#baterias">ir a la sección de baterías</a>), responda en equipo:</p>
+    <table class="ws">
+      <tr><th style="width:36%">Pregunta</th><th>Respuesta del equipo</th></tr>
+      <tr><td>¿Qué diferencia hay, a nivel de reacción química, entre "cargar" y "descargar" una batería recargable?</td><td><textarea></textarea></td></tr>
+      <tr><td>¿Por qué una batería alcalina común no puede recargarse de forma segura?</td><td><textarea></textarea></td></tr>
+      <tr><td>Nombre 3 metales presentes en una batería de iones de litio y su función.</td><td><textarea></textarea></td></tr>
+      <tr><td>¿Qué le ocurre a un ánodo de litio-metal si se carga demasiado rápido (relación con la estructura cristalina de los depósitos metálicos)?</td><td><textarea></textarea></td></tr>
+    </table>
+
+    <h3 style="margin-top:30px;">Parte C · Reto de diseño: una mezcla que genera calor al mezclarse</h3>
+    <p>Las raciones militares de campaña (como las MRE) incluyen un calentador flameless que calienta la comida sin fuego, usando una <strong>reacción exotérmica</strong> —una reacción química que libera calor. Su reto: diseñar (a nivel de propuesta de ingeniería, no de fabricación) un sistema similar para calentar un alimento.</p>
+
+    <div class="callout safety">
+      <strong>Seguridad primero:</strong> esta parte es un ejercicio de <em>diseño conceptual</em>, no una guía de fabricación. Cualquier prueba con reacciones exotérmicas reales debe hacerse únicamente en el laboratorio, bajo la supervisión directa de su profesor, con equipo de protección personal (guantes, lentes) y en cantidades de prueba controladas por el docente.
+    </div>
+
+    <p>Como punto de partida para su investigación, dos familias de reacciones exotérmicas ya se usan comercialmente y son de dominio público:</p>
+    <ul>
+      <li><strong>Hidratación de óxido de calcio (cal viva):</strong> CaO + H₂O → Ca(OH)₂ + calor. Es el principio detrás de las latas de café autocalentables.</li>
+      <li><strong>Oxidación de una aleación magnesio-hierro en agua salada:</strong> es el principio usado en los calentadores flameless de las raciones militares; el hierro actúa como catalizador y la sal como activador del electrolito.</li>
+    </ul>
+
+    <table class="ws">
+      <tr><th style="width:30%">Elemento del diseño</th><th>Propuesta de su equipo</th></tr>
+      <tr><td>Reacción exotérmica elegida (investíguela y cite su fuente)</td><td><textarea></textarea></td></tr>
+      <tr><td>Temperatura objetivo y tiempo estimado de calentamiento</td><td><textarea></textarea></td></tr>
+      <tr><td>Cálculo aproximado de energía necesaria (use Q = m·c·ΔT para el alimento a calentar)</td><td><textarea></textarea></td></tr>
+      <tr><td>Material de empaque/contención propuesto y por qué es seguro</td><td><textarea></textarea></td></tr>
+      <tr><td>Impacto ambiental y posibilidad de reciclaje o biodegradabilidad del empaque</td><td><textarea></textarea></td></tr>
+      <tr><td>Riesgos identificados y cómo los mitigaría su diseño</td><td><textarea></textarea></td></tr>
+    </table>
+
+    <div class="reflect">
+      <h4>Pregunta de reflexión final</h4>
+      <p>¿Qué relación encuentra entre este reto de diseño y los temas de selección de materiales, economía y ciclo de vida vistos en el curso? ¿Qué material metálico de los estudiados en esta clase podría tener un rol en su propuesta (por ejemplo, como catalizador, contenedor o conductor térmico)?</p>
+      <textarea></textarea>
+    </div>
+
+    <h3 style="margin-top:26px;">Rúbrica sugerida (10 pts)</h3>
+    <table class="rubric">
+      <tr><th>Criterio</th><th>Puntos</th></tr>
+      <tr><td>Tres modelos cristalinos correctamente construidos y fotografiados</td><td>2.5</td></tr>
+      <tr><td>Tabla comparativa de estructuras (cálculo correcto de átomos por celda)</td><td>1.5</td></tr>
+      <tr><td>Respuestas de baterías, con vocabulario técnico correcto</td><td>2</td></tr>
+      <tr><td>Propuesta de diseño de mezcla exotérmica: viabilidad, cálculo de energía y seguridad</td><td>3</td></tr>
+      <tr><td>Reflexión final y referencias APA</td><td>1</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================== REFERENCIAS ================== -->
+<section id="referencias">
+  <div class="wrap">
+    <h2>Referencias</h2>
+    <div class="refs">
+      <p>Mercado Solís, R. D. y Díaz Romero, D. A. (2007). Los materiales en la historia. <em>Conocimiento</em>, (60), 3–8.</p>
+      <p>Newell, J. A. (2011). <em>Ciencia de materiales: Aplicaciones en ingeniería</em> (1a ed.). Alfaomega.</p>
+      <p>Universidad de Celaya. (2023). <em>IIA2324. Reto en el uso de materiales</em> [Programa de asignatura]. Ingeniería Industrial Administrativa.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Universidad de Celaya · Ingeniería Industrial Administrativa · Reto en el uso de materiales · Tema 3 — Aplicación de los materiales</div>
+</footer>
+
+<script>
+/* Flip cards */
+document.querySelectorAll('.flip').forEach(function(el){
+  el.addEventListener('click', function(){ el.classList.toggle('flipped'); });
+});
+
+/* Battery diagram toggle */
+function setModoBateria(modo){
+  var btnD = document.getElementById('btnDescarga');
+  var btnC = document.getElementById('btnCarga');
+  var modoLabel = document.getElementById('modo-label');
+  var expl = document.getElementById('modo-explicacion');
+  var lblIon = document.getElementById('lblIon');
+  var lblCircuito = document.getElementById('lblCircuito');
+  var lblAnodoDesc = document.getElementById('lblAnodoDesc');
+  var lblCatodoDesc = document.getElementById('lblCatodoDesc');
+
+  if(modo === 'descarga'){
+    btnD.classList.add('active'); btnC.classList.remove('active');
+    modoLabel.textContent = 'DESCARGA';
+    expl.textContent = 'la reacción redox ocurre de forma espontánea; los electrones fluyen del ánodo al cátodo por el circuito externo (por eso encienden el foco o mueven el motor), mientras los iones se mueven por el electrolito para mantener el balance de carga.';
+    lblIon.textContent = 'ion ⟶';
+    lblCircuito.textContent = 'e⁻ fluye ánodo → cátodo';
+    lblAnodoDesc.textContent = 'se oxida (libera e⁻)';
+    lblCatodoDesc.textContent = 'se reduce (acepta e⁻)';
+  } else {
+    btnC.classList.add('active'); btnD.classList.remove('active');
+    modoLabel.textContent = 'CARGA';
+    expl.textContent = 'una fuente externa fuerza la reacción inversa: empuja electrones e iones de vuelta a su posición original, "recargando" la energía química almacenada en los electrodos.';
+    lblIon.textContent = '⟵ ion (forzado)';
+    lblCircuito.textContent = 'e⁻ forzado cátodo → ánodo (fuente externa)';
+    lblAnodoDesc.textContent = 'se reduce (recibe e⁻)';
+    lblCatodoDesc.textContent = 'se oxida (libera e⁻)';
+  }
+}
+
+/* Periodic-ish grid: simplified layout (row, col within 18-col grid) */
+var ptData = [
+  {sym:'Mg', name:'Magnesio', row:3, col:2, cat:'noferroso', info:'No ferroso ligero. Aleante clave del aluminio (series 5xxx y 6xxx) y de aleaciones aeroespaciales. Estructura HCP.'},
+  {sym:'Al', name:'Aluminio', row:3, col:13, cat:'noferroso', info:'No ferroso ligero. Densidad ~2.70 g/cm³ (1/3 del acero). Aeroespacial, automotriz, empaques. Red cristalina FCC.'},
+  {sym:'Ti', name:'Titanio', row:4, col:4, cat:'noferroso', info:'No ferroso ligero, alta resistencia a la corrosión. Aeroespacial, implantes médicos (biomaterial).'},
+  {sym:'Cr', name:'Cromo', row:4, col:6, cat:'ferroso', info:'Aleante clave del acero: ≥12% Cr produce acero inoxidable. Resistencia a la corrosión y dureza.'},
+  {sym:'Mn', name:'Manganeso', row:4, col:7, cat:'ferroso', info:'Aleante del acero: mejora resistencia a la corrosión y maquinabilidad.'},
+  {sym:'Fe', name:'Hierro', row:4, col:8, cat:'ferroso', info:'Base de todos los metales ferrosos (aceros, hierros fundidos). El metal industrial más reciclado del mundo.'},
+  {sym:'Ni', name:'Níquel', row:4, col:10, cat:'noferroso', info:'No ferroso; también aleante del acero inoxidable austenítico (7–20% Ni). Baterías NiMH, monedas, catálisis.'},
+  {sym:'Cu', name:'Cobre', row:4, col:11, cat:'noferroso', info:'No ferroso, excelente conductor eléctrico. Cableado, latón (Cu+Zn), bronce (Cu+Sn), colector de ánodo en baterías Li-ion.'},
+  {sym:'Zn', name:'Zinc', row:4, col:12, cat:'noferroso', info:'No ferroso. Galvanizado (recubrimiento anticorrosivo del acero), aleante del latón.'},
+  {sym:'Mo', name:'Molibdeno', row:5, col:6, cat:'ferroso', info:'Aleante de aceros de alta resistencia y aceros para herramientas.'},
+  {sym:'Ag', name:'Plata', row:5, col:11, cat:'noferroso', info:'Metal precioso. Electrónica (mejor conductor eléctrico), joyería, contactos eléctricos.'},
+  {sym:'Sn', name:'Estaño', row:5, col:14, cat:'noferroso', info:'No ferroso. Soldadura electrónica, aleante del bronce (Cu+Sn), recubrimiento de latas de conserva.'},
+  {sym:'W', name:'Tungsteno', row:6, col:6, cat:'ferroso', info:'Aleante de aceros para herramientas de alta dureza; filamentos, brocas, insertos de corte.'},
+  {sym:'Pt', name:'Platino', row:6, col:10, cat:'noferroso', info:'Metal precioso. Catalizadores automotrices e industriales, electrónica de alta precisión.'},
+  {sym:'Au', name:'Oro', row:6, col:11, cat:'noferroso', info:'Metal precioso. Contactos electrónicos de alta confiabilidad, joyería, reservas de valor.'},
+  {sym:'Pb', name:'Plomo', row:6, col:14, cat:'noferroso', info:'No ferroso pesado. Baterías plomo-ácido (automotrices), blindaje contra radiación.'},
+  {sym:'La', name:'Lantano', row:8, col:4, cat:'raro', info:'Tierra rara. Baterías NiMH, catalizadores de refinación de petróleo, pulido de vidrio.'},
+  {sym:'Ce', name:'Cerio', row:8, col:5, cat:'raro', info:'Tierra rara más abundante. Pulido óptico de vidrio, catalizadores automotrices de oxidación.'},
+  {sym:'Nd', name:'Neodimio', row:8, col:7, cat:'raro', info:'Tierra rara. Imanes permanentes NdFeB: motores de VE, turbinas eólicas, discos duros.'},
+  {sym:'Sm', name:'Samario', row:8, col:9, cat:'raro', info:'Tierra rara. Imanes samario-cobalto (SmCo), estables a alta temperatura.'},
+  {sym:'Eu', name:'Europio', row:8, col:11, cat:'raro', info:'Tierra rara. Fósforo rojo/azul en pantallas LED/LCD y focos fluorescentes.'},
+  {sym:'Tb', name:'Terbio', row:8, col:13, cat:'raro', info:'Tierra rara. Fósforo verde en pantallas; aleaciones magnetoestrictivas.'},
+  {sym:'Dy', name:'Disprosio', row:8, col:15, cat:'raro', info:'Tierra rara. Mejora la resistencia térmica de los imanes de neodimio en motores de VE.'},
+  {sym:'Y', name:'Itrio', row:6, col:3, cat:'raro', info:'Tierra rara (técnicamente, no lantánido). Láseres YAG, superconductores, cerámicas de alta temperatura.'},
+  {sym:'C', name:'Carbono', row:2, col:14, cat:'nometal', info:'No metal. Elemento aleante clave del acero (define el contenido de carbono); grafito como ánodo en baterías Li-ion.'},
+  {sym:'O', name:'Oxígeno', row:2, col:16, cat:'nometal', info:'No metal. Casi todos los metales se encuentran en la naturaleza como óxidos metálicos.'},
+  {sym:'S', name:'Azufre', row:3, col:16, cat:'nometal', info:'No metal. Contaminante común de menas metálicas; interviene en algunos electrolitos de batería.'}
+];
+
+var grid = document.getElementById('ptGrid');
+for(var r=1;r<=8;r++){
+  for(var c=1;c<=18;c++){
+    var found = ptData.find(function(d){return d.row===r && d.col===c;});
+    var cell = document.createElement('div');
+    if(found){
+      cell.className = 'pt-cell ' + found.cat;
+      cell.innerHTML = '<b>'+found.sym+'</b>';
+      cell.title = found.name;
+      cell.addEventListener('click', (function(d){
+        return function(){
+          document.getElementById('pt-info').innerHTML = '<strong>'+d.name+' ('+d.sym+')</strong> — '+d.info;
+        };
+      })(found));
+    } else {
+      cell.className = 'pt-cell blank';
+    }
+    grid.appendChild(cell);
+  }
+}
+
+/* Activity 1 self-check (category correctness only) */
+var act1Answers = {0:'Ferroso',1:'No ferroso',2:'No ferroso',3:'No ferroso',4:'No ferroso',5:'No ferroso',6:'No ferroso',7:'No ferroso',8:'Ferroso',9:'Tierra rara',10:'No ferroso',11:'No ferroso'};
+function checkAct1(){
+  var rows = document.querySelectorAll('#tablaAct1 tr');
+  var correct = 0, total = 0;
+  for(var i=1;i<rows.length;i++){
+    var sel = rows[i].querySelector('select');
+    if(!sel) continue;
+    total++;
+    if(sel.value === act1Answers[i-1]){ correct++; sel.style.borderColor = '#2f7d4f'; }
+    else if(sel.value !== ''){ sel.style.borderColor = '#a13e3e'; }
+  }
+  document.getElementById('check-result1').innerHTML =
+    'Categorías correctas: '+correct+' de '+total+'. <span style="font-weight:400; font-size:.8rem;">(Los usos industriales se revisan por su profesor, no de forma automática.)</span>';
+}
+</script>
+</body>
+</html>

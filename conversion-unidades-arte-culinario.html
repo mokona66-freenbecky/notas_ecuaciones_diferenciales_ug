@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversión de Unidades en Arte Culinario | Universidad de Celaya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1e3a8a;
+  --navy-dark:#16296b;
+  --navy-light:#3557b7;
+  --gold:#eab308;
+  --gold-light:#f0c94a;
+  --gold-dark:#a16207;
+  --bg:#f8fafc;
+  --paper:#ffffff;
+  --ink:#1a2233;
+  --ink-soft:#4a5568;
+  --line:#e2e8f0;
+  --line-strong:#cbd5e1;
+  --ok:#15803d;
+  --ok-bg:#f0fdf4;
+  --warn:#b45309;
+  --warn-bg:#fffbeb;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+  line-height:1.65;
+}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--navy-dark);margin:0 0 .4em;}
+.mono{font-family:'JetBrains Mono',monospace;}
+img{max-width:100%;}
+
+/* ===== Header institucional ===== */
+header.institucional{
+  background:linear-gradient(180deg,var(--navy) 0%,var(--navy-dark) 100%);
+  color:#fff;
+  padding:0;
+  position:relative;
+  overflow:hidden;
+}
+.top-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 40px;
+  border-bottom:1px solid rgba(255,255,255,.15);
+  font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;
+  color:rgba(255,255,255,.75);
+}
+.top-bar .crest{display:flex;align-items:center;gap:10px;}
+.crest-mark{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;font-weight:700;color:var(--gold);font-size:.95rem;
+}
+.hero{
+  padding:64px 40px 56px;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;
+  max-width:1180px;margin:0 auto;
+}
+.hero .eyebrow{
+  display:inline-block;color:var(--gold-light);text-transform:uppercase;
+  letter-spacing:.14em;font-size:.72rem;font-weight:600;margin-bottom:14px;
+}
+.hero h1{color:#fff;font-size:2.6rem;font-weight:600;line-height:1.12;margin-bottom:14px;}
+.hero p.lead{color:rgba(255,255,255,.82);font-size:1.05rem;max-width:46ch;}
+.hero .meta-row{
+  display:flex;gap:22px;margin-top:24px;flex-wrap:wrap;
+}
+.hero .meta-item{font-size:.82rem;color:rgba(255,255,255,.7);}
+.hero .meta-item b{display:block;color:#fff;font-size:.92rem;font-weight:600;}
+
+/* balanza SVG animada */
+.scale-wrap{display:flex;justify-content:center;align-items:center;}
+#balanza{width:100%;max-width:340px;height:auto;}
+.pan{transition:transform .05s linear;}
+.beam{transform-origin:170px 90px;transition:transform .05s linear;}
+
+nav.subnav{
+  background:var(--navy-dark);
+  border-top:1px solid rgba(255,255,255,.12);
+}
+nav.subnav .inner{
+  max-width:1180px;margin:0 auto;padding:0 40px;
+  display:flex;gap:2px;overflow-x:auto;
+}
+nav.subnav a{
+  color:rgba(255,255,255,.72);text-decoration:none;
+  padding:14px 16px;font-size:.82rem;font-weight:500;white-space:nowrap;
+  border-bottom:2px solid transparent;
+}
+nav.subnav a:hover{color:#fff;border-bottom-color:var(--gold);}
+
+main{max-width:1180px;margin:0 auto;padding:0 40px;}
+section{padding:56px 0;border-bottom:1px solid var(--line);}
+section:last-of-type{border-bottom:none;}
+.section-label{
+  display:flex;align-items:center;gap:12px;margin-bottom:8px;
+}
+.section-num{
+  font-family:'JetBrains Mono',monospace;color:var(--gold-dark);
+  font-size:.82rem;font-weight:600;background:#fdf3d0;
+  padding:3px 9px;border-radius:4px;
+}
+section h2{font-size:1.7rem;}
+section > p.intro{color:var(--ink-soft);max-width:75ch;font-size:1rem;margin-bottom:28px;}
+
+/* ===== Temario ===== */
+.temario-list{list-style:none;margin:0;padding:0;counter-reset:tema;}
+.temario-list > li{
+  counter-increment:tema;
+  display:grid;grid-template-columns:52px 1fr;gap:18px;
+  padding:20px 0;border-top:1px solid var(--line);
+}
+.temario-list > li:first-child{border-top:none;}
+.temario-list > li::before{
+  content:counter(tema,decimal-leading-zero);
+  font-family:'JetBrains Mono',monospace;color:var(--gold-dark);
+  font-size:1rem;font-weight:600;padding-top:2px;
+}
+.temario-list h3{font-size:1.02rem;margin-bottom:6px;color:var(--navy-dark);}
+.temario-list ul{margin:6px 0 0;padding-left:18px;color:var(--ink-soft);font-size:.92rem;}
+.temario-list ul li{margin-bottom:3px;}
+
+/* ===== Tablas de factores ===== */
+.factor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-bottom:20px;}
+.factor-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;
+}
+.factor-card h4{
+  background:var(--navy);color:#fff;margin:0;padding:12px 18px;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:.92rem;
+  display:flex;align-items:center;gap:8px;
+}
+.factor-card h4 .tag{
+  background:var(--gold);color:var(--navy-dark);font-size:.68rem;
+  padding:2px 7px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+}
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+table th{
+  text-align:left;background:#eef2f9;color:var(--navy-dark);
+  font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;
+  padding:9px 18px;font-weight:600;
+}
+table td{padding:9px 18px;border-top:1px solid var(--line);}
+table td.num{font-family:'JetBrains Mono',monospace;color:var(--navy-dark);font-weight:500;text-align:right;}
+.factor-card table{margin:0;}
+
+/* ===== Formula maestra ===== */
+.formula-box{
+  background:var(--navy-dark);color:#fff;border-radius:12px;
+  padding:34px 38px;position:relative;overflow:hidden;margin-bottom:24px;
+}
+.formula-box::before{
+  content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;
+  border:2px solid rgba(234,179,8,.18);border-radius:50%;
+}
+.formula-box .label{
+  color:var(--gold-light);text-transform:uppercase;letter-spacing:.12em;
+  font-size:.7rem;font-weight:700;margin-bottom:14px;
+}
+.formula-main{
+  font-family:'Fraunces',serif;font-size:1.5rem;font-weight:500;
+  display:flex;align-items:center;flex-wrap:wrap;gap:10px;position:relative;z-index:1;
+}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;}
+.frac .top{padding:0 6px 3px;border-bottom:1.5px solid #fff;font-size:1rem;}
+.frac .bot{padding:3px 6px 0;font-size:1rem;}
+.formula-note{color:rgba(255,255,255,.65);font-size:.86rem;margin-top:16px;max-width:65ch;position:relative;z-index:1;}
+
+.step-chain{
+  display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:22px 0;
+}
+.step-box{
+  background:var(--paper);border:1px solid var(--line-strong);border-radius:10px;
+  padding:16px 20px;flex:1;min-width:210px;
+}
+.step-box .step-tag{
+  font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-dark);font-weight:700;margin-bottom:6px;
+}
+.step-arrow{display:flex;align-items:center;justify-content:center;padding:0 14px;color:var(--navy-light);font-size:1.3rem;}
+.step-box .calc{font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--navy-dark);}
+
+/* ===== Calculadora interactiva ===== */
+.tool-panel{
+  background:var(--paper);border:1px solid var(--line);border-radius:12px;
+  padding:28px 30px;
+}
+.tool-tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.tool-tab{
+  background:#eef2f9;border:1px solid var(--line);color:var(--navy-dark);
+  padding:8px 16px;border-radius:20px;font-size:.84rem;font-weight:600;cursor:pointer;
+  font-family:'Inter',sans-serif;
+}
+.tool-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.tool-body{display:none;}
+.tool-body.active{display:block;}
+.field-row{display:grid;grid-template-columns:1fr 130px auto 130px;gap:12px;align-items:end;margin-bottom:18px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600;}
+.field input, .field select{
+  padding:10px 12px;border:1px solid var(--line-strong);border-radius:7px;
+  font-family:'JetBrains Mono',monospace;font-size:.94rem;background:#fff;color:var(--ink);
+}
+.field select{font-family:'Inter',sans-serif;}
+.swap-arrow{display:flex;align-items:center;justify-content:center;height:40px;color:var(--navy-light);font-size:1.2rem;}
+.result-line{
+  display:flex;align-items:baseline;gap:10px;background:#eef2f9;
+  border-radius:8px;padding:16px 20px;margin-top:6px;
+}
+.result-line .rval{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:600;color:var(--navy-dark);}
+.result-line .rlabel{font-size:.82rem;color:var(--ink-soft);}
+.tool-note{font-size:.8rem;color:var(--ink-soft);margin-top:12px;}
+
+/* ===== Actividad ===== */
+.case-box{
+  background:linear-gradient(135deg,#fdf3d0 0%,#fdf9ec 100%);
+  border:1px solid #f0dfa0;border-left:4px solid var(--gold);
+  border-radius:10px;padding:26px 28px;margin-bottom:30px;
+}
+.case-box h3{margin-top:0;font-size:1.15rem;color:var(--gold-dark);}
+.case-box p{margin:0;color:#5c4a12;font-size:.96rem;}
+.case-box ol{margin:14px 0 0;padding-left:20px;color:#5c4a12;}
+.case-box ol li{margin-bottom:6px;}
+
+.data-tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:22px;margin-bottom:30px;}
+.data-tables .factor-card h4{background:var(--gold-dark);}
+
+.parts-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:10px;}
+.part-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:26px 28px;
+}
+.part-card .part-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.part-card .part-icon{
+  width:34px;height:34px;border-radius:8px;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;
+}
+.part-card ol{padding-left:20px;margin:0;font-size:.92rem;color:var(--ink-soft);}
+.part-card ol li{margin-bottom:10px;}
+.part-card ol li b{color:var(--ink);}
+
+.sheet-list{list-style:none;margin:0;padding:0;}
+.sheet-list li{
+  display:grid;grid-template-columns:110px 1fr;gap:14px;
+  padding:14px 0;border-top:1px solid var(--line);font-size:.9rem;
+}
+.sheet-list li:first-child{border-top:none;}
+.sheet-list .sheet-name{font-weight:600;color:var(--navy-dark);}
+.sheet-list .sheet-name span{
+  display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--gold-dark);margin-top:2px;
+}
+
+.deliverables{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:26px 0;}
+.deliv-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px 20px;text-align:center;
+}
+.deliv-card .n{
+  width:30px;height:30px;border-radius:50%;background:#eef2f9;color:var(--navy-dark);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-weight:700;font-family:'JetBrains Mono',monospace;
+}
+.deliv-card p{font-size:.86rem;color:var(--ink-soft);margin:0;}
+
+.rubric-table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.rubric-table th{background:var(--navy);color:#fff;padding:12px 18px;text-align:left;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;}
+.rubric-table td{padding:12px 18px;border-top:1px solid var(--line);font-size:.9rem;}
+.rubric-table td.pts{text-align:right;font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--gold-dark);}
+.rubric-table tr.total td{background:#eef2f9;font-weight:700;color:var(--navy-dark);}
+
+/* ===== calculadora de escalado (signature interactivo) ===== */
+.scale-tool{
+  background:var(--navy-dark);border-radius:14px;padding:32px 34px;color:#fff;
+}
+.scale-tool h3{color:#fff;font-size:1.2rem;}
+.scale-tool .sub{color:rgba(255,255,255,.65);font-size:.88rem;margin-bottom:22px;}
+.scale-controls{display:flex;gap:20px;align-items:end;flex-wrap:wrap;margin-bottom:22px;}
+.scale-controls .field label{color:rgba(255,255,255,.7);}
+.scale-controls .field input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25);color:#fff;}
+.scale-factor-display{
+  display:inline-flex;align-items:baseline;gap:8px;background:rgba(234,179,8,.15);
+  border:1px solid rgba(234,179,8,.4);padding:10px 18px;border-radius:8px;margin-bottom:20px;
+}
+.scale-factor-display .fnum{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--gold-light);}
+.scale-out-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.scale-out-table th{text-align:left;padding:9px 14px;color:rgba(255,255,255,.55);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid rgba(255,255,255,.15);}
+.scale-out-table td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.scale-out-table td.num{font-family:'JetBrains Mono',monospace;text-align:right;color:var(--gold-light);}
+.scale-out-table td.note{font-size:.76rem;color:rgba(255,255,255,.5);}
+
+footer{
+  background:var(--navy-dark);color:rgba(255,255,255,.6);
+  padding:30px 40px;text-align:center;font-size:.8rem;margin-top:20px;
+}
+footer .crest-mark{margin:0 auto 12px;}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:44px 24px;}
+  main{padding:0 20px;}
+  .top-bar{padding:12px 20px;}
+  section{padding:40px 0;}
+  .field-row{grid-template-columns:1fr;}
+  .swap-arrow{transform:rotate(90deg);}
+  .parts-grid{grid-template-columns:1fr;}
+  .deliverables{grid-template-columns:1fr;}
+  .scale-controls{flex-direction:column;align-items:stretch;}
+  .temario-list>li{grid-template-columns:36px 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="institucional">
+  <div class="top-bar">
+    <div class="crest">
+      <div class="crest-mark">UC</div>
+      <span>Universidad de Celaya &middot; Escuela de Arte Culinario</span>
+    </div>
+    <span>Licenciatura &middot; Ciclo 2026</span>
+  </div>
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Apunte &amp; actividad integradora</span>
+      <h1>Conversión de unidades en arte culinario</h1>
+      <p class="lead">De la taza a la producción industrial: cómo el chef-ingeniero traduce una receta entre sistemas de medición, escala fórmulas y las convierte en decisiones de costo confiables.</p>
+      <div class="meta-row">
+        <div class="meta-item"><b>Nivel</b>Licenciatura</div>
+        <div class="meta-item"><b>Duración estimada</b>3&ndash;4 horas</div>
+        <div class="meta-item"><b>Entregables</b>Libreta + Excel</div>
+        <div class="meta-item"><b>Eje</b>Pensamiento lógico culinario</div>
+      </div>
+    </div>
+    <div class="scale-wrap">
+      <svg id="balanza" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg">
+        <line x1="170" y1="90" x2="170" y2="190" stroke="#f0c94a" stroke-width="4"/>
+        <rect x="150" y="188" width="40" height="10" rx="2" fill="#f0c94a"/>
+        <circle cx="170" cy="90" r="6" fill="#f0c94a"/>
+        <g class="beam" id="beam">
+          <line x1="60" y1="90" x2="280" y2="90" stroke="#f0c94a" stroke-width="4"/>
+          <g class="pan" id="panL">
+            <line x1="60" y1="90" x2="60" y2="130" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+            <ellipse cx="60" cy="132" rx="34" ry="9" fill="none" stroke="#fff" stroke-width="2.5" opacity=".85"/>
+            <text x="60" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#fff">g</text>
+          </g>
+          <g class="pan" id="panR">
+            <line x1="280" y1="90" x2="280" y2="130" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+            <ellipse cx="280" cy="132" rx="34" ry="9" fill="none" stroke="#fff" stroke-width="2.5" opacity=".85"/>
+            <text x="280" y="128" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#fff">oz</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <nav class="subnav">
+    <div class="inner">
+      <a href="#temario">Temario</a>
+      <a href="#factores">Factores de conversión</a>
+      <a href="#formula">Fórmula maestra</a>
+      <a href="#calculadora">Calculadora</a>
+      <a href="#actividad">Actividad</a>
+      <a href="#excel">Instrucciones Excel</a>
+      <a href="#rubrica">Rúbrica</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<section id="temario">
+  <div class="section-label"><span class="section-num">01</span><h2>Temario</h2></div>
+  <p class="intro">Unidad de conversión de unidades aplicada a la gastronomía. Nueve bloques que van del fundamento teórico hasta la automatización en hoja de cálculo.</p>
+  <ol class="temario-list">
+    <li><div><h3>Fundamentos de sistemas de medición</h3>
+      <ul><li>Sistema Internacional (SI) vs. sistema imperial/anglosajón</li><li>Unidades base: masa, volumen, temperatura, longitud</li><li>Peso vs. volumen: por qué "1 taza de harina" no es confiable</li><li>Densidad como puente entre masa y volumen</li></ul></div></li>
+    <li><div><h3>Conversión de masa</h3>
+      <ul><li>Gramos, kilogramos, onzas, libras</li><li>Factores: 1 lb = 453.592 g · 1 oz = 28.35 g</li><li>Aplicación en escalado de rendimiento de porciones</li></ul></div></li>
+    <li><div><h3>Conversión de volumen</h3>
+      <ul><li>Mililitros, litros, tazas, cucharadas, cucharaditas, fl oz, galones, cuartos</li><li>Onza fluida vs. onza (masa): fuente común de error</li><li>Tabla de equivalencias culinarias estándar</li></ul></div></li>
+    <li><div><h3>Conversión de temperatura</h3>
+      <ul><li>Celsius, Fahrenheit, Kelvin</li><li>Aplicación en cocción, horneado, zona de peligro y pasteurización</li></ul></div></li>
+    <li><div><h3>Densidad y su rol en la conversión masa&ndash;volumen</h3>
+      <ul><li>Cálculo de densidad (g/mL) por ingrediente</li><li>Uso de tablas de densidad</li><li>Por qué la densidad varía (compactación, temperatura)</li></ul></div></li>
+    <li><div><h3>Porcentaje de panadería (Baker&rsquo;s Percentage)</h3>
+      <ul><li>Ingrediente base (100%) y porcentajes relativos</li><li>Escalado de fórmulas mediante porcentaje de panadería</li></ul></div></li>
+    <li><div><h3>Escalado de recetas (Recipe Scaling)</h3>
+      <ul><li>Factor de escalado = rendimiento deseado ÷ rendimiento original</li><li>Ajustes no lineales: sal, especias, leudantes</li></ul></div></li>
+    <li><div><h3>Costeo y conversión de unidades comerciales</h3>
+      <ul><li>De unidad de compra a unidad de uso</li><li>Costo por gramo, mL o porción</li><li>Rendimiento neto vs. bruto (mermas)</li></ul></div></li>
+    <li><div><h3>Aplicación en Excel</h3>
+      <ul><li>Fórmulas dinámicas y referencias absolutas</li><li>Construcción de una calculadora de conversión</li><li>Validación de datos y manejo de errores de unidad</li></ul></div></li>
+  </ol>
+</section>
+
+<section id="factores">
+  <div class="section-label"><span class="section-num">02</span><h2>Factores de conversión de referencia</h2></div>
+  <p class="intro">Tabla de consulta obligatoria para resolver la actividad. Todo factor se aplica sobre la fórmula maestra de la sección siguiente.</p>
+  <div class="factor-grid">
+    <div class="factor-card">
+      <h4>Masa <span class="tag">multiplicativo</span></h4>
+      <table>
+        <tr><th>De</th><th>A</th><th>Factor</th></tr>
+        <tr><td>Libras (lb)</td><td>Gramos (g)</td><td class="num">× 453.592</td></tr>
+        <tr><td>Onzas (oz)</td><td>Gramos (g)</td><td class="num">× 28.3495</td></tr>
+        <tr><td>Kilogramos (kg)</td><td>Gramos (g)</td><td class="num">× 1000</td></tr>
+        <tr><td>Gramos (g)</td><td>Libras (lb)</td><td class="num">× 0.00220462</td></tr>
+        <tr><td>Gramos (g)</td><td>Onzas (oz)</td><td class="num">× 0.035274</td></tr>
+      </table>
+    </div>
+    <div class="factor-card">
+      <h4>Volumen <span class="tag">multiplicativo</span></h4>
+      <table>
+        <tr><th>De</th><th>A</th><th>Factor</th></tr>
+        <tr><td>Taza (US)</td><td>Mililitros (mL)</td><td class="num">× 236.588</td></tr>
+        <tr><td>Cucharada (tbsp)</td><td>Mililitros (mL)</td><td class="num">× 14.7868</td></tr>
+        <tr><td>Cucharadita (tsp)</td><td>Mililitros (mL)</td><td class="num">× 4.92892</td></tr>
+        <tr><td>Onza fluida (fl oz)</td><td>Mililitros (mL)</td><td class="num">× 29.5735</td></tr>
+        <tr><td>Litro (L)</td><td>Mililitros (mL)</td><td class="num">× 1000</td></tr>
+        <tr><td>Galón (US)</td><td>Litros (L)</td><td class="num">× 3.78541</td></tr>
+        <tr><td>Cuarto (quart)</td><td>Mililitros (mL)</td><td class="num">× 946.353</td></tr>
+        <tr><td>Pinta (pint)</td><td>Mililitros (mL)</td><td class="num">× 473.176</td></tr>
+      </table>
+    </div>
+    <div class="factor-card">
+      <h4>Volumen &rarr; masa <span class="tag">requiere &rho;</span></h4>
+      <table>
+        <tr><th>Conversión</th><th colspan="2">Fórmula</th></tr>
+        <tr><td>mL &rarr; g</td><td colspan="2" class="mono">masa = volumen (mL) × &rho; (g/mL)</td></tr>
+        <tr><td>g &rarr; mL</td><td colspan="2" class="mono">volumen = masa (g) ÷ &rho; (g/mL)</td></tr>
+      </table>
+    </div>
+    <div class="factor-card">
+      <h4>Temperatura <span class="tag">afín</span></h4>
+      <table>
+        <tr><th>De</th><th>A</th><th>Fórmula</th></tr>
+        <tr><td>°F</td><td>°C</td><td class="num">(°F&minus;32)×5/9</td></tr>
+        <tr><td>°C</td><td>°F</td><td class="num">(°C×9/5)+32</td></tr>
+        <tr><td>°C</td><td>K</td><td class="num">°C+273.15</td></tr>
+        <tr><td>K</td><td>°C</td><td class="num">K&minus;273.15</td></tr>
+      </table>
+    </div>
+    <div class="factor-card">
+      <h4>Longitud <span class="tag">equipos / moldes</span></h4>
+      <table>
+        <tr><th>De</th><th>A</th><th>Factor</th></tr>
+        <tr><td>Pulgadas (in)</td><td>Centímetros (cm)</td><td class="num">× 2.54</td></tr>
+        <tr><td>Pies (ft)</td><td>Centímetros (cm)</td><td class="num">× 30.48</td></tr>
+      </table>
+    </div>
+    <div class="factor-card">
+      <h4>Densidades de referencia <span class="tag">g/mL</span></h4>
+      <table>
+        <tr><th>Ingrediente</th><th>Densidad</th></tr>
+        <tr><td>Harina de trigo (cernida)</td><td class="num">0.53</td></tr>
+        <tr><td>Azúcar refinada</td><td class="num">0.85</td></tr>
+        <tr><td>Mantequilla</td><td class="num">0.96</td></tr>
+        <tr><td>Leche entera</td><td class="num">1.03</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="formula">
+  <div class="section-label"><span class="section-num">03</span><h2>Fórmula maestra de conversión</h2></div>
+  <p class="intro">Toda conversión &mdash;sin importar cuál&mdash; sigue una sola estructura de análisis dimensional. Es la fórmula que debe justificarse en libreta y replicarse como fórmula de celda en Excel.</p>
+
+  <div class="formula-box">
+    <div class="label">Fórmula general</div>
+    <div class="formula-main">Valor convertido &nbsp;=&nbsp; Valor original &times;
+      <span class="frac"><span class="top">Unidad destino</span><span class="bot">Unidad origen</span></span>
+      <span style="font-size:1rem;color:var(--gold-light);">(factor de conversión)</span>
+    </div>
+    <p class="formula-note">El factor de conversión siempre se acomoda para que la unidad original se cancele algebraicamente y quede únicamente la unidad deseada. Ese es el criterio para saber si se multiplica o se divide.</p>
+  </div>
+
+  <h3 style="font-size:1.05rem;margin-bottom:8px;">Caso especial: cambio de magnitud (volumen &rarr; masa)</h3>
+  <p style="color:var(--ink-soft);font-size:.92rem;margin-bottom:4px;">Cuando la conversión no es directa &mdash;de tazas a gramos, por ejemplo&mdash; la fórmula maestra se aplica en dos pasos encadenados, usando la densidad como puente.</p>
+  <div class="step-chain">
+    <div class="step-box">
+      <div class="step-tag">Paso 1 &middot; unidad &rarr; mL</div>
+      <div class="calc">3.5 taza × 236.588 mL/taza</div>
+    </div>
+    <div class="step-arrow">&rarr;</div>
+    <div class="step-box">
+      <div class="step-tag">Resultado intermedio</div>
+      <div class="calc">828.06 mL</div>
+    </div>
+    <div class="step-arrow">&rarr;</div>
+    <div class="step-box">
+      <div class="step-tag">Paso 2 &middot; mL &rarr; g (&rho;)</div>
+      <div class="calc">828.06 mL × 0.53 g/mL</div>
+    </div>
+    <div class="step-arrow">&rarr;</div>
+    <div class="step-box" style="background:#eef2f9;border-color:var(--navy-light);">
+      <div class="step-tag">Masa final</div>
+      <div class="calc" style="font-weight:700;">438.87 g</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:1.05rem;margin-bottom:8px;margin-top:26px;">Fórmula maestra en Excel</h3>
+  <p style="color:var(--ink-soft);font-size:.92rem;">Una sola celda reutilizable, referenciando siempre celdas de una tabla de factores &mdash;nunca números capturados directamente dentro del cálculo:</p>
+  <div class="step-box" style="max-width:520px;margin-bottom:14px;">
+    <div class="step-tag">Masa a partir de volumen</div>
+    <div class="calc">=Cantidad_original * Factor_a_mL * Densidad_g_mL</div>
+  </div>
+  <p style="color:var(--ink-soft);font-size:.92rem;">La temperatura no es multiplicativa pura: es una fórmula afín (multiplicación + desplazamiento).</p>
+  <div class="step-box" style="max-width:520px;">
+    <div class="step-tag">Temperatura °F &rarr; °C</div>
+    <div class="calc">=(Temp_F - 32) * 5/9</div>
+  </div>
+</section>
+
+<section id="calculadora">
+  <div class="section-label"><span class="section-num">04</span><h2>Calculadora de práctica</h2></div>
+  <p class="intro">Úsala para verificar tus resultados manuales antes de construir las fórmulas en Excel. No sustituye el procedimiento en libreta.</p>
+  <div class="tool-panel">
+    <div class="tool-tabs">
+      <button class="tool-tab active" data-tab="masa">Masa</button>
+      <button class="tool-tab" data-tab="volumen">Volumen</button>
+      <button class="tool-tab" data-tab="temp">Temperatura</button>
+      <button class="tool-tab" data-tab="densidad">Volumen &rarr; masa (&rho;)</button>
+    </div>
+
+    <div class="tool-body active" id="tab-masa">
+      <div class="field-row">
+        <div class="field"><label>Valor</label><input type="number" id="masaVal" value="12" step="any"></div>
+        <div class="field"><label>De</label>
+          <select id="masaFrom"><option value="lb">Libras (lb)</option><option value="oz" selected>Onzas (oz)</option><option value="kg">Kilogramos (kg)</option><option value="g">Gramos (g)</option></select>
+        </div>
+        <div class="swap-arrow">&rarr;</div>
+        <div class="field"><label>A</label>
+          <select id="masaTo"><option value="lb">Libras (lb)</option><option value="oz">Onzas (oz)</option><option value="kg">Kilogramos (kg)</option><option value="g" selected>Gramos (g)</option></select>
+        </div>
+      </div>
+      <div class="result-line"><span class="rval" id="masaResult">0</span><span class="rlabel" id="masaResultLabel">g</span></div>
+    </div>
+
+    <div class="tool-body" id="tab-volumen">
+      <div class="field-row">
+        <div class="field"><label>Valor</label><input type="number" id="volVal" value="1.25" step="any"></div>
+        <div class="field"><label>De</label>
+          <select id="volFrom"><option value="taza" selected>Taza (US)</option><option value="tbsp">Cucharada</option><option value="tsp">Cucharadita</option><option value="floz">Onza fluida</option><option value="L">Litro</option><option value="gal">Galón</option><option value="qt">Cuarto</option><option value="pt">Pinta</option><option value="mL">Mililitro</option></select>
+        </div>
+        <div class="swap-arrow">&rarr;</div>
+        <div class="field"><label>A</label>
+          <select id="volTo"><option value="taza">Taza (US)</option><option value="tbsp">Cucharada</option><option value="tsp">Cucharadita</option><option value="floz">Onza fluida</option><option value="L">Litro</option><option value="gal">Galón</option><option value="qt">Cuarto</option><option value="pt">Pinta</option><option value="mL" selected>Mililitro</option></select>
+        </div>
+      </div>
+      <div class="result-line"><span class="rval" id="volResult">0</span><span class="rlabel" id="volResultLabel">mL</span></div>
+    </div>
+
+    <div class="tool-body" id="tab-temp">
+      <div class="field-row">
+        <div class="field"><label>Valor</label><input type="number" id="tempVal" value="350" step="any"></div>
+        <div class="field"><label>De</label>
+          <select id="tempFrom"><option value="F" selected>Fahrenheit (°F)</option><option value="C">Celsius (°C)</option><option value="K">Kelvin (K)</option></select>
+        </div>
+        <div class="swap-arrow">&rarr;</div>
+        <div class="field"><label>A</label>
+          <select id="tempTo"><option value="F">Fahrenheit (°F)</option><option value="C" selected>Celsius (°C)</option><option value="K">Kelvin (K)</option></select>
+        </div>
+      </div>
+      <div class="result-line"><span class="rval" id="tempResult">0</span><span class="rlabel" id="tempResultLabel">°C</span></div>
+    </div>
+
+    <div class="tool-body" id="tab-densidad">
+      <div class="field-row">
+        <div class="field"><label>Volumen</label><input type="number" id="densVal" value="3.5" step="any"></div>
+        <div class="field"><label>Unidad</label>
+          <select id="densUnit"><option value="taza" selected>Taza (US)</option><option value="tbsp">Cucharada</option><option value="tsp">Cucharadita</option><option value="mL">Mililitro</option></select>
+        </div>
+        <div class="swap-arrow">&times;</div>
+        <div class="field"><label>Densidad (g/mL)</label>
+          <select id="densRho"><option value="0.53" selected>Harina (0.53)</option><option value="0.85">Azúcar (0.85)</option><option value="0.96">Mantequilla (0.96)</option><option value="1.03">Leche (1.03)</option></select>
+        </div>
+      </div>
+      <div class="result-line"><span class="rval" id="densResult">0</span><span class="rlabel">gramos</span></div>
+    </div>
+    <p class="tool-note">Los resultados se redondean a dos decimales. Verifica siempre tu procedimiento manual con la fórmula maestra de la sección 3.</p>
+  </div>
+</section>
+
+<section id="actividad">
+  <div class="section-label"><span class="section-num">05</span><h2>Actividad integradora: el recetario internacional escalado</h2></div>
+  <p class="intro">Aplica conversión de masa, volumen, temperatura y densidad, así como escalado de recetas y costeo, resolviendo un caso integral en libreta y en Excel.</p>
+
+  <div class="case-box">
+    <h3>Contexto del caso</h3>
+    <p>Trabajas en el departamento de desarrollo de un restaurante que lanzará una línea de repostería para exportación. Recibiste una receta maestra en unidades mixtas que debe:</p>
+    <ol>
+      <li>Convertirse completamente a sistema métrico.</li>
+      <li>Escalarse de 12 porciones a 250 porciones (producción industrial).</li>
+      <li>Costearse por porción en pesos mexicanos.</li>
+      <li>Documentarse con las temperaturas de horneado correctas en Celsius.</li>
+    </ol>
+  </div>
+
+  <div class="data-tables">
+    <div class="factor-card">
+      <h4>Receta maestra <span class="tag">12 porciones</span></h4>
+      <table>
+        <tr><th>Ingrediente</th><th>Cantidad</th><th>Unidad</th></tr>
+        <tr><td>Harina de trigo</td><td class="num">3 &frac12;</td><td>tazas</td></tr>
+        <tr><td>Azúcar refinada</td><td class="num">1 &frac34;</td><td>tazas</td></tr>
+        <tr><td>Mantequilla</td><td class="num">12</td><td>oz</td></tr>
+        <tr><td>Huevo entero</td><td class="num">4</td><td>pzas (50 g c/u)</td></tr>
+        <tr><td>Leche entera</td><td class="num">1 &frac14;</td><td>tazas</td></tr>
+        <tr><td>Extracto de vainilla</td><td class="num">2</td><td>cdtas</td></tr>
+        <tr><td>Sal</td><td class="num">&frac34;</td><td>cdta</td></tr>
+        <tr><td>Polvo para hornear</td><td class="num">2 &frac12;</td><td>cdtas</td></tr>
+        <tr><td>Temperatura de horneado</td><td class="num">350</td><td>°F</td></tr>
+        <tr><td>Tiempo de horneado</td><td class="num">35</td><td>min</td></tr>
+      </table>
+    </div>
+    <div class="factor-card">
+      <h4>Costeo <span class="tag">precio de compra</span></h4>
+      <table>
+        <tr><th>Ingrediente</th><th>Presentación</th><th>Precio</th></tr>
+        <tr><td>Harina</td><td>Costal 20 kg</td><td class="num">$420.00</td></tr>
+        <tr><td>Azúcar</td><td>Costal 25 kg</td><td class="num">$520.00</td></tr>
+        <tr><td>Mantequilla</td><td>Barra 500 g</td><td class="num">$95.00</td></tr>
+        <tr><td>Huevo</td><td>Caja 30 pzas</td><td class="num">$85.00</td></tr>
+        <tr><td>Leche</td><td>Litro</td><td class="num">$24.00</td></tr>
+        <tr><td>Extracto de vainilla</td><td>Frasco 250 mL</td><td class="num">$180.00</td></tr>
+        <tr><td>Sal</td><td>Bolsa 1 kg</td><td class="num">$18.00</td></tr>
+        <tr><td>Polvo para hornear</td><td>Bote 200 g</td><td class="num">$45.00</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="parts-grid">
+    <div class="part-card">
+      <div class="part-head"><div class="part-icon">1</div><h3 style="margin:0;font-size:1.05rem;">Libreta &middot; trabajo manual</h3></div>
+      <ol>
+        <li><b>Convierte</b> cada ingrediente medido en tazas/cucharadas a gramos, usando la tabla de densidades (muestra volumen &rarr; mL &rarr; g).</li>
+        <li><b>Convierte</b> la temperatura de horneado de °F a °C, mostrando la fórmula.</li>
+        <li><b>Calcula</b> el porcentaje de panadería tomando la harina como 100%.</li>
+        <li><b>Determina</b> el factor de escalado de 12 a 250 porciones.</li>
+        <li><b>Calcula</b> la cantidad de cada ingrediente (g y kg donde aplique) para 250 porciones.</li>
+        <li><b>Justifica</b> si el polvo para hornear y la sal deben escalarse de forma estrictamente proporcional o requieren ajuste.</li>
+      </ol>
+    </div>
+    <div class="part-card">
+      <div class="part-head"><div class="part-icon">2</div><h3 style="margin:0;font-size:1.05rem;">Excel &middot; automatización</h3></div>
+      <p style="font-size:.88rem;color:var(--ink-soft);margin-top:0;">Construye un archivo con las siguientes hojas, todas con fórmulas visibles (no valores fijos):</p>
+      <ul class="sheet-list">
+        <li><span class="sheet-name">Hoja 1<span>Conversión base</span></span><span>Ingrediente, cantidad original, densidad y cantidad en gramos calculada por fórmula.</span></li>
+        <li><span class="sheet-name">Hoja 2<span>Escalado</span></span><span>Factor de escalado (=250/12), aplicado por referencia, con columna de ajuste sugerido para leudantes/sal.</span></li>
+        <li><span class="sheet-name">Hoja 3<span>Costeo</span></span><span>Costo por gramo/mL, costo total escalado y costo por porción.</span></li>
+        <li><span class="sheet-name">Hoja 4<span>Panificación %</span></span><span>Harina = 100% y fórmula automática para el resto de los ingredientes.</span></li>
+        <li><span class="sheet-name">Hoja 5<span>Horneado</span></span><span>Conversión °F &rarr; °C mostrando la fórmula matemática, no una función de caja negra.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="excel">
+  <div class="section-label"><span class="section-num">06</span><h2>Explora el escalado en vivo</h2></div>
+  <p class="intro">Cambia el rendimiento deseado y observa cómo se recalcula el factor de escalado sobre la receta maestra. Esta lógica es exactamente la que debe automatizarse en la Hoja 2 de tu archivo Excel.</p>
+
+  <div class="scale-tool">
+    <h3>Simulador de factor de escalado</h3>
+    <p class="sub">Receta base: 12 porciones. Ajusta el rendimiento objetivo.</p>
+    <div class="scale-controls">
+      <div class="field"><label>Rendimiento deseado (porciones)</label><input type="number" id="targetServ" value="250" min="1" step="1"></div>
+    </div>
+    <div class="scale-factor-display">
+      <span>Factor de escalado</span>
+      <span class="fnum" id="scaleFactorOut">20.83</span>
+      <span style="color:rgba(255,255,255,.5);font-size:.8rem;" id="scaleFormulaOut">= 250 / 12</span>
+    </div>
+    <table class="scale-out-table">
+      <tr><th>Ingrediente</th><th>Base (g)</th><th>Escalado (g)</th><th>Nota</th></tr>
+      <tbody id="scaleTableBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="rubrica">
+  <div class="section-label"><span class="section-num">07</span><h2>Entregables y rúbrica</h2></div>
+
+  <div class="deliverables">
+    <div class="deliv-card"><div class="n">1</div><p>Libreta con procedimiento completo y justificaciones (parte 1)</p></div>
+    <div class="deliv-card"><div class="n">2</div><p>Archivo Excel funcional con fórmulas visibles (parte 2)</p></div>
+    <div class="deliv-card"><div class="n">3</div><p>Conclusión breve (máx. media cuartilla): manual vs. automatizado</p></div>
+  </div>
+
+  <table class="rubric-table">
+    <tr><th>Criterio</th><th style="text-align:right;">Puntos</th></tr>
+    <tr><td>Conversión correcta masa/volumen en libreta</td><td class="pts">20</td></tr>
+    <tr><td>Conversión de temperatura correcta</td><td class="pts">10</td></tr>
+    <tr><td>Cálculo correcto de porcentaje de panadería</td><td class="pts">15</td></tr>
+    <tr><td>Escalado correcto y justificación de ajustes no lineales</td><td class="pts">20</td></tr>
+    <tr><td>Excel funcional con fórmulas dinámicas</td><td class="pts">20</td></tr>
+    <tr><td>Costeo correcto por porción</td><td class="pts">10</td></tr>
+    <tr><td>Conclusión analítica</td><td class="pts">5</td></tr>
+    <tr class="total"><td>Total</td><td class="pts">100</td></tr>
+  </table>
+</section>
+
+</main>
+
+<footer>
+  <div class="crest-mark">UC</div>
+  Universidad de Celaya &middot; Escuela de Arte Culinario &middot; Material de apoyo académico &middot; Uso exclusivo en clase
+</footer>
+
+<script>
+// ---------- Balanza animada ----------
+(function(){
+  const beam = document.getElementById('beam');
+  let t = 0;
+  function anim(){
+    t += 0.02;
+    const angle = Math.sin(t) * 6;
+    beam.style.transform = 'rotate(' + angle + 'deg)';
+    requestAnimationFrame(anim);
+  }
+  anim();
+})();
+
+// ---------- Tabs calculadora ----------
+document.querySelectorAll('.tool-tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    document.querySelectorAll('.tool-tab').forEach(function(x){x.classList.remove('active');});
+    document.querySelectorAll('.tool-body').forEach(function(x){x.classList.remove('active');});
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- Factores ----------
+const MASA_A_G = {lb:453.592, oz:28.3495, kg:1000, g:1};
+const VOL_A_ML = {taza:236.588, tbsp:14.7868, tsp:4.92892, floz:29.5735, L:1000, gal:3785.41, qt:946.353, pt:473.176, mL:1};
+const LABELS_MASA = {lb:'lb', oz:'oz', kg:'kg', g:'g'};
+const LABELS_VOL = {taza:'taza(s)', tbsp:'cda(s)', tsp:'cdta(s)', floz:'fl oz', L:'L', gal:'gal', qt:'qt', pt:'pt', mL:'mL'};
+
+function round2(n){ return Math.round(n * 100) / 100; }
+
+function calcMasa(){
+  const val = parseFloat(document.getElementById('masaVal').value) || 0;
+  const from = document.getElementById('masaFrom').value;
+  const to = document.getElementById('masaTo').value;
+  const grams = val * MASA_A_G[from];
+  const result = grams / MASA_A_G[to];
+  document.getElementById('masaResult').textContent = round2(result);
+  document.getElementById('masaResultLabel').textContent = LABELS_MASA[to];
+}
+function calcVol(){
+  const val = parseFloat(document.getElementById('volVal').value) || 0;
+  const from = document.getElementById('volFrom').value;
+  const to = document.getElementById('volTo').value;
+  const ml = val * VOL_A_ML[from];
+  const result = ml / VOL_A_ML[to];
+  document.getElementById('volResult').textContent = round2(result);
+  document.getElementById('volResultLabel').textContent = LABELS_VOL[to];
+}
+function calcTemp(){
+  const val = parseFloat(document.getElementById('tempVal').value) || 0;
+  const from = document.getElementById('tempFrom').value;
+  const to = document.getElementById('tempTo').value;
+  let c;
+  if(from === 'F') c = (val - 32) * 5/9;
+  else if(from === 'K') c = val - 273.15;
+  else c = val;
+  let result;
+  if(to === 'F') result = (c * 9/5) + 32;
+  else if(to === 'K') result = c + 273.15;
+  else result = c;
+  document.getElementById('tempResult').textContent = round2(result);
+  document.getElementById('tempResultLabel').textContent = to === 'K' ? 'K' : ('°' + to);
+}
+function calcDens(){
+  const val = parseFloat(document.getElementById('densVal').value) || 0;
+  const unit = document.getElementById('densUnit').value;
+  const rho = parseFloat(document.getElementById('densRho').value) || 0;
+  const ml = val * VOL_A_ML[unit];
+  const grams = ml * rho;
+  document.getElementById('densResult').textContent = round2(grams);
+}
+['masaVal','masaFrom','masaTo'].forEach(function(id){document.getElementById(id).addEventListener('input', calcMasa); document.getElementById(id).addEventListener('change', calcMasa);});
+['volVal','volFrom','volTo'].forEach(function(id){document.getElementById(id).addEventListener('input', calcVol); document.getElementById(id).addEventListener('change', calcVol);});
+['tempVal','tempFrom','tempTo'].forEach(function(id){document.getElementById(id).addEventListener('input', calcTemp); document.getElementById(id).addEventListener('change', calcTemp);});
+['densVal','densUnit','densRho'].forEach(function(id){document.getElementById(id).addEventListener('input', calcDens); document.getElementById(id).addEventListener('change', calcDens);});
+calcMasa(); calcVol(); calcTemp(); calcDens();
+
+// ---------- Simulador de escalado ----------
+const RECIPE_BASE = [
+  {name:'Harina de trigo', vol:3.5, unit:'taza', rho:0.53, kind:'harina'},
+  {name:'Azúcar refinada', vol:1.75, unit:'taza', rho:0.85, kind:'seco'},
+  {name:'Mantequilla', vol:null, grams:12*28.3495, kind:'seco'},
+  {name:'Huevo entero', vol:null, grams:4*50, kind:'seco'},
+  {name:'Leche entera', vol:1.25, unit:'taza', rho:1.03, kind:'liquido'},
+  {name:'Extracto de vainilla', vol:2, unit:'tsp', rho:1.0, kind:'liquido'},
+  {name:'Sal', vol:0.75, unit:'tsp', rho:1.2, kind:'critico'},
+  {name:'Polvo para hornear', vol:2.5, unit:'tsp', rho:0.9, kind:'critico'}
+];
+
+function baseGrams(item){
+  if(item.grams !== undefined && item.grams !== null) return item.grams;
+  return item.vol * VOL_A_ML[item.unit] * item.rho;
+}
+
+function renderScale(){
+  const target = parseFloat(document.getElementById('targetServ').value) || 0;
+  const factor = target / 12;
+  document.getElementById('scaleFactorOut').textContent = round2(factor);
+  document.getElementById('scaleFormulaOut').textContent = '= ' + target + ' / 12';
+  const tbody = document.getElementById('scaleTableBody');
+  tbody.innerHTML = '';
+  RECIPE_BASE.forEach(function(item){
+    const base = baseGrams(item);
+    let scaled, note;
+    if(item.kind === 'critico'){
+      const adjFactor = 1 + (factor - 1) * 0.85;
+      scaled = base * adjFactor;
+      note = 'Ajustado al 85% del factor lineal';
+    } else {
+      scaled = base * factor;
+      note = 'Escalado lineal';
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + item.name + '</td><td class="num">' + round2(base) + '</td><td class="num">' + round2(scaled) + '</td><td class="note">' + note + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+document.getElementById('targetServ').addEventListener('input', renderScale);
+renderScale();
+</script>
+
+</body>
+</html>

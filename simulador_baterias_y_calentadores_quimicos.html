@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de baterías: electrolitos, carga y descarga</title>
+<style>
+  :root{
+    --bg:#f7f5f0; --panel:#ffffff; --ink:#1f2a2e; --ink-soft:#4b5a5f;
+    --teal:#1f6f6b; --teal-dark:#134f4c; --teal-pale:#e4f1ef;
+    --copper:#b5651d; --copper-pale:#f6e6d8; --line:#dde3e0;
+    --anode:#5b6b8c; --cathode:#b5651d; --ok:#2f7d4f; --warn:#a13e3e;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.6;}
+  .wrap{max-width:980px; margin:0 auto; padding:0 20px;}
+  header{background:linear-gradient(180deg,#0f4a47,#1f6f6b 75%,#24807b); color:#eef7f5; padding:38px 0 30px;}
+  header .eyebrow{text-transform:uppercase; letter-spacing:.12em; font-size:.72rem; font-weight:700; color:#ffd9ae;}
+  h1{font-family:var(--serif); font-size:1.9rem; margin:.3rem 0 .4rem; color:#fff;}
+  header p{max-width:680px; color:#d9ece9; margin:0;}
+  h2{font-family:var(--serif); color:var(--teal-dark); border-bottom:3px solid var(--teal-pale); padding-bottom:.35rem;}
+  h3{font-family:var(--serif); color:var(--copper); margin-bottom:.4rem;}
+  section{padding:34px 0;}
+  section.alt{background:#f1efe8;}
+
+  /* controls */
+  .controls{display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:16px 0 22px;}
+  .controls label{font-weight:700; font-size:.85rem; color:var(--teal-dark);}
+  select{
+    padding:9px 12px; border-radius:8px; border:1px solid var(--line); font-size:.9rem; background:#fff;
+  }
+  .modebar{display:flex; gap:10px;}
+  .modebar button{
+    border:2px solid var(--teal); background:#fff; color:var(--teal); font-weight:700;
+    padding:9px 18px; border-radius:999px; cursor:pointer; font-size:.85rem;
+  }
+  .modebar button.active{background:var(--teal); color:#fff;}
+  .speedbar{display:flex; align-items:center; gap:8px; font-size:.82rem; color:var(--ink-soft);}
+
+  /* simulator panel */
+  .simpanel{background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .sim-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:22px;}
+  @media(max-width:820px){.sim-grid{grid-template-columns:1fr;}}
+
+  .cell-box{position:relative; height:280px; border-radius:12px; overflow:hidden; border:1px solid var(--line);}
+  .electrode{
+    position:absolute; top:0; bottom:0; width:26%; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:.85rem; text-align:center; padding:8px;
+  }
+  .electrode.anode{left:0; background:linear-gradient(180deg,#6b7ba0,#5b6b8c);}
+  .electrode.cathode{right:0; background:linear-gradient(180deg,#c97a34,#b5651d);}
+  .electrode small{display:block; font-weight:400; font-size:.72rem; margin-top:4px; opacity:.9;}
+  .electrolito-area{
+    position:absolute; left:26%; right:26%; top:0; bottom:0; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; font-size:.75rem; color:var(--teal-dark);
+  }
+  .electrolito-label{position:absolute; top:8px; left:0; right:0; text-align:center; font-weight:700; font-size:.72rem; z-index:5;}
+  .ion{
+    position:absolute; width:16px; height:16px; border-radius:50%; background:#fff;
+    font-size:.6rem; display:flex; top:50%;
+    align-items:center; justify-content:center; font-weight:700; margin-top:-8px;
+  }
+  .ion-cation{border:2px solid var(--copper); color:var(--copper);}
+  .ion-anion{border:2px solid var(--teal); color:var(--teal-dark);}
+  .ion-lane{position:absolute; left:0; right:0; height:16px;}
+
+  .electron-dot{
+    position:absolute; top:-11px; width:15px; height:15px; border-radius:50%;
+    background:#fff8ee; border:2px solid var(--copper); color:var(--copper);
+    font-size:.5rem; display:flex; align-items:center; justify-content:center; font-weight:700; z-index:7;
+    margin-left:-7px;
+  }
+  .flow-arrows{position:absolute; left:0; right:0; text-align:center; font-size:1rem; font-weight:900; letter-spacing:3px; color:var(--teal); pointer-events:none;}
+  .flow-arrows.top{top:6%; opacity:.55;}
+  .flow-arrows.bottom{bottom:6%; opacity:.55;}
+  /* liquid look */
+  .estado-liquido{background:repeating-linear-gradient(120deg, #cfe6e2, #cfe6e2 8px, #bfe0da 8px, #bfe0da 16px); opacity:.9;}
+  /* gel/paste look */
+  .estado-gel{background:repeating-radial-gradient(circle at 30% 40%, #e3d2b8 0 6px, #d8c4a2 6px 14px); opacity:.9;}
+  /* solid look: lattice grid */
+  .estado-solido{
+    background:#eae6da;
+    background-image: linear-gradient(rgba(180,160,120,.5) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(180,160,120,.5) 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+
+  .circuit{position:absolute; top:-4px; left:13%; right:13%; height:4px; background:var(--copper); z-index:6;}
+  .circuit::before, .circuit::after{content:""; position:absolute; top:-6px; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid var(--copper);}
+  .circuit::before{left:0;}
+  .circuit::after{right:0;}
+
+  .flowlabel{position:absolute; top:-26px; left:0; right:0; text-align:center; font-size:.72rem; font-weight:700; color:var(--copper);}
+
+  .readout{margin-top:14px; background:var(--teal-pale); border-left:4px solid var(--teal); border-radius:10px; padding:12px 16px; font-size:.9rem;}
+  .readout b{color:var(--teal-dark);}
+
+  .info-side .card{background:#fdfcf9; border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:12px; font-size:.87rem;}
+  .info-side .card h4{margin:0 0 6px; color:var(--teal-dark); font-family:var(--serif); font-size:1.02rem;}
+  .badge{display:inline-block; font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:2px 9px; border-radius:999px; margin-right:6px;}
+  .badge.ok{background:#e1f2e6; color:var(--ok);}
+  .badge.no{background:#f7e3e3; color:var(--warn);}
+  .reaction{font-family:"SFMono-Regular",Consolas,monospace; font-size:.8rem; background:#f4f2ec; border-radius:8px; padding:8px 10px; margin-top:6px; white-space:pre-line;}
+
+  /* comparison table */
+  table.cmp{width:100%; border-collapse:collapse; font-size:.85rem; margin-top:12px;}
+  table.cmp th, table.cmp td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top;}
+  table.cmp th{background:var(--teal-pale); color:var(--teal-dark); font-family:var(--serif);}
+  table.cmp tr.highlight{background:#fdf6ec;}
+
+  .principle-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px;}
+  @media(max-width:820px){.principle-grid{grid-template-columns:1fr;}}
+  .principle-card{border-radius:12px; padding:16px 18px; font-size:.9rem;}
+  .principle-card.descarga{background:#eef3fc; border-left:4px solid #3a5ea8;}
+  .principle-card.carga{background:var(--copper-pale); border-left:4px solid var(--copper);}
+
+  /* TAB NAV */
+  .tabnav{display:flex; gap:8px; margin:18px 0 0; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+  .tabnav button{
+    border:none; background:transparent; padding:12px 18px; font-size:.92rem; font-weight:700;
+    color:var(--ink-soft); cursor:pointer; border-bottom:3px solid transparent; font-family:var(--sans);
+  }
+  .tabnav button.active{color:var(--teal-dark); border-bottom:3px solid var(--copper);}
+  .tabpanel{display:none;}
+  .tabpanel.active{display:block;}
+
+  /* HEATER SIMULATOR */
+  .heater-diagram{background:#fff; border:1px solid var(--line); border-radius:12px; padding:22px; text-align:center;}
+  .pouch-row{display:flex; gap:18px; justify-content:center; align-items:flex-end; margin-bottom:16px; flex-wrap:wrap;}
+  .compartimento{
+    width:150px; height:150px; border-radius:12px; border:2px solid var(--line); display:flex;
+    flex-direction:column; align-items:center; justify-content:center; font-size:.78rem; padding:10px;
+    transition:background 1s ease, box-shadow 1s ease, color 1s ease;
+  }
+  .compartimento .icon{font-size:1.6rem; margin-bottom:6px;}
+  .compartimento.reactivo{background:#e7e2d6; color:#6b5d43;}
+  .compartimento.reactivo.activo{background:linear-gradient(180deg,#ffb35c,#d85a24); color:#fff; box-shadow:0 0 26px rgba(216,90,36,.55);}
+  .compartimento.alimento{background:#dbe9f4; color:#2c4c66;}
+  .compartimento.alimento.activo{background:linear-gradient(180deg,#ffd08a,#f2985a); color:#5c3312; box-shadow:0 0 22px rgba(242,152,90,.5);}
+  .barrera{
+    width:3px; height:110px; background:repeating-linear-gradient(180deg,var(--ink-soft) 0 6px, transparent 6px 11px);
+    align-self:center; opacity:.6; transition:opacity .6s;
+  }
+  .barrera.rota{opacity:.08;}
+  .thermo-wrap{display:flex; flex-direction:column; align-items:center;}
+  .thermo{width:36px; height:150px; border:2px solid var(--ink-soft); border-radius:20px; position:relative; background:#fff; overflow:hidden;}
+  .thermo-fill{position:absolute; bottom:0; left:0; right:0; height:10%; background:linear-gradient(180deg,#ffa25c,#c23b1f); transition:height 2.2s ease;}
+  .thermo.activo .thermo-fill{height:85%;}
+  .thermo-label{font-size:.85rem; margin-top:8px; font-weight:700; color:var(--copper);}
+  .heater-actions{display:flex; gap:10px; margin:14px 0; justify-content:center;}
+  .heater-actions button{
+    border:2px solid var(--copper); background:#fff; color:var(--copper); font-weight:700;
+    padding:9px 18px; border-radius:999px; cursor:pointer; font-size:.85rem;
+  }
+  .heater-actions button.primary{background:var(--copper); color:#fff;}
+  .heater-actions button:disabled{opacity:.45; cursor:default;}
+
+  footer{background:var(--teal-dark); color:#cfe9e5; padding:20px 0; font-size:.8rem; text-align:center;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="eyebrow">Reto en el uso de materiales · Simuladores complementarios</span>
+    <h1>Baterías y calentadores químicos: dos formas de usar reacciones para trabajar sin conectarse a la red</h1>
+    <p>Explore, en dos pestañas, cómo una reacción redox controlada puede <strong>almacenar y entregar energía eléctrica</strong> (baterías) o liberar <strong>calor directo</strong> sin llama ni estufa (calentadores químicos usados en raciones militares y latas autocalentables).</p>
+    <div class="tabnav">
+      <button id="tabBtnBaterias" class="active" onclick="switchTab('baterias')">🔋 Simulador de baterías</button>
+      <button id="tabBtnCalor" onclick="switchTab('calor')">🔥 Calentadores sin fuego</button>
+    </div>
+  </div>
+</header>
+
+<div class="tabpanel active" id="tabBaterias">
+
+<section>
+  <div class="wrap">
+    <div class="controls">
+      <div>
+        <label for="battSelect">Tipo de batería (electrolito):</label><br>
+        <select id="battSelect" onchange="renderBattery()"></select>
+      </div>
+      <div class="modebar">
+        <button id="btnDescarga" class="active" onclick="setModo('descarga')">🔋 Descarga (uso)</button>
+        <button id="btnCarga" onclick="setModo('carga')">🔌 Carga</button>
+      </div>
+    </div>
+
+    <div class="simpanel">
+      <div class="sim-grid">
+        <div>
+          <div class="cell-box" id="cellBox">
+            <div class="flowlabel" id="flowLabel">e⁻ fluye ánodo → cátodo</div>
+            <div class="circuit" id="circuit"></div>
+            <div class="electrode anode" id="anodeBox">
+              <span id="anodeName">Ánodo</span>
+              <small id="anodeState">se oxida</small>
+            </div>
+            <div class="electrolito-area" id="electrolitoArea">
+              <div class="electrolito-label" id="electrolitoLabel">Electrolito</div>
+              <div class="flow-arrows top" id="arrowsCation">→ catión (+) →</div>
+              <div class="flow-arrows bottom" id="arrowsAnion">← anión (−) ←</div>
+              <!-- ions injected by JS -->
+            </div>
+            <div class="electrode cathode" id="cathodeBox">
+              <span id="cathodeName">Cátodo</span>
+              <small id="cathodeState">se reduce</small>
+            </div>
+          </div>
+          <div class="readout">
+            <div><b>Modo:</b> <span id="modoTxt">Descarga</span> — <b>Voltaje nominal:</b> <span id="voltajeTxt">—</span></div>
+            <div style="margin-top:6px;" id="explicacionTxt"></div>
+          </div>
+        </div>
+
+        <div class="info-side">
+          <div class="card">
+            <h4 id="nombreBateria">—</h4>
+            <div>
+              <span class="badge" id="recargableBadge"></span>
+              <span class="badge" style="background:#eee6d8; color:#7a5c2e;" id="estadoBadge"></span>
+            </div>
+            <p><b>Electrolito:</b> <span id="electrolitoTxt"></span></p>
+            <p><b>Densidad energética:</b> <span id="densidadTxt"></span></p>
+            <p><b>Riesgo principal:</b> <span id="riesgoTxt"></span></p>
+            <p><b>Aplicación típica:</b> <span id="usoTxt"></span></p>
+            <div class="reaction" id="reaccionTxt"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>Principios generales: ¿qué cambia entre cargar y descargar?</h2>
+    <div class="principle-grid">
+      <div class="principle-card descarga">
+        <h3 style="color:#3a5ea8;">Descarga (la batería trabaja)</h3>
+        <p>La reacción redox ocurre de forma <strong>espontánea</strong> (energéticamente favorable). El ánodo se <strong>oxida</strong> y libera electrones; estos viajan por el circuito externo (encienden un foco, mueven un motor) hasta el cátodo, que se <strong>reduce</strong> y los acepta. Dentro de la celda, los iones se mueven por el electrolito para mantener el balance de carga. La energía química almacenada disminuye.</p>
+      </div>
+      <div class="principle-card carga">
+        <h3>Carga (se le devuelve energía)</h3>
+        <p>Solo es posible en baterías <strong>secundarias</strong> (recargables). Una fuente externa (cargador) aplica un voltaje mayor al de la celda y <strong>fuerza la reacción inversa</strong>: empuja electrones e iones de regreso a su posición original. El ánodo ahora se reduce y el cátodo se oxida —justo al revés que en la descarga. La energía eléctrica se convierte de nuevo en energía química almacenada.</p>
+      </div>
+    </div>
+    <div class="readout" style="margin-top:16px;">
+      <b>¿Por qué no todas las baterías se pueden cargar?</b> En una batería primaria (por ejemplo, alcalina Zn-MnO₂), la reacción de descarga produce compuestos estables que no regresan fácilmente a su forma original al aplicar corriente inversa; forzar la carga puede generar gases, fugas o incluso ruptura de la celda. Por eso el diseño del electrolito y de los electrodos debe planearse desde el inicio para que la reacción sea reversible.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Comparación de electrolitos</h2>
+    <p>El electrolito es el medio que permite el paso de iones (no de electrones) entre los electrodos. Su estado físico —líquido, gel/pasta o sólido— determina qué tan rápido pueden moverse los iones, qué tan segura es la batería y en qué aplicaciones tiene sentido usarla.</p>
+    <table class="cmp" id="cmpTable"></table>
+  </div>
+</section>
+
+</div><!-- /tabBaterias -->
+
+<div class="tabpanel" id="tabCalor">
+
+<section>
+  <div class="wrap">
+    <h2>¿Cómo se calienta una ración militar sin estufa ni fuego?</h2>
+    <p>Cuando no hay una fuente de calor cercana —una ración de campaña, un kit de senderismo o un desastre natural sin electricidad— la solución no es la combustión (que necesita oxígeno y produce llama y humo), sino una <strong>reacción química exotérmica controlada</strong>: una reacción que libera calor por sí misma, sin fuego, al poner en contacto dos sustancias, casi siempre agua con un sólido reactivo.</p>
+
+    <div class="controls">
+      <div>
+        <label for="heaterSelect">Reacción exotérmica:</label><br>
+        <select id="heaterSelect" onchange="renderHeater()"></select>
+      </div>
+      <div class="heater-actions">
+        <button id="btnActivar" class="primary" onclick="activarReaccion()">🔥 Activar reacción</button>
+        <button id="btnReset" onclick="resetReaccion()" disabled>↺ Reiniciar</button>
+      </div>
+    </div>
+
+    <div class="simpanel">
+      <div class="sim-grid">
+        <div>
+          <div class="heater-diagram">
+            <div class="pouch-row">
+              <div class="compartimento reactivo" id="compReactivo">
+                <span class="icon">🧪</span>
+                <span id="reactivoLabel">Reactivo seco</span>
+              </div>
+              <div class="barrera" id="barrera"></div>
+              <div class="compartimento alimento" id="compAlimento">
+                <span class="icon">🥫</span>
+                <span>Alimento / bebida</span>
+              </div>
+              <div class="thermo-wrap">
+                <div class="thermo" id="thermo"><div class="thermo-fill"></div></div>
+                <div class="thermo-label" id="thermoLabel">~20 °C</div>
+              </div>
+            </div>
+            <div id="estadoHeaterTxt" style="font-size:.88rem; color:var(--ink-soft);">Compartimentos separados. Toque "Activar reacción" para simular el contacto con el activador (agua o agua salada).</div>
+          </div>
+        </div>
+        <div class="info-side">
+          <div class="card">
+            <h4 id="heaterNombre">—</h4>
+            <p><b>Reacción:</b></p>
+            <div class="reaction" id="heaterReaccion"></div>
+            <p><b>Calor aproximado liberado:</b> <span id="heaterCalor"></span></p>
+            <p><b>Tiempo típico:</b> <span id="heaterTiempo"></span></p>
+            <p><b>Aplicación real:</b> <span id="heaterUso"></span></p>
+            <p><b>Precaución principal:</b> <span id="heaterSeguridad"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>El principio: energía química que sale como calor, no como electricidad</h2>
+    <p>En una batería, la reacción redox se aprovecha para producir una <strong>corriente de electrones</strong> a través de un circuito externo. En un calentador químico, la misma idea de "reacción espontánea que libera energía" se usa de forma distinta: <strong>no se separan los electrodos</strong>, el reactivo y el agua (o agua salada) se ponen en contacto directo, y toda la energía se libera de inmediato como <strong>calor</strong>, sin generar corriente eléctrica útil.</p>
+    <div class="principle-grid">
+      <div class="principle-card descarga">
+        <h3 style="color:#3a5ea8;">Empaque de dos compartimentos</h3>
+        <p>El diseño clave de estos productos comerciales es mantener el reactivo <strong>seco y aislado</strong> del agua (o del alimento) hasta el momento de usarlo, mediante dos bolsas separadas por una barrera o sello. Al romper el sello o verter el activador, comienza la reacción y el calor se transmite por conducción hacia el compartimento del alimento.</p>
+      </div>
+      <div class="principle-card carga">
+        <h3>Por qué no usan fuego</h3>
+        <p>Una reacción exotérmica sin llama es más segura para espacios cerrados, vehículos militares o mochilas: no consume oxígeno del ambiente, no produce humo ni luz visible que delate una posición, y no requiere combustible adicional que transportar.</p>
+      </div>
+    </div>
+
+    <div class="callout safety" style="background:#fdecec; border-left:4px solid var(--warn); border-radius:12px; padding:14px 18px; margin-top:18px; font-size:.9rem;">
+      <strong>Seguridad primero:</strong> este simulador es solo educativo. La reacción con aleación de magnesio-hierro libera <strong>hidrógeno gaseoso (H₂), que es inflamable</strong>; por eso los calentadores reales siempre se usan en un empaque ventilado y jamás dentro de un contenedor sellado herméticamente ni cerca de una llama. Cualquier prueba real con estas reacciones debe hacerse únicamente en laboratorio, bajo supervisión directa del profesor y con el equipo de protección adecuado.
+    </div>
+
+    <table class="cmp" style="margin-top:18px;">
+      <tr><th>Reacción</th><th>Ecuación</th><th>Genera gas?</th><th>Aplicación real</th></tr>
+      <tr><td>Hidratación de cal viva</td><td>CaO + H₂O → Ca(OH)₂ + calor</td><td>No</td><td>Latas autocalentables de café, chocolate, sopas</td></tr>
+      <tr><td>Oxidación de Mg-Fe en agua salada</td><td>Mg + 2H₂O → Mg(OH)₂ + H₂↑ + calor</td><td>Sí (H₂, inflamable)</td><td>Calentadores flameless de raciones militares (MRE)</td></tr>
+    </table>
+  </div>
+</section>
+
+</div><!-- /tabCalor -->
+
+<footer>
+  <div class="wrap">Universidad de Celaya · Ingeniería Industrial Administrativa · Reto en el uso de materiales — Simuladores de baterías y calentadores químicos</div>
+</footer>
+
+<script>
+var baterias = [
+  {
+    id:'liion', nombre:'Iones de litio (Li-ion)',
+    electrolito:'Líquido orgánico (carbonatos) con sal de litio LiPF₆', estadoFisico:'liquido',
+    voltaje:'3.6–3.7 V/celda', recargable:true, densidad:'Alta (150–250 Wh/kg)',
+    riesgo:'Inflamable si se perfora, sobrecarga o sobrecalienta (fuga térmica)',
+    uso:'Celulares, laptops, vehículos eléctricos',
+    reaccionDescarga:'Ánodo (grafito):  LiC6 → C6 + Li+ + e-\nCátodo (LiCoO2):  CoO2 + Li+ + e- → LiCoO2',
+    reaccionCarga:'Ánodo (grafito):  C6 + Li+ + e- → LiC6\nCátodo (LiCoO2):  LiCoO2 → CoO2 + Li+ + e-'
+  },
+  {
+    id:'nimh', nombre:'Níquel-hidruro metálico (NiMH)',
+    electrolito:'Alcalino acuoso, hidróxido de potasio (KOH)', estadoFisico:'liquido',
+    voltaje:'1.2 V/celda', recargable:true, densidad:'Media (60–120 Wh/kg)',
+    riesgo:'Efecto memoria leve; autodescarga más rápida que Li-ion',
+    uso:'Herramientas inalámbricas, vehículos híbridos, pilas AA/AAA recargables',
+    reaccionDescarga:'Ánodo (aleación M-H):  MH + OH- → M + H2O + e-\nCátodo (NiOOH):  NiOOH + H2O + e- → Ni(OH)2 + OH-',
+    reaccionCarga:'Ánodo:  M + H2O + e- → MH + OH-\nCátodo:  Ni(OH)2 + OH- → NiOOH + H2O + e-'
+  },
+  {
+    id:'pbacid', nombre:'Plomo-ácido',
+    electrolito:'Ácido sulfúrico diluido (H₂SO₄)', estadoFisico:'liquido',
+    voltaje:'2.0 V/celda (paquete 12 V = 6 celdas)', recargable:true, densidad:'Baja (30–50 Wh/kg)',
+    riesgo:'Electrolito corrosivo; contiene plomo, metal tóxico; muy pesada',
+    uso:'Baterías de arranque automotriz, respaldo de energía (UPS)',
+    reaccionDescarga:'Ánodo (Pb):  Pb + SO4²- → PbSO4 + 2e-\nCátodo (PbO2):  PbO2 + 4H+ + SO4²- + 2e- → PbSO4 + 2H2O',
+    reaccionCarga:'Ánodo:  PbSO4 + 2e- → Pb + SO4²-\nCátodo:  PbSO4 + 2H2O → PbO2 + 4H+ + SO4²- + 2e-'
+  },
+  {
+    id:'alcalina', nombre:'Alcalina (Zn–MnO₂)',
+    electrolito:'Pasta alcalina de hidróxido de potasio (KOH)', estadoFisico:'gel',
+    voltaje:'1.5 V/celda', recargable:false, densidad:'Media-baja (~100–150 Wh/kg, un solo uso)',
+    riesgo:'Puede tener fuga de electrolito si se agota por completo; no diseñada para recargarse',
+    uso:'Controles remotos, linternas, relojes, uso doméstico general',
+    reaccionDescarga:'Ánodo (Zn):  Zn + 2OH- → ZnO + H2O + 2e-\nCátodo (MnO2):  2MnO2 + H2O + 2e- → Mn2O3 + 2OH-',
+    reaccionCarga:'No aplica: es una batería primaria (no recargable). Forzar corriente inversa puede generar gas y romper la celda.'
+  },
+  {
+    id:'solido', nombre:'Estado sólido (próxima generación)',
+    electrolito:'Cerámico o polímero sólido (p. ej. óxidos de litio-lantano-zirconio, LLZO)', estadoFisico:'solido',
+    voltaje:'~3.5–4.5 V/celda (variable según el diseño)', recargable:true, densidad:'Potencialmente muy alta (en investigación)',
+    riesgo:'Menor riesgo de incendio o fuga que el líquido; reto principal: costo y manufactura a escala',
+    uso:'Investigación y desarrollo; próxima generación de vehículos eléctricos',
+    reaccionDescarga:'Ánodo (Li metálico o Si):  Li → Li+ + e-\nCátodo (óxido de litio-metal):  Li+ + e- + [óxido] → [óxido-Li]',
+    reaccionCarga:'Ánodo:  Li+ + e- → Li (depósito metálico)\nCátodo:  [óxido-Li] → [óxido] + Li+ + e-'
+  }
+];
+
+var modoActual = 'descarga';
+var battActual = baterias[0];
+
+function poblarSelect(){
+  var sel = document.getElementById('battSelect');
+  baterias.forEach(function(b){
+    var opt = document.createElement('option');
+    opt.value = b.id; opt.textContent = b.nombre;
+    sel.appendChild(opt);
+  });
+}
+
+/* Los cationes (+) siempre viajan hacia el electrodo donde ocurre la REDUCCIÓN,
+   y los aniones (−) hacia el electrodo donde ocurre la OXIDACIÓN, para cerrar el
+   circuito iónico dentro de la celda. Esto se invierte por completo entre descarga y carga. */
+function crearIones(area, estado){
+  area.querySelectorAll('.ion, .ion-lane').forEach(function(i){ i.remove(); });
+  var carriles = 5;
+  for(var i=0;i<carriles;i++){
+    var lane = document.createElement('div');
+    lane.className = 'ion-lane';
+    lane.style.top = (14 + i*16) + '%';
+
+    // cada carril lleva un catión y un anión, en direcciones opuestas
+    [['cation','+'], ['anion','−']].forEach(function(par, j){
+      var ion = document.createElement('div');
+      ion.className = 'ion ion-' + par[0];
+      ion.textContent = par[1];
+      lane.appendChild(ion);
+
+      var cationVaHaciaCatodo = (modoActual === 'descarga'); // descarga: catión -> cátodo (derecha)
+      var vaHaciaDerecha = (par[0] === 'cation') ? cationVaHaciaCatodo : !cationVaHaciaCatodo;
+
+      var animName = vaHaciaDerecha ? 'sweepRight' : 'sweepLeft';
+      var baseDur = estado === 'solido' ? 3.6 : (estado === 'gel' ? 4.4 : 2.3);
+      var dur = baseDur + Math.random()*1.1;
+      var timing = estado === 'solido' ? 'steps(7, jump-end)' : 'linear';
+
+      ion.style.animationName = animName + ', ionFade';
+      ion.style.animationDuration = dur + 's, ' + dur + 's';
+      ion.style.animationTimingFunction = timing + ', linear';
+      ion.style.animationIterationCount = 'infinite, infinite';
+      ion.style.animationDelay = (-Math.random()*dur) + 's, ' + (-Math.random()*dur) + 's';
+    });
+    area.appendChild(lane);
+  }
+}
+
+function actualizarElectronDot(){
+  var circuit = document.getElementById('circuit');
+  var old = circuit.querySelector('.electron-dot');
+  if(old) old.remove();
+  var dot = document.createElement('div');
+  dot.className = 'electron-dot';
+  dot.textContent = 'e⁻';
+  var animName = modoActual === 'descarga' ? 'eflowRight' : 'eflowLeft';
+  dot.style.animation = animName + ' 1.6s linear infinite';
+  circuit.appendChild(dot);
+}
+
+/* keyframes injected once: barrido completo con desvanecido en los bordes (flujo continuo, no vaivén) */
+var styleTag = document.createElement('style');
+styleTag.textContent =
+  '@keyframes sweepRight{0%{left:2%;}100%{left:92%;}}' +
+  '@keyframes sweepLeft{0%{left:92%;}100%{left:2%;}}' +
+  '@keyframes ionFade{0%{opacity:0;}10%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}' +
+  '@keyframes eflowRight{0%{left:0%;}100%{left:100%;}}' +
+  '@keyframes eflowLeft{0%{left:100%;}100%{left:0%;}}';
+document.head.appendChild(styleTag);
+
+function renderBattery(){
+  var sel = document.getElementById('battSelect');
+  battActual = baterias.find(function(b){ return b.id === sel.value; }) || baterias[0];
+  var area = document.getElementById('electrolitoArea');
+
+  area.className = 'electrolito-area estado-' + battActual.estadoFisico;
+  document.getElementById('electrolitoLabel').textContent =
+    'Electrolito: ' + (battActual.estadoFisico === 'liquido' ? 'líquido' : battActual.estadoFisico === 'gel' ? 'gel/pasta' : 'sólido');
+
+  document.getElementById('nombreBateria').textContent = battActual.nombre;
+  document.getElementById('electrolitoTxt').textContent = battActual.electrolito;
+  document.getElementById('densidadTxt').textContent = battActual.densidad;
+  document.getElementById('riesgoTxt').textContent = battActual.riesgo;
+  document.getElementById('usoTxt').textContent = battActual.uso;
+  document.getElementById('voltajeTxt').textContent = battActual.voltaje;
+
+  var recBadge = document.getElementById('recargableBadge');
+  recBadge.textContent = battActual.recargable ? 'Recargable (secundaria)' : 'No recargable (primaria)';
+  recBadge.className = 'badge ' + (battActual.recargable ? 'ok' : 'no');
+
+  var estBadge = document.getElementById('estadoBadge');
+  estBadge.textContent = 'Electrolito: ' + (battActual.estadoFisico === 'liquido' ? 'líquido' : battActual.estadoFisico === 'gel' ? 'gel/pasta' : 'sólido');
+
+  crearIones(area, battActual.estadoFisico);
+  actualizarElectronDot();
+  actualizarModoUI();
+}
+
+function setModo(modo){
+  modoActual = modo;
+  document.getElementById('btnDescarga').classList.toggle('active', modo==='descarga');
+  document.getElementById('btnCarga').classList.toggle('active', modo==='carga');
+  crearIones(document.getElementById('electrolitoArea'), battActual.estadoFisico);
+  actualizarElectronDot();
+  actualizarModoUI();
+}
+
+function actualizarModoUI(){
+  var modoTxt = document.getElementById('modoTxt');
+  var flowLabel = document.getElementById('flowLabel');
+  var anodeState = document.getElementById('anodeState');
+  var cathodeState = document.getElementById('cathodeState');
+  var explicacion = document.getElementById('explicacionTxt');
+  var reaccion = document.getElementById('reaccionTxt');
+
+  document.getElementById('anodeName').textContent = 'Ánodo (–)';
+  document.getElementById('cathodeName').textContent = 'Cátodo (+)';
+
+  var arrowsCation = document.getElementById('arrowsCation');
+  var arrowsAnion = document.getElementById('arrowsAnion');
+
+  if(modoActual === 'descarga'){
+    modoTxt.textContent = 'Descarga';
+    flowLabel.textContent = '⚡ e⁻ fluye: ánodo → cátodo (circuito externo, uso real)';
+    anodeState.textContent = 'se oxida (libera e⁻)';
+    cathodeState.textContent = 'se reduce (acepta e⁻)';
+    explicacion.textContent = 'Reacción espontánea: la energía química se convierte en energía eléctrica utilizable. Los cationes viajan hacia el cátodo y los aniones hacia el ánodo, dentro de la celda.';
+    reaccion.textContent = battActual.reaccionDescarga;
+    arrowsCation.textContent = '→  catión (+) hacia el cátodo  →';
+    arrowsAnion.textContent = '←  anión (−) hacia el ánodo  ←';
+  } else {
+    modoTxt.textContent = 'Carga';
+    flowLabel.textContent = '🔌 e⁻ forzado: cátodo → ánodo (fuente externa, dirección invertida)';
+    anodeState.textContent = battActual.recargable ? 'se reduce (recibe e⁻)' : 'no aplica (no recargable)';
+    cathodeState.textContent = battActual.recargable ? 'se oxida (libera e⁻)' : 'no aplica (no recargable)';
+    explicacion.textContent = battActual.recargable
+      ? 'Una fuente externa fuerza la reacción inversa: la energía eléctrica se almacena de nuevo como energía química. El movimiento de los cationes y aniones se invierte por completo respecto a la descarga.'
+      : 'Esta batería es primaria: no está diseñada para invertir su reacción de forma segura.';
+    reaccion.textContent = battActual.reaccionCarga;
+    arrowsCation.textContent = '←  catión (+) hacia el ánodo  ←';
+    arrowsAnion.textContent = '→  anión (−) hacia el cátodo  →';
+  }
+}
+
+function construirTablaComparativa(){
+  var tabla = document.getElementById('cmpTable');
+  var thead = '<tr><th>Batería</th><th>Electrolito</th><th>Estado físico</th><th>Voltaje</th><th>¿Recargable?</th><th>Densidad energética</th><th>Aplicación típica</th></tr>';
+  var rows = baterias.map(function(b){
+    return '<tr><td><b>'+b.nombre+'</b></td><td>'+b.electrolito+'</td><td>'+
+      (b.estadoFisico==='liquido'?'Líquido':b.estadoFisico==='gel'?'Gel/pasta':'Sólido')+'</td><td>'+b.voltaje+'</td><td>'+
+      (b.recargable?'Sí':'No')+'</td><td>'+b.densidad+'</td><td>'+b.uso+'</td></tr>';
+  }).join('');
+  tabla.innerHTML = thead + rows;
+}
+
+poblarSelect();
+renderBattery();
+construirTablaComparativa();
+
+/* ============ TABS ============ */
+function switchTab(tab){
+  document.getElementById('tabBaterias').classList.toggle('active', tab==='baterias');
+  document.getElementById('tabCalor').classList.toggle('active', tab==='calor');
+  document.getElementById('tabBtnBaterias').classList.toggle('active', tab==='baterias');
+  document.getElementById('tabBtnCalor').classList.toggle('active', tab==='calor');
+}
+
+/* ============ CALENTADORES QUÍMICOS ============ */
+var calentadores = [
+  {
+    id:'cao', nombre:'Hidratación de óxido de calcio (cal viva)',
+    reaccion:'CaO (s) + H2O (l) → Ca(OH)2 (s) + calor',
+    calor:'Suficiente para elevar la temperatura del alimento entre 40–50 °C en pocos minutos',
+    tiempo:'2–5 minutos',
+    uso:'Latas autocalentables comerciales de café, chocolate caliente y algunas sopas instantáneas',
+    seguridad:'El óxido de calcio en polvo es corrosivo e irrita piel y ojos; debe mantenerse seco y sellado hasta activarlo, y no debe ingerirse directamente.',
+    activador:'Agua'
+  },
+  {
+    id:'mgfe', nombre:'Oxidación de aleación magnesio-hierro en agua salada',
+    reaccion:'Mg (s) + 2H2O (l) → Mg(OH)2 (s) + H2 (g) + calor\n(el Fe de la aleación facilita la reacción en la superficie; el NaCl activa el electrolito)',
+    calor:'Suficiente para elevar la temperatura del alimento ~50–60 °C',
+    tiempo:'10–15 minutos',
+    uso:'Calentadores "flameless" (FRH) de raciones militares tipo MRE y algunos kits de senderismo/emergencia',
+    seguridad:'Libera hidrógeno gaseoso (H2), inflamable: debe usarse en espacio ventilado, nunca en un contenedor sellado herméticamente ni cerca de una llama.',
+    activador:'Agua salada'
+  }
+];
+
+var heaterActual = calentadores[0];
+var heaterActivado = false;
+var heaterTimer = null;
+
+function poblarHeaterSelect(){
+  var sel = document.getElementById('heaterSelect');
+  calentadores.forEach(function(h){
+    var opt = document.createElement('option');
+    opt.value = h.id; opt.textContent = h.nombre;
+    sel.appendChild(opt);
+  });
+}
+
+function renderHeater(){
+  var sel = document.getElementById('heaterSelect');
+  heaterActual = calentadores.find(function(h){ return h.id === sel.value; }) || calentadores[0];
+  resetReaccion();
+  document.getElementById('heaterNombre').textContent = heaterActual.nombre;
+  document.getElementById('heaterReaccion').textContent = heaterActual.reaccion;
+  document.getElementById('heaterCalor').textContent = heaterActual.calor;
+  document.getElementById('heaterTiempo').textContent = heaterActual.tiempo;
+  document.getElementById('heaterUso').textContent = heaterActual.uso;
+  document.getElementById('heaterSeguridad').textContent = heaterActual.seguridad;
+  document.getElementById('reactivoLabel').textContent = 'Reactivo seco';
+}
+
+function activarReaccion(){
+  if(heaterActivado) return;
+  heaterActivado = true;
+  document.getElementById('compReactivo').classList.add('activo');
+  document.getElementById('compAlimento').classList.add('activo');
+  document.getElementById('barrera').classList.add('rota');
+  document.getElementById('thermo').classList.add('activo');
+  document.getElementById('reactivoLabel').textContent = '+ ' + heaterActual.activador;
+  document.getElementById('btnActivar').disabled = true;
+  document.getElementById('btnReset').disabled = false;
+  document.getElementById('estadoHeaterTxt').textContent =
+    'Reacción en curso: se libera calor por ' + heaterActual.tiempo.toLowerCase() + '. El calor se transmite por conducción hacia el alimento.';
+
+  var temp = 20;
+  var objetivo = heaterActual.id === 'mgfe' ? 75 : 65;
+  clearInterval(heaterTimer);
+  heaterTimer = setInterval(function(){
+    temp += Math.max(1, Math.round((objetivo-temp)*0.18));
+    if(temp >= objetivo){ temp = objetivo; clearInterval(heaterTimer); }
+    document.getElementById('thermoLabel').textContent = '~' + temp + ' °C';
+  }, 200);
+}
+
+function resetReaccion(){
+  heaterActivado = false;
+  clearInterval(heaterTimer);
+  document.getElementById('compReactivo').classList.remove('activo');
+  document.getElementById('compAlimento').classList.remove('activo');
+  document.getElementById('barrera').classList.remove('rota');
+  document.getElementById('thermo').classList.remove('activo');
+  document.getElementById('thermoLabel').textContent = '~20 °C';
+  document.getElementById('btnActivar').disabled = false;
+  document.getElementById('btnReset').disabled = true;
+  document.getElementById('estadoHeaterTxt').textContent =
+    'Compartimentos separados. Toque "Activar reacción" para simular el contacto con el activador (' + (heaterActual ? heaterActual.activador.toLowerCase() : 'agua') + ').';
+}
+
+poblarHeaterSelect();
+renderHeater();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 2 · Tema 2.1 · Viscosidad y Mecanismos del Transporte de Momentum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Spectral+SC:wght@600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+<style>
+:root{
+  --paper:#EEF0E8; --paper-2:#E4E7DC; --ink:#182422; --ink-soft:#3E4A44;
+  --blueprint:#28596B; --blueprint-2:#1B3F4C; --wheat:#C8963C; --wheat-2:#a87a2b;
+  --clay:#B0532E; --leaf:#54713A; --line: rgba(24,36,34,0.14); --line-strong: rgba(24,36,34,0.28);
+  --card:#FBFAF6; --shadow: 0 10px 30px -18px rgba(20,30,28,0.35); --radius: 4px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{ margin:0; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans', sans-serif; line-height:1.65;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 42px 42px; }
+h1,h2,h3,h4{ font-family:'Spectral', serif; color:var(--blueprint-2); margin:0 0 .4em 0; font-weight:600;}
+a{color:var(--blueprint);}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+
+/* breadcrumb */
+.crumbbar{ background:var(--blueprint-2); color:#dfe6df; font-family:'IBM Plex Mono',monospace; font-size:.74rem; padding:8px 0;}
+.crumbbar .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;}
+.crumbbar a{ color:#bcd6cf; text-decoration:none; }
+.crumbbar a:hover{ text-decoration:underline; }
+.crumbbar .next{ color:#9fb3ab; }
+
+/* header */
+header.portada{ position:relative; background: linear-gradient(160deg, var(--blueprint-2) 0%, var(--blueprint) 62%, #2c6b52 100%); color:#F4F2E9; overflow:hidden; border-bottom:6px solid var(--wheat);}
+header.portada .grain-overlay{ position:absolute; inset:0; opacity:.10; background-image: radial-gradient(circle, #F4F2E9 1px, transparent 1.4px); background-size: 16px 16px; pointer-events:none;}
+.uni-block{ position:relative; padding:22px 24px 10px; max-width:1080px; margin:0 auto; font-family:'IBM Plex Mono', monospace; font-size:.78rem; letter-spacing:.03em; opacity:.92;}
+.uni-block .line{display:block;}
+.uni-block .l1{font-weight:600; letter-spacing:.08em; text-transform:uppercase;}
+.hero{ position:relative; padding:14px 24px 46px; max-width:1080px; margin:0 auto; }
+.hero h1{ color:#FBFAF6; font-size:clamp(1.9rem, 3.6vw, 2.7rem); line-height:1.12; margin-bottom:.3em; max-width:26ch;}
+.hero .subt{ font-size:1.02rem; max-width:62ch; color:#E4E9DE; }
+.hero .tema{ font-family:'IBM Plex Mono', monospace; font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; color:var(--wheat); margin-bottom:10px; display:block;}
+
+/* nav */
+nav.tabs{ position:sticky; top:0; z-index:40; background:rgba(238,240,232,0.96); backdrop-filter: blur(6px); border-bottom:1px solid var(--line-strong);}
+nav.tabs .wrap{ display:flex; gap:2px; overflow-x:auto; padding:0 24px;}
+nav.tabs button{ font-family:'IBM Plex Mono', monospace; font-size:.72rem; letter-spacing:.04em; text-transform:uppercase; background:none; border:none; padding:15px 12px; color:var(--ink-soft); cursor:pointer; white-space:nowrap; border-bottom:3px solid transparent; transition: color .15s, border-color .15s;}
+nav.tabs button:hover{ color:var(--blueprint-2); }
+nav.tabs button.active{ color:var(--blueprint-2); border-bottom-color:var(--wheat); font-weight:600; }
+
+main{ padding:40px 0 90px; }
+section.panel{ display:none; }
+section.panel.active{ display:block; animation: rise .35s ease; }
+@keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+.section-head{ margin-bottom:26px; max-width:74ch; }
+.section-head .num{ font-family:'Spectral SC', serif; font-size:.95rem; color:var(--wheat-2); display:block; margin-bottom:6px;}
+.card{ background:var(--card); border:1px solid var(--line-strong); border-radius:var(--radius); box-shadow:var(--shadow); padding:26px 28px; margin-bottom:26px;}
+.card h3{ font-size:1.22rem; margin-bottom:.5em; }
+.card h4{ font-size:1.02rem; color:var(--ink); margin-top:1.3em;}
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+@media (max-width:820px){ .grid-2{grid-template-columns:1fr;} }
+
+table{ width:100%; border-collapse:collapse; font-size:.9rem; margin:14px 0; }
+caption{ text-align:left; font-family:'IBM Plex Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; color:var(--wheat-2); margin-bottom:8px;}
+th,td{ text-align:left; padding:9px 11px; border-bottom:1px solid var(--line-strong); vertical-align:top;}
+thead th{ background:var(--blueprint-2); color:#F4F2E9; font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em;}
+tbody tr:nth-child(even){ background:var(--paper-2); }
+
+.tag{ display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:.66rem; text-transform:uppercase; letter-spacing:.06em; padding:3px 8px; border-radius:20px; border:1px solid currentColor;}
+.tag.mom{ color:var(--blueprint); }
+
+.note{ border-left:3px solid var(--wheat); background:var(--paper-2); padding:12px 16px; font-size:.9rem; margin:14px 0; border-radius:0 var(--radius) var(--radius) 0;}
+.note b{color:var(--wheat-2);}
+.preview{ border-left:3px solid var(--leaf); background:#eef3e6; padding:12px 16px; font-size:.9rem; margin:14px 0; border-radius:0 var(--radius) var(--radius) 0;}
+.preview b{ color:var(--leaf); }
+
+/* ecuaciones */
+.eqbox{ background:var(--blueprint-2); color:#F4F2E9; padding:16px 20px; border-radius:var(--radius); margin:14px 0; overflow-x:auto;}
+.eqbox.center{ text-align:center; }
+.eq-label{ font-family:'IBM Plex Mono', monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--wheat); margin-bottom:6px; display:block;}
+.var-list{ font-size:.86rem; margin:10px 0; }
+.var-list li{ margin-bottom:4px; }
+.var-list code{ background:var(--paper-2); padding:1px 5px; border-radius:3px; font-family:'IBM Plex Mono',monospace; }
+
+/* derivación paso a paso */
+.deriv{ counter-reset: step; list-style:none; padding:0; margin:16px 0; }
+.deriv li{ counter-increment: step; position:relative; padding:10px 0 10px 42px; border-bottom:1px dashed var(--line-strong); }
+.deriv li:last-child{ border-bottom:none; }
+.deriv li::before{ content: counter(step); position:absolute; left:0; top:8px; width:26px; height:26px; border-radius:50%; background:var(--blueprint-2); color:#F4F2E9; font-family:'IBM Plex Mono',monospace; font-size:.78rem; display:flex; align-items:center; justify-content:center; font-weight:600;}
+
+/* diagram svg */
+.diagram-svg{ width:100%; height:auto; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); }
+.diagram-svg .lbl{ font-family:'IBM Plex Mono',monospace; font-size:10px; fill:var(--ink-soft); }
+.diagram-svg .lbl-b{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; }
+.diagram-svg .face-label{ font-family:'IBM Plex Mono',monospace; font-size:9px; fill:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+.fig-caption{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-soft); text-align:center; margin-top:8px; }
+
+/* sliders */
+.sim{ display:grid; grid-template-columns: 1fr 1fr; gap:24px; }
+@media(max-width:820px){ .sim{grid-template-columns:1fr;} }
+.control{ margin-bottom:14px; }
+.control label{ display:flex; justify-content:space-between; font-family:'IBM Plex Mono', monospace; font-size:.76rem; margin-bottom:6px;}
+.control label .val{ color:var(--blueprint); font-weight:600; }
+input[type=range]{ width:100%; -webkit-appearance:none; height:6px; background:var(--paper-2); border-radius:4px; outline:none; border:1px solid var(--line-strong);}
+input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--wheat); border:2px solid var(--blueprint-2); cursor:pointer; margin-top:-1px;}
+input[type=range]::-moz-range-thumb{ width:18px; height:18px; border-radius:50%; background:var(--wheat); border:2px solid var(--blueprint-2); cursor:pointer;}
+.readout{ font-family:'IBM Plex Mono', monospace; background:var(--blueprint-2); color:#F4F2E9; border-radius:var(--radius); padding:14px 16px; margin-top:10px; font-size:.82rem;}
+.readout .big{ font-size:1.3rem; color:var(--wheat); font-weight:600; display:block; margin:4px 0;}
+
+/* gradient chart reused style */
+.grad-svg{ width:100%; height:auto; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); margin:8px 0; display:block; overflow:visible;}
+.grad-svg .grid{ stroke:var(--line-strong); stroke-width:1; stroke-dasharray:2 4;}
+.grad-svg .axis{ stroke:var(--ink); stroke-width:1.6;}
+.grad-svg .tick{ font-family:'IBM Plex Mono', monospace; font-size:8.5px; fill:var(--ink-soft);}
+.grad-svg .axistitle{ font-family:'IBM Plex Mono', monospace; font-size:8.5px; fill:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:600;}
+.grad-svg .badge{ font-family:'IBM Plex Sans', sans-serif; font-size:9.5px; font-weight:600; fill:var(--ink);}
+
+/* code blocks */
+.code-wrap{ margin:14px 0; border-radius:var(--radius); overflow:hidden; border:1px solid var(--line-strong);}
+.code-head{ background:var(--blueprint-2); color:#dfe6df; font-family:'IBM Plex Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; padding:8px 14px; display:flex; justify-content:space-between;}
+pre.code-py{ margin:0; background:#10201f; color:#dbe6df; padding:16px 18px; font-family:'IBM Plex Mono',monospace; font-size:.78rem; line-height:1.55; overflow-x:auto; }
+.code-py .kw{ color:#f0b27a; font-weight:600; }
+.code-py .st{ color:#b7d99a; }
+.code-py .cm{ color:#7d9691; font-style:italic; }
+
+.eyebrow{ font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.14em; font-size:.72rem; color:var(--wheat-2); font-weight:600;}
+
+.ref{ padding:10px 0; border-bottom:1px solid var(--line); font-size:.9rem; }
+
+footer{ background:var(--blueprint-2); color:#c8d4c8; text-align:center; padding:24px; font-size:.8rem; font-family:'IBM Plex Mono', monospace;}
+</style>
+</head>
+<body>
+
+<div class="crumbbar">
+  <div class="wrap">
+    <span><a href="unidad1_fenomenos_de_transporte.html">← Unidad 1 · Principios y balances globales</a></span>
+    <span class="next">Unidad 2 · Tema 2.1 de 4 &nbsp;|&nbsp; próximamente: 2.2, 2.3, 2.4</span>
+  </div>
+</div>
+
+<header class="portada">
+  <div class="grain-overlay"></div>
+  <div class="uni-block">
+    <span class="line l1">Universidad de Guanajuato</span>
+    <span class="line">Campus Celaya–Salvatierra · División de Ciencias de la Salud e Ingenierías</span>
+    <span class="line">Licenciatura en Ingeniería Agroindustrial · Asignatura: Fenómenos de Transporte</span>
+  </div>
+  <div class="hero">
+    <span class="tema">Unidad 2 · Transporte de cantidad de movimiento</span>
+    <h1>2.1 Viscosidad y mecanismos del transporte de cantidad de movimiento</h1>
+    <p class="subt">La ley de Newton de la viscosidad en sus tres formas —escalar, plana y tensorial— junto con el mecanismo molecular que la origina, y el primer ejercicio agroindustrial que la pone en práctica: una película líquida descendente sobre un plano inclinado.</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-tab="intro" class="active">0 · Mapa</button>
+    <button data-tab="visc">Viscosidad</button>
+    <button data-tab="d1">Ley 1D</button>
+    <button data-tab="d2">Generalización 2D</button>
+    <button data-tab="d3">Generalización 3D</button>
+    <button data-tab="mec">Mecanismos moleculares</button>
+    <button data-tab="ejercicio">Ejercicio práctico</button>
+    <button data-tab="python">Simuladores en Python</button>
+    <button data-tab="refs">Referencias</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ===================== 0. MAPA ===================== -->
+  <section class="panel active" id="intro">
+    <div class="section-head">
+      <span class="num">Panorama</span>
+      <h2>De la fricción entre capas de fluido a la ecuación general de esfuerzos</h2>
+      <p>El tema 2.1 construye la base física de toda la Unidad 2: la <b>viscosidad</b> como propiedad de transporte y la <b>ley de Newton de la viscosidad</b> como la relación constitutiva que conecta el esfuerzo cortante con el gradiente de velocidad. Aquí la presentamos en tres niveles de generalidad —una dimensión, un plano y el espacio completo— y cerramos con el planteamiento de un ejercicio agroindustrial real que retomaremos formalmente en el tema 2.2 (balances de cantidad de movimiento).</p>
+    </div>
+    <div class="card">
+      <h3>Ruta de este tema</h3>
+      <table>
+        <thead><tr><th>Sección</th><th>Contenido</th><th>Nivel matemático</th></tr></thead>
+        <tbody>
+          <tr><td>Viscosidad</td><td>Definición física, μ y ν, tabla de fluidos agroindustriales</td><td>Conceptual</td></tr>
+          <tr><td>Ley 1D</td><td>τ<sub>yx</sub> = −μ (dv<sub>x</sub>/dy), flujo de Couette</td><td>Escalar</td></tr>
+          <tr><td>Generalización 2D</td><td>τ<sub>xx</sub>, τ<sub>yy</sub>, τ<sub>xy</sub>=τ<sub>yx</sub> — elemento de esfuerzo plano</td><td>Derivadas parciales</td></tr>
+          <tr><td>Generalización 3D</td><td>Tensor de esfuerzos τ<sub>ij</sub> completo, notación índice</td><td>Tensorial</td></tr>
+          <tr><td>Mecanismos moleculares</td><td>Teoría cinética en gases; cohesión en líquidos</td><td>Conceptual</td></tr>
+          <tr><td>Ejercicio práctico</td><td>Película descendente: planteamiento y deducción completa</td><td>Ecuación diferencial ordinaria</td></tr>
+          <tr><td>Simuladores en Python</td><td>Diferencias finitas vs. solución analítica</td><td>Numérico</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note"><b>Cómo se conecta con lo que sigue:</b> el ejercicio de la película descendente que se plantea aquí se resolverá formalmente con un balance de cantidad de movimiento en el tema 2.2, y se generalizará usando las ecuaciones de variación (Navier–Stokes) en el tema 2.3. Este tema 2.1 solo te da las herramientas —la ley constitutiva— para poder hacerlo.</div>
+  </section>
+
+  <!-- ===================== VISCOSIDAD ===================== -->
+  <section class="panel" id="visc">
+    <div class="section-head">
+      <span class="num">Concepto</span>
+      <h2>¿Qué es la viscosidad?</h2>
+      <p>La <b>viscosidad</b> es la resistencia interna de un fluido a la deformación por corte: mide qué tan "pegajosas" son las capas de fluido entre sí cuando una se desliza sobre otra. Es la propiedad de transporte que aparece en la ley de Newton de la viscosidad, análoga a la conductividad térmica k en la ley de Fourier y a la difusividad D en la ley de Fick (tema 1.1).</p>
+    </div>
+    <div class="card">
+      <h3>Viscosidad dinámica y viscosidad cinemática</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Viscosidad dinámica (absoluta), μ</h4>
+          <p>Relaciona directamente el esfuerzo cortante con el gradiente de velocidad. Sus unidades en el SI son Pa·s (equivalente a kg·m⁻¹·s⁻¹). En el sistema cgs se usa el poise (1 Pa·s = 10 poise).</p>
+        </div>
+        <div>
+          <h4>Viscosidad cinemática, ν</h4>
+          <div class="eqbox center"><span class="eq-label">Definición</span>\( \displaystyle \nu = \frac{\mu}{\rho} \)</div>
+          <p>Es el cociente entre la viscosidad dinámica y la densidad; aparece de forma natural cuando se compara el transporte de momentum con el de calor o masa, ya que sus unidades (m²/s) son las mismas que las de k/(ρc<sub>p</sub>) y D.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Viscosidad de fluidos agroindustriales comunes</h3>
+      <table>
+        <caption>Valores aproximados a temperatura ambiente (20–25 °C)</caption>
+        <thead><tr><th>Fluido</th><th>μ aproximada (Pa·s)</th><th>Comentario de proceso</th></tr></thead>
+        <tbody>
+          <tr><td>Agua</td><td>0.001</td><td>Fluido de referencia (1 cP)</td></tr>
+          <tr><td>Leche entera</td><td>0.002 – 0.003</td><td>Ligeramente más viscosa que el agua</td></tr>
+          <tr><td>Aceite de oliva</td><td>0.08 – 0.1</td><td>Disminuye fuertemente al calentar</td></tr>
+          <tr><td>Jarabe de maíz (concentrado)</td><td>0.3 – 5</td><td>Muy sensible a la concentración de sólidos</td></tr>
+          <tr><td>Miel</td><td>2 – 10</td><td>Varía mucho con la humedad y temperatura</td></tr>
+          <tr><td>Chocolate fundido</td><td>2 – 25</td><td>Comportamiento no newtoniano (plástico de Bingham)</td></tr>
+          <tr><td>Aire (25 °C)</td><td>1.8 × 10⁻⁵</td><td>Referencia para aire de secado</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.85rem; color:var(--ink-soft);">Nota: la miel, el chocolate y muchas pastas alimenticias no son estrictamente newtonianas; la ley de Newton de la viscosidad, tal como se presenta aquí, describe con precisión a los <b>fluidos newtonianos</b> (agua, leche descremada, jarabes diluidos, aceites, aire). Los fluidos no newtonianos requieren modelos reológicos adicionales que se mencionan como referencia pero no son el foco de esta unidad introductoria.</p>
+    </div>
+  </section>
+
+  <!-- ===================== LEY 1D ===================== -->
+  <section class="panel" id="d1">
+    <div class="section-head">
+      <span class="num">Forma escalar</span>
+      <h2>La ley de Newton de la viscosidad en una dimensión</h2>
+      <p>Cuando la velocidad solo cambia en una dirección perpendicular al flujo (flujo cortante simple), la ley de Newton de la viscosidad toma su forma más sencilla.</p>
+    </div>
+
+    <div class="card">
+      <h3>Planteamiento: flujo de Couette</h3>
+      <p>Un fluido newtoniano está confinado entre dos placas paralelas separadas una distancia <i>b</i>. La placa inferior está fija; la placa superior se mueve con velocidad constante <i>V</i> por acción de una fuerza <i>F</i> aplicada sobre su área <i>A</i>. En régimen laminar y estacionario, el fluido desarrolla un perfil de velocidad lineal.</p>
+
+      <svg class="diagram-svg" viewBox="0 0 320 200" id="svgCouette">
+        <rect x="60" y="40" width="200" height="10" fill="#28596B"/>
+        <text class="lbl-b" x="270" y="48" fill="#28596B">V, F</text>
+        <line x1="330" y1="45" x2="300" y2="45" stroke="#28596B" stroke-width="2" marker-end="url(#arrC)"/>
+        <rect x="60" y="150" width="200" height="10" fill="#C8963C"/>
+        <text class="lbl" x="270" y="158">fija</text>
+        <line x1="60" y1="50" x2="60" y2="150" stroke="var(--line-strong)" stroke-width="1"/>
+        <line x1="90" y1="55" x2="90" y2="145" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="2 3"/>
+        <path d="M92,145 L150,120 L200,95 L250,60" fill="none" stroke="#1B3F4C" stroke-width="2"/>
+        <line x1="92" y1="145" x2="92" y2="145" />
+        <g stroke="#1B3F4C" stroke-width="1.6" marker-end="url(#arrCsmall)">
+          <line x1="92" y1="145" x2="120" y2="145"/>
+          <line x1="92" y1="120" x2="160" y2="120"/>
+          <line x1="92" y1="95" x2="205" y2="95"/>
+          <line x1="92" y1="70" x2="250" y2="70"/>
+        </g>
+        <defs>
+          <marker id="arrC" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#28596B"/></marker>
+          <marker id="arrCsmall" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1B3F4C"/></marker>
+        </defs>
+        <text class="lbl" x="30" y="100" text-anchor="middle" transform="rotate(-90 30 100)">y</text>
+        <text class="lbl" x="45" y="53">y = b</text>
+        <text class="lbl" x="45" y="153">y = 0</text>
+        <text class="lbl" x="130" y="180">v<tspan baseline-shift="sub" font-size="7">x</tspan>(y) — perfil lineal de velocidad</text>
+      </svg>
+      <p class="fig-caption">Fig. 2.1-1 — Flujo de Couette: perfil de velocidad lineal entre una placa móvil y una fija.</p>
+
+      <div class="eqbox">
+        <span class="eq-label">Ley de Newton de la viscosidad (1D)</span>
+        \[ \tau_{yx} = -\mu \frac{dv_x}{dy} \]
+      </div>
+      <ul class="var-list">
+        <li><code>τ_yx</code>: esfuerzo cortante — flujo de cantidad de movimiento en x que atraviesa una superficie de normal y [Pa]</li>
+        <li><code>μ</code>: viscosidad dinámica del fluido [Pa·s]</li>
+        <li><code>dv_x/dy</code>: gradiente de velocidad en la dirección y [s⁻¹]</li>
+      </ul>
+      <p>El signo negativo indica que el momentum se transporta desde la región de mayor velocidad hacia la de menor velocidad — exactamente la misma estructura que vimos en la Unidad 1 para calor (Fourier) y masa (Fick).</p>
+
+      <h4>Del gradiente a la fuerza sobre la placa</h4>
+      <p>Para el perfil lineal \(v_x(y) = V y / b\), el gradiente es constante: \(dv_x/dy = V/b\). Sustituyendo en la ley de Newton y multiplicando por el área de la placa se obtiene la fuerza necesaria para mantenerla en movimiento:</p>
+      <div class="eqbox center"><span class="eq-label">Fuerza sobre la placa móvil</span>\[ F = \mu \, A \, \frac{V}{b} \]</div>
+    </div>
+
+    <div class="card">
+      <h3>Simulador: esfuerzo cortante y fuerza en el flujo de Couette</h3>
+      <div class="sim">
+        <div>
+          <div class="control">
+            <label>Velocidad de la placa V <span class="val" id="vCoV">1.0</span> m/s</label>
+            <input type="range" id="rCoV" min="0.1" max="3" step="0.1" value="1">
+          </div>
+          <div class="control">
+            <label>Separación entre placas b <span class="val" id="vCoB">10</span> mm</label>
+            <input type="range" id="rCoB" min="2" max="30" value="10">
+          </div>
+          <div class="control">
+            <label>Viscosidad μ <span class="val" id="vCoMu">0.35</span> Pa·s</label>
+            <input type="range" id="rCoMu" min="0.01" max="2" step="0.01" value="0.35">
+          </div>
+          <div class="control">
+            <label>Área de la placa A <span class="val" id="vCoA">0.25</span> m²</label>
+            <input type="range" id="rCoA" min="0.05" max="1" step="0.05" value="0.25">
+          </div>
+        </div>
+        <div class="readout">
+          Gradiente dv<sub>x</sub>/dy = V/b
+          <span class="big" id="coGradOut">100.0 (m/s)/mm</span>
+          Esfuerzo cortante τ<sub>yx</sub> = −μ (dv<sub>x</sub>/dy)
+          <span class="big" id="coTauOut">−35.0 Pa</span>
+          Fuerza sobre la placa F = μAV/b
+          <span class="big" id="coFOut">8.75 N</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GENERALIZACIÓN 2D ===================== -->
+  <section class="panel" id="d2">
+    <div class="section-head">
+      <span class="num">Forma plana</span>
+      <h2>Generalización a dos dimensiones</h2>
+      <p>Cuando el campo de velocidad tiene dos componentes que dependen de dos coordenadas —por ejemplo \(v_x(x,y)\) y \(v_y(x,y)\), como ocurre en una capa límite sobre una banda transportadora o al inicio del flujo dentro de una tubería— ya no basta un solo término. Aparecen esfuerzos normales además del esfuerzo cortante, y estos actúan sobre un elemento de fluido plano.</p>
+    </div>
+
+    <div class="card">
+      <h3>Elemento de esfuerzo en 2D</h3>
+      <svg class="diagram-svg" viewBox="0 0 300 250" id="svgStress2D">
+        <defs>
+          <marker id="arr2D" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1B3F4C"/></marker>
+        </defs>
+        <rect x="90" y="60" width="120" height="120" fill="#fff" stroke="#1B3F4C" stroke-width="2.5"/>
+        <!-- cara derecha (+x) -->
+        <line x1="210" y1="120" x2="245" y2="120" stroke="#28596B" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="250" y="123" fill="#28596B">τ<tspan font-size="7" baseline-shift="sub">xx</tspan></text>
+        <line x1="210" y1="140" x2="210" y2="100" stroke="#B0532E" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="216" y="95" fill="#B0532E">τ<tspan font-size="7" baseline-shift="sub">xy</tspan></text>
+        <!-- cara izquierda (-x) -->
+        <line x1="90" y1="120" x2="55" y2="120" stroke="#28596B" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="15" y="123" fill="#28596B">τ<tspan font-size="7" baseline-shift="sub">xx</tspan></text>
+        <line x1="90" y1="100" x2="90" y2="140" stroke="#B0532E" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="60" y="150" fill="#B0532E">τ<tspan font-size="7" baseline-shift="sub">xy</tspan></text>
+        <!-- cara superior (+y) -->
+        <line x1="150" y1="60" x2="150" y2="25" stroke="#54713A" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="156" y="22" fill="#54713A">τ<tspan font-size="7" baseline-shift="sub">yy</tspan></text>
+        <line x1="130" y1="60" x2="170" y2="60" stroke="#B0532E" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="174" y="55" fill="#B0532E">τ<tspan font-size="7" baseline-shift="sub">yx</tspan></text>
+        <!-- cara inferior (-y) -->
+        <line x1="150" y1="180" x2="150" y2="215" stroke="#54713A" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="156" y="228" fill="#54713A">τ<tspan font-size="7" baseline-shift="sub">yy</tspan></text>
+        <line x1="170" y1="180" x2="130" y2="180" stroke="#B0532E" stroke-width="2.2" marker-end="url(#arr2D)"/>
+        <text class="lbl-b" x="100" y="195" fill="#B0532E">τ<tspan font-size="7" baseline-shift="sub">yx</tspan></text>
+        <text class="lbl" x="150" y="245" text-anchor="middle">elemento de fluido en el plano x–y</text>
+      </svg>
+      <p class="fig-caption">Fig. 2.1-2 — Esfuerzos normales (verde/azul) y cortantes (naranja, τ<sub>xy</sub>=τ<sub>yx</sub>) sobre un elemento de fluido plano.</p>
+
+      <div class="eqbox">
+        <span class="eq-label">Componentes del esfuerzo en 2D (fluido incompresible)</span>
+        \[ \tau_{xx} = -2\mu \frac{\partial v_x}{\partial x} \qquad \tau_{yy} = -2\mu \frac{\partial v_y}{\partial y} \]
+        \[ \tau_{xy} = \tau_{yx} = -\mu \left( \frac{\partial v_x}{\partial y} + \frac{\partial v_y}{\partial x} \right) \]
+      </div>
+      <p>Los esfuerzos <b>normales</b> τ<sub>xx</sub> y τ<sub>yy</sub> aparecen cuando el fluido se estira o comprime en esa dirección (gradientes de v<sub>x</sub> en x, o de v<sub>y</sub> en y). El esfuerzo <b>cortante</b> τ<sub>xy</sub> = τ<sub>yx</sub> —simétrico por equilibrio de momento angular— combina ambos gradientes cruzados. Cuando \(v_y=0\) y \(v_x\) solo depende de y, estas expresiones colapsan exactamente en la ley 1D de la sección anterior.</p>
+      <div class="note"><b>Ejemplo agroindustrial:</b> el desarrollo de una capa límite de un jarabe sobre una banda transportadora en movimiento, o el flujo de entrada a una tubería (región de entrada antes del perfil totalmente desarrollado), requieren esta forma 2D porque la velocidad cambia tanto a lo largo del flujo como perpendicular a él.</div>
+    </div>
+  </section>
+
+  <!-- ===================== GENERALIZACIÓN 3D ===================== -->
+  <section class="panel" id="d3">
+    <div class="section-head">
+      <span class="num">Forma tensorial</span>
+      <h2>Generalización a tres dimensiones: el tensor de esfuerzos</h2>
+      <p>En el caso más general, la velocidad tiene tres componentes que dependen de las tres coordenadas espaciales. El esfuerzo ya no se describe con un solo número sino con un <b>tensor</b> de 9 componentes (6 independientes) que actúa sobre un elemento cúbico de fluido.</p>
+    </div>
+
+    <div class="card">
+      <h3>El cubo de esfuerzos</h3>
+      <svg class="diagram-svg" viewBox="0 0 300 240" id="svgCube3D">
+        <defs>
+          <marker id="arr3D" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1B3F4C"/></marker>
+        </defs>
+        <!-- top face -->
+        <polygon points="100,90 190,90 220,60 130,60" fill="#C8963C" opacity=".18" stroke="#1B3F4C" stroke-width="1.6"/>
+        <!-- right face -->
+        <polygon points="190,90 190,180 220,150 220,60" fill="#54713A" opacity=".18" stroke="#1B3F4C" stroke-width="1.6"/>
+        <!-- front face -->
+        <polygon points="100,90 190,90 190,180 100,180" fill="#28596B" opacity=".14" stroke="#1B3F4C" stroke-width="1.6"/>
+
+        <!-- front face (normal z, hacia el observador) -->
+        <line x1="110" y1="150" x2="160" y2="150" stroke="#28596B" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="163" y="153" fill="#28596B">τ<tspan font-size="7" baseline-shift="sub">zx</tspan></text>
+        <line x1="135" y1="175" x2="135" y2="125" stroke="#28596B" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="138" y="120" fill="#28596B">τ<tspan font-size="7" baseline-shift="sub">zy</tspan></text>
+        <circle cx="170" cy="165" r="5" fill="none" stroke="#28596B" stroke-width="1.5"/>
+        <circle cx="170" cy="165" r="1.6" fill="#28596B"/>
+        <text class="lbl-b" x="176" y="169" fill="#28596B">τ<tspan font-size="7" baseline-shift="sub">zz</tspan></text>
+
+        <!-- top face (normal y) -->
+        <line x1="140" y1="75" x2="180" y2="75" stroke="#a87a2b" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="184" y="78" fill="#a87a2b">τ<tspan font-size="7" baseline-shift="sub">yx</tspan></text>
+        <line x1="146" y1="89" x2="174" y2="61" stroke="#a87a2b" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="178" y="58" fill="#a87a2b">τ<tspan font-size="7" baseline-shift="sub">yz</tspan></text>
+        <line x1="160" y1="75" x2="160" y2="42" stroke="#a87a2b" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="164" y="38" fill="#a87a2b">τ<tspan font-size="7" baseline-shift="sub">yy</tspan></text>
+
+        <!-- right face (normal x) -->
+        <line x1="205" y1="140" x2="205" y2="100" stroke="#54713A" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="208" y="95" fill="#54713A">τ<tspan font-size="7" baseline-shift="sub">xy</tspan></text>
+        <line x1="191" y1="134" x2="219" y2="106" stroke="#54713A" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="222" y="102" fill="#54713A">τ<tspan font-size="7" baseline-shift="sub">xz</tspan></text>
+        <line x1="205" y1="120" x2="238" y2="120" stroke="#54713A" stroke-width="2" marker-end="url(#arr3D)"/>
+        <text class="lbl-b" x="242" y="123" fill="#54713A">τ<tspan font-size="7" baseline-shift="sub">xx</tspan></text>
+
+        <text class="face-label" x="145" y="200">cara z (frontal)</text>
+        <text class="face-label" x="160" y="30">cara y (superior)</text>
+        <text class="face-label" x="200" y="192">cara x (derecha)</text>
+      </svg>
+      <p class="fig-caption">Fig. 2.1-3 — Los 9 componentes del tensor de esfuerzos τ<sub>ij</sub> sobre un elemento cúbico de fluido (⊙ indica esfuerzo normal saliendo de la página).</p>
+
+      <div class="eqbox">
+        <span class="eq-label">Ley general de Newton de la viscosidad (notación índice)</span>
+        \[ \tau_{ij} = -\mu \left( \frac{\partial v_i}{\partial x_j} + \frac{\partial v_j}{\partial x_i} \right) + \left( \frac{2}{3}\mu - \kappa \right) (\nabla \cdot \mathbf{v}) \, \delta_{ij} \qquad i,j = x,y,z \]
+      </div>
+      <p>El término con \((\nabla \cdot \mathbf{v})\) corrige por la compresión o expansión volumétrica del fluido (κ es la viscosidad dilatacional, casi siempre despreciable). Para un <b>fluido incompresible</b> —la aproximación habitual en procesos agroindustriales con líquidos— \(\nabla \cdot \mathbf{v}=0\) y la expresión se reduce a:</p>
+      <div class="eqbox center"><span class="eq-label">Caso incompresible</span>\[ \tau_{ij} = -\mu \left( \frac{\partial v_i}{\partial x_j} + \frac{\partial v_j}{\partial x_i} \right) \]</div>
+
+      <h4>Las 9 componentes explícitas</h4>
+      <div class="eqbox">
+        \[
+        \tau_{xx} = -2\mu\frac{\partial v_x}{\partial x} \qquad
+        \tau_{yy} = -2\mu\frac{\partial v_y}{\partial y} \qquad
+        \tau_{zz} = -2\mu\frac{\partial v_z}{\partial z}
+        \]
+        \[
+        \tau_{xy}=\tau_{yx} = -\mu\!\left(\frac{\partial v_x}{\partial y}+\frac{\partial v_y}{\partial x}\right) \qquad
+        \tau_{xz}=\tau_{zx} = -\mu\!\left(\frac{\partial v_x}{\partial z}+\frac{\partial v_z}{\partial x}\right) \qquad
+        \tau_{yz}=\tau_{zy} = -\mu\!\left(\frac{\partial v_y}{\partial z}+\frac{\partial v_z}{\partial y}\right)
+        \]
+      </div>
+      <p>La simetría τ<sub>ij</sub> = τ<sub>ji</sub> reduce las 9 componentes a solo 6 independientes, y es consecuencia directa del balance de momento angular sobre el elemento de fluido (si no fueran simétricas, el cubo giraría indefinidamente sobre sí mismo). Cuando el flujo es unidireccional y depende de una sola coordenada —como en el flujo de Couette de la sección anterior— todas las componentes se anulan excepto \(\tau_{yx}\), recuperando la ley 1D.</p>
+    </div>
+  </section>
+
+  <!-- ===================== MECANISMOS MOLECULARES ===================== -->
+  <section class="panel" id="mec">
+    <div class="section-head">
+      <span class="num">Origen físico</span>
+      <h2>Mecanismos moleculares del transporte de cantidad de movimiento</h2>
+      <p>La ley de Newton de la viscosidad es una descripción macroscópica. A nivel molecular, el origen de la viscosidad es distinto en gases y en líquidos —y esto explica por qué se comportan de forma opuesta con la temperatura.</p>
+    </div>
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <h4>Gases: transporte por colisión molecular</h4>
+          <p>Las moléculas de una capa rápida cruzan aleatoriamente hacia una capa lenta (y viceversa), transportando su cantidad de movimiento en cada colisión. La teoría cinética simple predice:</p>
+          <div class="eqbox center"><span class="eq-label">Teoría cinética (aprox.)</span>\( \displaystyle \mu \approx \tfrac{1}{3}\rho\,\bar{c}\,\lambda \)</div>
+          <p style="font-size:.85rem;">donde \(\bar c\) es la velocidad molecular media y λ el camino libre medio. Como \(\bar c\) aumenta con la temperatura, <b>la viscosidad de los gases aumenta con T</b>.</p>
+        </div>
+        <div>
+          <h4>Líquidos: transporte por fuerzas de cohesión</h4>
+          <p>En líquidos las moléculas están mucho más próximas; el momentum se transmite principalmente por las fuerzas de atracción intermolecular al deslizarse unas capas sobre otras. Un aumento de temperatura debilita esas fuerzas de cohesión, de modo que <b>la viscosidad de los líquidos disminuye con T</b> — con frecuencia según una relación tipo Arrhenius:</p>
+          <div class="eqbox center"><span class="eq-label">Relación de Arrhenius</span>\( \displaystyle \mu = A \, e^{E_a/RT} \)</div>
+        </div>
+      </div>
+      <div class="note"><b>Implicación agroindustrial directa:</b> el bombeo de jarabes, miel o chocolate se vuelve mucho más fácil al calentar (μ baja), por eso las líneas de proceso de fluidos viscosos casi siempre incluyen calentamiento previo o tuberías con chaqueta térmica. En cambio, el aire de secado se vuelve ligeramente más viscoso (y por tanto ofrece un poco más de resistencia al flujo) conforme se calienta.</div>
+    </div>
+  </section>
+
+  <!-- ===================== EJERCICIO PRÁCTICO ===================== -->
+  <section class="panel" id="ejercicio">
+    <div class="section-head">
+      <span class="num">De la teoría a la aplicación</span>
+      <h2>Ejercicio práctico introductorio: película líquida descendente</h2>
+      <p>Este es el ejercicio que abrirá las deducciones de los siguientes temas. Lo planteamos aquí, con la física completa, y anticipamos su solución aplicando directamente la ley de Newton de la viscosidad; el tema 2.2 formalizará el procedimiento como un <b>balance de cantidad de movimiento en una lámina delgada</b> ("shell balance"), y el 2.3 lo obtendrá de nuevo a partir de las ecuaciones de variación generales.</p>
+    </div>
+
+    <div class="card">
+      <h3>Planteamiento del problema</h3>
+      <p>Un evaporador de película descendente concentra jugo de fruta haciéndolo fluir como una capa delgada sobre la superficie interior de un tubo o placa inclinada, calentada para evaporar agua. Simplificamos la geometría a una <b>placa plana inclinada un ángulo β respecto a la vertical</b>, sobre la cual el jarabe desciende por gravedad formando una película de espesor constante δ, con aire (de arrastre despreciable) sobre la superficie libre.</p>
+
+      <svg class="diagram-svg" viewBox="0 0 320 260" id="svgFilm">
+        <defs>
+          <marker id="arrF" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1B3F4C"/></marker>
+        </defs>
+        <!-- inclined wall -->
+        <line x1="90" y1="30" x2="150" y2="230" stroke="#1B3F4C" stroke-width="5"/>
+        <!-- film -->
+        <polygon points="90,30 150,230 178,230 112,30" fill="#9fd3e0" opacity=".55"/>
+        <line x1="112" y1="30" x2="178" y2="230" stroke="#28596B" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <!-- gravity arrow -->
+        <line x1="250" y1="60" x2="250" y2="130" stroke="#B0532E" stroke-width="2.4" marker-end="url(#arrF)"/>
+        <text class="lbl-b" x="256" y="100" fill="#B0532E">g</text>
+        <!-- angle beta indicator -->
+        <line x1="120" y1="30" x2="120" y2="70" stroke="var(--ink-soft)" stroke-width="1" stroke-dasharray="2 3"/>
+        <path d="M120,50 A20,20 0 0 1 105,42" fill="none" stroke="var(--ink-soft)" stroke-width="1"/>
+        <text class="lbl" x="126" y="48">β</text>
+        <!-- coordinate axes -->
+        <line x1="112" y1="30" x2="70" y2="35" stroke="#54713A" stroke-width="1.8" marker-end="url(#arrF)"/>
+        <text class="lbl-b" x="55" y="30" fill="#54713A">x (0 en la pared)</text>
+        <line x1="150" y1="230" x2="150" y2="255" stroke="#a87a2b" stroke-width="1.8" marker-end="url(#arrF)"/>
+        <text class="lbl-b" x="135" y="252" fill="#a87a2b">z (dirección del flujo)</text>
+        <!-- labels -->
+        <text class="lbl" x="80" y="130" text-anchor="end">pared sólida</text>
+        <text class="lbl" x="185" y="130">superficie libre</text>
+        <text class="lbl" x="185" y="145">τ = 0 (aire)</text>
+        <text class="lbl" x="80" y="145" text-anchor="end">v_z = 0</text>
+        <text class="lbl-b" x="190" y="170">x = δ</text>
+        <text class="lbl-b" x="65" y="45">x = 0</text>
+      </svg>
+      <p class="fig-caption">Fig. 2.1-4 — Película descendente sobre un plano inclinado: coordenadas, espesor δ y condiciones de frontera.</p>
+
+      <h4>Supuestos del modelo</h4>
+      <ol class="var-list" style="list-style:decimal; padding-left:20px;">
+        <li>Estado estacionario y flujo laminar, con ρ y μ constantes (propiedades del jarabe a temperatura de proceso).</li>
+        <li>Flujo completamente desarrollado: \(v_z\) depende únicamente de x; \(v_x = v_y = 0\).</li>
+        <li>Ancho de la placa muy grande frente a δ, de modo que los efectos de borde en y son despreciables (problema esencialmente 1D en x).</li>
+        <li>Presión atmosférica constante sobre la superficie libre — el flujo lo impulsa solo la componente de la gravedad a lo largo de z, no un gradiente de presión.</li>
+        <li>El aire no ejerce arrastre apreciable: el esfuerzo cortante es nulo en la superficie libre (x = δ).</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Vista previa de la deducción (se formaliza en el tema 2.2)</h3>
+      <p>Aplicando un balance de fuerzas sobre una delgada lámina de fluido de espesor Δx —peso a favor del flujo menos la diferencia de esfuerzo cortante entre sus dos caras— y sustituyendo enseguida la ley de Newton de la viscosidad, se llega a la ecuación diferencial que gobierna el perfil de velocidad:</p>
+      <ol class="deriv">
+        <li><b>Balance de fuerzas sobre la lámina Δx</b> (estado estacionario, suma de fuerzas = 0):
+          \[ \big(\tau_{xz}\big|_{x}\big)(WL) - \big(\tau_{xz}\big|_{x+\Delta x}\big)(WL) + \rho g \cos\beta \,(WL\Delta x) = 0 \]
+        </li>
+        <li><b>Dividir entre WLΔx y tomar el límite Δx→0:</b>
+          \[ \frac{d\tau_{xz}}{dx} = \rho g \cos\beta \]
+        </li>
+        <li><b>Integrar una vez</b> e imponer la condición de esfuerzo nulo en la superficie libre, \(\tau_{xz}(x=\delta)=0\):
+          \[ \tau_{xz}(x) = \rho g \cos\beta \,(x - \delta) \]
+        </li>
+        <li><b>Sustituir la ley de Newton de la viscosidad</b> \(\tau_{xz} = -\mu\, dv_z/dx\) — aquí es donde entra directamente el contenido de este tema 2.1:
+          \[ \frac{dv_z}{dx} = \frac{\rho g \cos\beta}{\mu}(\delta - x) \]
+        </li>
+        <li><b>Integrar de nuevo</b> e imponer la condición de no deslizamiento en la pared, \(v_z(x=0)=0\):
+          \[ v_z(x) = \frac{\rho g \cos\beta \,\delta^2}{2\mu}\left[ 2\left(\frac{x}{\delta}\right) - \left(\frac{x}{\delta}\right)^2 \right] \]
+        </li>
+      </ol>
+      <div class="preview"><b>Resultado:</b> un perfil de velocidad parabólico, máximo en la superficie libre (x = δ) y cero en la pared (x = 0) — exactamente la forma que verás en el simulador de la siguiente sección.</div>
+      <div class="eqbox center"><span class="eq-label">Velocidad promedio y caudal por unidad de ancho</span>
+        \[ \bar v_z = \frac{\rho g \cos\beta\,\delta^2}{3\mu} \qquad\qquad \frac{Q}{W} = \bar v_z\,\delta = \frac{\rho g \cos\beta\,\delta^3}{3\mu} \]
+      </div>
+      <p style="font-size:.85rem; color:var(--ink-soft);">Estas dos últimas expresiones son las que un ingeniero usaría en la práctica: por ejemplo, para dimensionar el ancho de placa necesario en un evaporador de película descendente que debe manejar un caudal de jugo determinado.</p>
+    </div>
+  </section>
+
+  <!-- ===================== SIMULADORES PYTHON ===================== -->
+  <section class="panel" id="python">
+    <div class="section-head">
+      <span class="num">Numérico vs. analítico</span>
+      <h2>Simuladores en Python: diferencias finitas contra la solución analítica</h2>
+      <p>La mayoría de los problemas reales de transporte de momentum no tienen una solución analítica tan limpia como la película descendente. Por eso conviene aprender, desde ahora, a resolver la misma ecuación diferencial <b>numéricamente</b> — y a usar un caso con solución conocida (como este) para verificar que el método numérico funciona antes de aplicarlo a problemas más complejos en los temas 2.2 y 2.3.</p>
+    </div>
+
+    <div class="card">
+      <h3>Metodología: diferencias finitas</h3>
+      <p>La ecuación a resolver es una EDO de segundo orden con una condición de frontera Dirichlet (pared, v = 0) y una de Neumann (superficie libre, dv/dx = 0):</p>
+      <div class="eqbox center">\[ \frac{d^2 v_z}{dx^2} = -\frac{\rho g \cos\beta}{\mu}, \qquad v_z(0)=0, \qquad \left.\frac{dv_z}{dx}\right|_{x=\delta} = 0 \]</div>
+      <p>Se discretiza el dominio [0, δ] en N nodos, se aproxima la segunda derivada con la fórmula centrada de tres puntos, y la condición de Neumann se implementa con un <b>nodo fantasma</b>. El resultado es un sistema lineal tridiagonal que se resuelve directamente.</p>
+
+      <div class="code-wrap">
+        <div class="code-head"><span>pelicula_descendente.py</span><span>NumPy + Matplotlib</span></div>
+        <pre class="code-py" id="pyCode1">import numpy as np
+import matplotlib.pyplot as plt
+
+# ---------------------------------------------------------------
+# Pelicula descendente (falling film) - flujo laminar
+# Comparacion: solucion numerica (diferencias finitas)
+#              vs. solucion analitica (integracion directa)
+# ---------------------------------------------------------------
+
+# Parametros fisicos (ejemplo: jarabe de fruta sobre una rampa)
+rho   = 1300.0            # kg/m3  (densidad del jarabe concentrado)
+mu    = 0.35               # Pa.s   (viscosidad dinamica)
+g     = 9.81                 # m/s2
+beta  = np.radians(20)         # angulo del plano medido desde la vertical
+delta = 0.0015                   # m (espesor de la pelicula, ~1.5 mm)
+
+# --- Solucion analitica ------------------------------------------
+def v_analitica(x):
+    return (rho * g * np.cos(beta) * delta**2) / (2 * mu) * (
+        2 * (x / delta) - (x / delta) ** 2
+    )
+
+# --- Solucion numerica: diferencias finitas -----------------------
+# ODE:  d2v/dx2 = -(rho*g*cos(beta))/mu      0 <= x <= delta
+# BC:   v(0) = 0                (no deslizamiento en la pared)
+#       dv/dx(delta) = 0        (esfuerzo cero en la superficie libre)
+
+N = 60                       # numero de nodos
+x = np.linspace(0, delta, N)
+h = x[1] - x[0]
+A = np.zeros((N, N))
+b = np.zeros(N)
+fuente = -(rho * g * np.cos(beta)) / mu
+
+# nodo 0: pared, v = 0 (Dirichlet)
+A[0, 0] = 1.0
+b[0] = 0.0
+
+# nodos internos: formula centrada de 3 puntos
+for i in range(1, N - 1):
+    A[i, i - 1] = 1.0 / h**2
+    A[i, i] = -2.0 / h**2
+    A[i, i + 1] = 1.0 / h**2
+    b[i] = fuente
+
+# nodo N-1: superficie libre, dv/dx = 0 -> nodo fantasma
+A[N - 1, N - 2] = 2.0 / h**2
+A[N - 1, N - 1] = -2.0 / h**2
+b[N - 1] = fuente
+
+v_numerica = np.linalg.solve(A, b)
+
+# --- Comparacion -----------------------------------------------------
+v_exacta = v_analitica(x)
+error = np.abs(v_numerica - v_exacta)
+print(f"Error maximo numerico vs. analitico: {error.max():.3e} m/s")
+
+plt.figure(figsize=(5, 4))
+plt.plot(v_exacta * 1000, x * 1000, "k-", label="Analitica")
+plt.plot(v_numerica * 1000, x * 1000, "o", ms=3, color="#B0532E",
+         label="Numerica (dif. finitas)")
+plt.xlabel("v_z (mm/s)")
+plt.ylabel("x (mm)")
+plt.title("Perfil de velocidad en pelicula descendente")
+plt.legend()
+plt.tight_layout()
+plt.show()</pre>
+      </div>
+      <div class="note"><b>Resultado esperado:</b> el error entre ambas soluciones es del orden del error de máquina (≈10⁻¹⁵), no un error de discretización. Esto ocurre porque el perfil analítico es exactamente cuadrático, y la fórmula centrada de diferencias finitas es <i>exacta</i> para cualquier polinomio de grado ≤ 2 — un buen recordatorio de que el método numérico no es una aproximación cruda, sino una herramienta que reproduce la física con la precisión que el esquema numérico permite.</div>
+
+      <h4>Extensión sugerida como ejercicio</h4>
+      <p>Repite el mismo procedimiento para el flujo de Couette de la sección 1D (fuente = 0 en vez de ρg cosβ/μ, con condiciones v(0)=0 y v(b)=V). El resultado numérico debe coincidir con la recta \(v_x(y)=Vy/b\); es una buena forma de verificar que tu código de diferencias finitas está bien planteado antes de usarlo en problemas sin solución analítica conocida.</p>
+    </div>
+
+    <div class="card">
+      <h3>Versión interactiva: el mismo cálculo, en el navegador</h3>
+      <p>Esta gráfica ejecuta la misma discretización por diferencias finitas (algoritmo de Thomas para sistemas tridiagonales) directamente en JavaScript, para que puedas explorar cómo cambia el perfil sin instalar Python. Los puntos numéricos se superponen sobre la curva analítica.</p>
+      <div class="sim">
+        <div>
+          <div class="control">
+            <label>Viscosidad μ <span class="val" id="vFilmMu">0.35</span> Pa·s</label>
+            <input type="range" id="rFilmMu" min="0.05" max="2" step="0.01" value="0.35">
+          </div>
+          <div class="control">
+            <label>Densidad ρ <span class="val" id="vFilmRho">1300</span> kg/m³</label>
+            <input type="range" id="rFilmRho" min="800" max="1400" step="10" value="1300">
+          </div>
+          <div class="control">
+            <label>Espesor de película δ <span class="val" id="vFilmDelta">1.5</span> mm</label>
+            <input type="range" id="rFilmDelta" min="0.5" max="4" step="0.1" value="1.5">
+          </div>
+          <div class="control">
+            <label>Ángulo β (desde la vertical) <span class="val" id="vFilmBeta">20</span> °</label>
+            <input type="range" id="rFilmBeta" min="0" max="80" value="20">
+          </div>
+          <div class="readout">
+            v<sub>z,máx</sub> (superficie libre)
+            <span class="big" id="filmVmaxOut">38.5 mm/s</span>
+            Error máx. numérico vs. analítico
+            <span class="big" id="filmErrOut">3.2e-13 mm/s</span>
+          </div>
+        </div>
+        <svg class="grad-svg" viewBox="0 0 300 250" id="svgFilmSim">
+          <defs>
+            <marker id="arrowheadFilm" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#28596B"/></marker>
+          </defs>
+          <line class="grid" x1="56" y1="26" x2="56" y2="176"/>
+          <line class="grid" x1="56" y1="101" x2="284" y2="101"/>
+          <line class="grid" x1="56" y1="176" x2="284" y2="176"/>
+          <line class="axis" x1="56" y1="26" x2="56" y2="176"/>
+          <line class="axis" x1="56" y1="176" x2="284" y2="176"/>
+          <text class="axistitle" x="26" y="101" text-anchor="middle" transform="rotate(-90 26 101)">posición x (pared → superficie)</text>
+          <text class="axistitle" x="284" y="212" text-anchor="end">velocidad v_z (mm/s)</text>
+          <text class="tick" x="50" y="29" text-anchor="end">δ</text>
+          <text class="tick" x="50" y="104" text-anchor="end">δ/2</text>
+          <text class="tick" x="50" y="179" text-anchor="end">0</text>
+          <text class="tick" id="filmTick0" x="56" y="192" text-anchor="middle">0</text>
+          <text class="tick" id="filmTickMax" x="284" y="192" text-anchor="middle">40</text>
+          <path id="filmAnalytic" fill="none" stroke="#28596B" stroke-width="3"/>
+          <g id="filmNumericDots"></g>
+          <circle cx="66" cy="164" r="4" fill="#28596B"/>
+          <text class="badge" x="74" y="167">v_z(0) = 0 (no deslizamiento)</text>
+          <circle cx="66" cy="38" r="4" fill="#B0532E"/>
+          <text class="badge" x="74" y="41">v_z(δ) = <tspan id="filmBadgeMax">38.5</tspan> mm/s (máx.)</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== REFERENCIAS ===================== -->
+  <section class="panel" id="refs">
+    <div class="section-head">
+      <span class="num">Bibliografía</span>
+      <h2>Referencias (formato APA)</h2>
+    </div>
+    <div class="card">
+      <div class="ref">Bird, R. B., Stewart, W. E., &amp; Lightfoot, E. N. (2006). <i>Transport phenomena</i> (2.ª ed.). John Wiley &amp; Sons.</div>
+      <div class="ref">Geankoplis, C. J., Hersel, A. A., &amp; Lepek, D. H. (2018). <i>Transport processes and separation process principles</i> (5.ª ed.). Prentice Hall.</div>
+      <div class="ref">Welty, J. R., Wicks, C. E., Wilson, R. E., &amp; Rorrer, G. L. (2015). <i>Fundamentals of momentum, heat, and mass transfer</i> (6.ª ed.). Wiley.</div>
+      <div class="ref">Singh, R. P., &amp; Heldman, D. R. (2014). <i>Introduction to food engineering</i> (5.ª ed.). Academic Press.</div>
+      <div class="ref">Chhabra, R. P., &amp; Richardson, J. F. (2008). <i>Non-Newtonian flow and applied rheology: Engineering applications</i> (2.ª ed.). Butterworth-Heinemann.</div>
+      <div class="ref">Rao, M. A. (2014). <i>Rheology of fluid, semisolid, and solid foods: Principles and applications</i> (3.ª ed.). Springer.</div>
+      <div class="ref">Chapra, S. C., &amp; Canale, R. P. (2015). <i>Numerical methods for engineers</i> (7.ª ed.). McGraw-Hill.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Universidad de Guanajuato · Campus Celaya–Salvatierra · División de Ciencias de la Salud e Ingenierías · Licenciatura en Ingeniería Agroindustrial — Material de apoyo, Unidad 2, Tema 2.1.
+</footer>
+
+<script>
+// ---- TABS ----
+const tabBtns = document.querySelectorAll('nav.tabs button');
+const panels = document.querySelectorAll('section.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+// ---- RESALTADO DE SINTAXIS PYTHON (ligero) ----
+function highlightPython(raw){
+  let t = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const store = [];
+  function stash(cls, s){ store.push('<span class="'+cls+'">'+s+'</span>'); return '\u0000'+(store.length-1)+'\u0000'; }
+  t = t.replace(/('[^'\n]*'|"[^"\n]*")/g, m=>stash('st', m));
+  t = t.replace(/(#[^\n]*)/g, m=>stash('cm', m));
+  const kw = ['def','return','for','in','if','elif','else','import','as','while','and','or','not','True','False','None','print'];
+  t = t.replace(new RegExp('\\b('+kw.join('|')+')\\b','g'), m=>stash('kw', m));
+  t = t.replace(/\u0000(\d+)\u0000/g, (m,i)=>store[+i]);
+  return t;
+}
+document.querySelectorAll('pre.code-py').forEach(el=>{
+  el.innerHTML = highlightPython(el.textContent);
+});
+
+// ---- SIMULADOR 1D: flujo de Couette ----
+const rCoV=document.getElementById('rCoV'), rCoB=document.getElementById('rCoB'), rCoMu=document.getElementById('rCoMu'), rCoA=document.getElementById('rCoA');
+const vCoV=document.getElementById('vCoV'), vCoB=document.getElementById('vCoB'), vCoMu=document.getElementById('vCoMu'), vCoA=document.getElementById('vCoA');
+const coGradOut=document.getElementById('coGradOut'), coTauOut=document.getElementById('coTauOut'), coFOut=document.getElementById('coFOut');
+function actualizarCouette(){
+  const V=+rCoV.value, b=+rCoB.value, mu=+rCoMu.value, A=+rCoA.value;
+  vCoV.textContent=V.toFixed(1); vCoB.textContent=b; vCoMu.textContent=mu.toFixed(2); vCoA.textContent=A.toFixed(2);
+  const grad = V/b; // (m/s)/mm, b ya en mm
+  const tau = -mu*grad*1000; // Pa: mu[Pa.s]*grad[(m/s)/mm] -> multiplicar por 1000 para pasar mm a m en el denominador
+  const F = mu*A*V/(b/1000); // N
+  coGradOut.textContent = grad.toFixed(2)+' (m/s)/mm';
+  coTauOut.textContent = tau.toFixed(1)+' Pa';
+  coFOut.textContent = F.toFixed(2)+' N';
+}
+[rCoV,rCoB,rCoMu,rCoA].forEach(r=>r.addEventListener('input', actualizarCouette));
+actualizarCouette();
+
+// ---- SIMULADOR: pelicula descendente (numerico vs analitico) ----
+function thomasSolve(a,b,c,d){
+  const n=b.length;
+  const cp=new Array(n), dp=new Array(n);
+  cp[0]=c[0]/b[0]; dp[0]=d[0]/b[0];
+  for(let i=1;i<n;i++){
+    const m=b[i]-a[i]*cp[i-1];
+    cp[i]=c[i]/m;
+    dp[i]=(d[i]-a[i]*dp[i-1])/m;
+  }
+  const x=new Array(n);
+  x[n-1]=dp[n-1];
+  for(let i=n-2;i>=0;i--){ x[i]=dp[i]-cp[i]*x[i+1]; }
+  return x;
+}
+
+const rFilmMu=document.getElementById('rFilmMu'), rFilmRho=document.getElementById('rFilmRho'), rFilmDelta=document.getElementById('rFilmDelta'), rFilmBeta=document.getElementById('rFilmBeta');
+const vFilmMu=document.getElementById('vFilmMu'), vFilmRho=document.getElementById('vFilmRho'), vFilmDelta=document.getElementById('vFilmDelta'), vFilmBeta=document.getElementById('vFilmBeta');
+const filmVmaxOut=document.getElementById('filmVmaxOut'), filmErrOut=document.getElementById('filmErrOut');
+const filmAnalytic=document.getElementById('filmAnalytic'), filmNumericDots=document.getElementById('filmNumericDots');
+const filmTickMax=document.getElementById('filmTickMax'), filmBadgeMax=document.getElementById('filmBadgeMax');
+const FG_LEFT=56, FG_RIGHT=284, FG_TOP=26, FG_BOTTOM=176;
+const G=9.81;
+
+function actualizarFilm(){
+  const mu=+rFilmMu.value, rho=+rFilmRho.value, deltaMM=+rFilmDelta.value, betaDeg=+rFilmBeta.value;
+  vFilmMu.textContent=mu.toFixed(2); vFilmRho.textContent=rho; vFilmDelta.textContent=deltaMM.toFixed(1); vFilmBeta.textContent=betaDeg;
+
+  const delta = deltaMM/1000; // m
+  const beta = betaDeg*Math.PI/180;
+  const cosB = Math.cos(beta);
+  const vmax = (rho*G*cosB*delta*delta)/(2*mu); // m/s
+  const vmaxMM = vmax*1000;
+
+  // --- solucion numerica: diferencias finitas (algoritmo de Thomas) ---
+  const N=13;
+  const h = delta/(N-1);
+  const fuente = -(rho*G*cosB)/mu;
+  const a=new Array(N).fill(0), bd=new Array(N).fill(0), c=new Array(N).fill(0), d=new Array(N).fill(0);
+  bd[0]=1; d[0]=0;
+  for(let i=1;i<N-1;i++){ a[i]=1/(h*h); bd[i]=-2/(h*h); c[i]=1/(h*h); d[i]=fuente; }
+  a[N-1]=2/(h*h); bd[N-1]=-2/(h*h); d[N-1]=fuente;
+  const vNum = thomasSolve(a,bd,c,d); // m/s en cada nodo
+
+  // --- solucion analitica en los mismos nodos, para el error ---
+  let maxErr=0;
+  const xFor = v => FG_LEFT + (v/ (vmaxMM*1.15)) * (FG_RIGHT-FG_LEFT);
+  const yFor = pf => FG_BOTTOM - pf*(FG_BOTTOM-FG_TOP);
+
+  let path = '';
+  for(let k=0;k<=40;k++){
+    const pf = k/40;
+    const vAnaMM = vmaxMM*(2*pf - pf*pf);
+    const px = xFor(vAnaMM), py = yFor(pf);
+    path += (k===0?'M':'L') + px.toFixed(1) + ',' + py.toFixed(1) + ' ';
+  }
+  filmAnalytic.setAttribute('d', path);
+
+  let dots='';
+  for(let i=0;i<N;i++){
+    const pf = i/(N-1);
+    const vAnaMM = vmaxMM*(2*pf - pf*pf);
+    const vNumMM = vNum[i]*1000;
+    maxErr = Math.max(maxErr, Math.abs(vNumMM - vAnaMM));
+    const px = xFor(vNumMM), py = yFor(pf);
+    dots += '<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="3.2" fill="#B0532E" stroke="#fff" stroke-width="1"/>';
+  }
+  filmNumericDots.innerHTML = dots;
+
+  filmVmaxOut.textContent = vmaxMM.toFixed(1)+' mm/s';
+  filmBadgeMax.textContent = vmaxMM.toFixed(1);
+  filmErrOut.textContent = maxErr.toExponential(2)+' mm/s (excelente concordancia)';
+  filmTickMax.textContent = (vmaxMM*1.15).toFixed(0);
+}
+[rFilmMu,rFilmRho,rFilmDelta,rFilmBeta].forEach(r=>r.addEventListener('input', actualizarFilm));
+actualizarFilm();
+</script>
+</body>
+</html>

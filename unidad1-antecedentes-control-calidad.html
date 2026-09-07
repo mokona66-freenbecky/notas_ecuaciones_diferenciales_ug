@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 1 · Antecedentes del control de calidad · UDEC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --paper:#F1EFE6;
+  --paper2:#E8E5D8;
+  --card:#FBFAF4;
+  --ink:#1C2B39;
+  --ink-soft:#4A5C6B;
+  --ink-faint:#8A93A0;
+  --grid-line: rgba(28,43,57,0.08);
+  --border:#C9C4B2;
+  --border-strong:#A9A38C;
+  --radius:10px;
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'IBM Plex Sans',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+
+  --c1:#B8842B; --c1-dk:#7A5518; --c1-bg:#F5E9D2;
+  --c2:#2F8F6E; --c2-dk:#1D5C46; --c2-bg:#DCF0E7;
+  --c3:#C4302B; --c3-dk:#8F1F1B; --c3-bg:#F7DAD8;
+  --c4:#2C5F8A; --c4-dk:#1E3F5C; --c4-bg:#DAE7F1;
+  --c5:#7B4B9E; --c5-dk:#54326E; --c5-bg:#EBE0F2;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size:26px 26px;
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.6;
+}
+h1,h2,h3,h4{font-family:var(--font-display); margin:0; letter-spacing:-0.01em;}
+p{margin:0 0 12px;}
+code{font-family:var(--font-mono);}
+
+.wrap{max-width:980px; margin:0 auto; padding:0 20px 80px;}
+
+header.hero{
+  padding:40px 20px 0;
+  max-width:980px;
+  margin:0 auto;
+}
+.folio{
+  font-family:var(--font-mono); font-size:12px; color:var(--ink-faint);
+  display:flex; justify-content:space-between; border-bottom:1px solid var(--border-strong);
+  padding-bottom:10px; margin-bottom:22px; flex-wrap:wrap; gap:6px;
+}
+.hero h1{font-size:clamp(28px,4.4vw,42px); font-weight:700; color:var(--ink);}
+.hero .sub{font-size:16px; color:var(--ink-soft); max-width:640px; margin-top:10px;}
+
+.progress-track{
+  display:flex; gap:6px; margin:26px 0 8px; flex-wrap:wrap;
+}
+.p-stop{
+  flex:1; min-width:110px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:8px; padding:8px 10px; font-family:var(--font-mono); font-size:11px;
+  color:var(--ink-soft); cursor:pointer; transition:transform .15s;
+  display:flex; flex-direction:column; gap:2px;
+}
+.p-stop:hover{transform:translateY(-2px);}
+.p-stop b{font-family:var(--font-display); font-size:13px; color:var(--ink); font-weight:600;}
+.p-stop.done{border-color:var(--c2); background:var(--c2-bg); color:var(--c2-dk);}
+.p-stop.done b{color:var(--c2-dk);}
+
+section.topic{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin:34px 0;
+  padding:0;
+  overflow:hidden;
+  scroll-margin-top:20px;
+}
+.topic-head{
+  padding:18px 26px;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:14px;
+  border-bottom:2px solid var(--accent, var(--ink));
+  background:var(--accent-bg, var(--paper2));
+}
+.topic-head .num{font-family:var(--font-mono); font-size:12px; color:var(--accent-dk,var(--ink-soft)); letter-spacing:.05em;}
+.topic-head h2{font-size:22px; color:var(--accent-dk,var(--ink)); margin-top:2px;}
+.topic-head .stamp{
+  font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); text-align:right; line-height:1.5; white-space:nowrap;
+}
+.topic-body{padding:22px 26px 28px;}
+
+.t1 .topic-head{--accent:var(--c1); --accent-dk:var(--c1-dk); --accent-bg:var(--c1-bg);}
+.t2 .topic-head{--accent:var(--c2); --accent-dk:var(--c2-dk); --accent-bg:var(--c2-bg);}
+.t3 .topic-head{--accent:var(--c3); --accent-dk:var(--c3-dk); --accent-bg:var(--c3-bg);}
+.t4 .topic-head{--accent:var(--c4); --accent-dk:var(--c4-dk); --accent-bg:var(--c4-bg);}
+.t5 .topic-head{--accent:var(--c5); --accent-dk:var(--c5-dk); --accent-bg:var(--c5-bg);}
+
+h3.h-sec{font-size:14px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin:20px 0 10px; font-weight:600;}
+h3.h-sec:first-child{margin-top:0;}
+ol,ul{padding-left:20px; margin:0 0 12px;}
+li{margin-bottom:5px;}
+
+.lab{
+  margin-top:18px; border:1.5px dashed var(--border-strong); border-radius:10px;
+  padding:18px 20px; background:rgba(255,255,255,0.5);
+}
+.lab-head{display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;}
+.lab-badge{
+  font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.06em;
+  background:var(--accent, var(--ink)); color:#fff; padding:3px 9px; border-radius:20px;
+}
+.t1 .lab-badge{background:var(--c1);} .t2 .lab-badge{background:var(--c2);}
+.t3 .lab-badge{background:var(--c3);} .t4 .lab-badge{background:var(--c4);} .t5 .lab-badge{background:var(--c5);}
+.lab .lt{font-weight:600; font-size:15px;}
+
+.mini-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:14px 0;}
+.mini-card{background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px 14px;}
+.mini-card h4{font-size:14px; margin-bottom:4px;}
+.mini-card p{font-size:13px; color:var(--ink-soft); margin:0;}
+.mc-tag{font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); text-transform:uppercase; margin-bottom:4px;}
+
+button.btn{
+  font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em;
+  background:var(--ink); color:#fff; border:none; border-radius:6px; padding:9px 16px;
+  cursor:pointer; transition:opacity .15s;
+}
+button.btn:hover{opacity:.85;}
+.t1 button.btn{background:var(--c1);} .t2 button.btn{background:var(--c2);}
+.t3 button.btn{background:var(--c3);} .t4 button.btn{background:var(--c4);} .t5 button.btn{background:var(--c5);}
+button.btn.ghost{background:transparent; border:1.5px solid var(--border-strong); color:var(--ink-soft);}
+
+/* --- 1.1 Timeline --- */
+.timeline-scroll{overflow-x:auto; padding-bottom:10px; margin-top:6px;}
+.timeline{display:flex; gap:0; min-width:760px; position:relative;}
+.era{
+  flex:1; text-align:center; padding:0 6px; cursor:pointer; position:relative;
+}
+.era .dot{
+  width:16px; height:16px; border-radius:50%; background:var(--card); border:3px solid var(--c1);
+  margin:0 auto 8px; position:relative; z-index:2; transition:transform .15s;
+}
+.era.active .dot{background:var(--c1); transform:scale(1.25);}
+.era .line{position:absolute; top:8px; left:-50%; width:100%; height:3px; background:var(--c1-bg); z-index:1;}
+.era:first-child .line{display:none;}
+.era .yr{font-family:var(--font-mono); font-size:11px; color:var(--c1-dk); font-weight:600;}
+.era .lbl{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+#era-detail{
+  margin-top:16px; background:var(--c1-bg); border-radius:8px; padding:16px 18px; border-left:4px solid var(--c1);
+}
+#era-detail h4{color:var(--c1-dk); font-size:15px; margin-bottom:6px;}
+#era-detail p{font-size:13.5px; color:var(--ink); margin:0;}
+
+/* --- 1.2 Impact simulator --- */
+.toggle-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin:14px 0;}
+.toggle-item{
+  display:flex; align-items:center; gap:10px; background:var(--card); border:1px solid var(--border);
+  border-radius:8px; padding:10px 12px; cursor:pointer; font-size:13px;
+}
+.toggle-item input{width:16px; height:16px; accent-color:var(--c2);}
+.toggle-item.on{border-color:var(--c2); background:var(--c2-bg);}
+.metric-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin:16px 0;}
+.metric{background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px 14px;}
+.metric .lbl{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; color:var(--ink-faint);}
+.metric .val{font-family:var(--font-display); font-size:24px; font-weight:700; color:var(--c2-dk); margin-top:2px;}
+.metric .bar{height:6px; background:var(--paper2); border-radius:4px; margin-top:8px; overflow:hidden;}
+.metric .bar i{display:block; height:100%; background:var(--c2); border-radius:4px; transition:width .3s;}
+
+/* --- 1.3 Cost simulator --- */
+.slider-row{display:flex; flex-direction:column; gap:4px; margin-bottom:16px;}
+.slider-row .lbl{display:flex; justify-content:space-between; font-size:13px; font-weight:600;}
+.slider-row .lbl span.v{font-family:var(--font-mono); color:var(--c3-dk); font-weight:600;}
+input[type=range]{width:100%; accent-color:var(--c3);}
+.cost-cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:16px 0;}
+.cost-card{border-radius:8px; padding:12px 14px; border:1px solid var(--border);}
+.cost-card .lbl{font-family:var(--font-mono); font-size:10px; text-transform:uppercase; color:var(--ink-faint);}
+.cost-card .val{font-family:var(--font-display); font-size:19px; font-weight:700; margin-top:2px;}
+.cc-prev{background:#DCF0E7; } .cc-prev .val{color:var(--c2-dk);}
+.cc-eval{background:#DAE7F1; } .cc-eval .val{color:var(--c4-dk);}
+.cc-int{background:#F7E3D2; } .cc-int .val{color:#B34A18;}
+.cc-ext{background:#F7DAD8; } .cc-ext .val{color:var(--c3-dk);}
+.cc-tot{background:#1C2B39; } .cc-tot .val{color:#fff;} .cc-tot .lbl{color:#B7C2CC;}
+table.dtab{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:14px; font-family:var(--font-mono);}
+table.dtab th{text-align:left; background:var(--c3-bg); color:var(--c3-dk); padding:7px 8px; border-bottom:2px solid var(--c3);}
+table.dtab td{padding:6px 8px; border-bottom:1px solid var(--border);}
+table.dtab tr:last-child td{font-weight:700; border-top:1.5px solid var(--ink);}
+
+/* --- 1.4 Stages stepper --- */
+.stage-track{display:flex; gap:8px; margin:16px 0; flex-wrap:wrap;}
+.stage-btn{
+  flex:1; min-width:150px; background:var(--card); border:2px solid var(--border); border-radius:8px;
+  padding:12px 14px; cursor:pointer; text-align:left;
+}
+.stage-btn .n{font-family:var(--font-mono); font-size:11px; color:var(--ink-faint);}
+.stage-btn .t{font-weight:600; font-size:14px; margin-top:2px;}
+.stage-btn.active{border-color:var(--c4); background:var(--c4-bg);}
+.stage-btn.active .t{color:var(--c4-dk);}
+#stage-detail{
+  background:var(--c4-bg); border-left:4px solid var(--c4); border-radius:8px; padding:16px 18px; font-size:13.5px;
+}
+#stage-detail h4{color:var(--c4-dk); font-size:15px; margin-bottom:6px;}
+#stage-detail ul{margin:8px 0 0; padding-left:18px;}
+
+/* --- 1.5 Philosophy cards --- */
+.guru-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:14px;}
+.guru-card{
+  perspective:1000px; height:190px; cursor:pointer;
+}
+.guru-inner{
+  position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;
+}
+.guru-card.flip .guru-inner{transform:rotateY(180deg);}
+.guru-face{
+  position:absolute; inset:0; backface-visibility:hidden; border-radius:10px; padding:14px 16px;
+  border:1.5px solid var(--c5); overflow:auto;
+}
+.guru-front{background:var(--c5-bg); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;}
+.guru-front .gi{font-family:var(--font-mono); font-size:10px; color:var(--c5-dk); text-transform:uppercase;}
+.guru-front h4{color:var(--c5-dk); font-size:17px; margin-top:6px;}
+.guru-front .hint{font-size:11px; color:var(--ink-faint); margin-top:10px;}
+.guru-back{background:var(--card); transform:rotateY(180deg); font-size:12px;}
+.guru-back b{color:var(--c5-dk); display:block; margin-bottom:3px; font-size:12.5px;}
+.guru-back p{margin:0 0 8px; color:var(--ink-soft);}
+
+.compare-select{display:flex; gap:10px; margin:14px 0; flex-wrap:wrap;}
+select{
+  font-family:var(--font-body); font-size:13px; padding:8px 10px; border-radius:6px; border:1px solid var(--border-strong);
+  background:var(--card); color:var(--ink);
+}
+#compare-out{margin-top:12px;}
+#compare-out table{width:100%; border-collapse:collapse; font-size:13px;}
+#compare-out th,#compare-out td{padding:8px 10px; border-bottom:1px solid var(--border); text-align:left;}
+#compare-out th{background:var(--c5-bg); color:var(--c5-dk); font-family:var(--font-mono); font-size:11px; text-transform:uppercase;}
+
+/* --- formulas & diagnosis --- */
+.formula-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin:14px 0;}
+.formula-card{background:var(--c3-bg); border:1px solid var(--c3); border-radius:8px; padding:12px 14px;}
+.formula-card .fname{font-weight:600; font-size:13px; color:var(--c3-dk); margin-bottom:6px;}
+.formula-card .feq{font-family:var(--font-mono); font-size:12.5px; background:#fff; border-radius:5px; padding:7px 9px; margin-bottom:7px; color:var(--ink); overflow-x:auto; white-space:nowrap;}
+.formula-card .fdesc{font-size:12px; color:var(--ink-soft); margin:0;}
+.diag-row{display:flex; gap:10px; align-items:center; margin:14px 0; flex-wrap:wrap;}
+#diag-out{margin-top:6px; background:var(--c5-bg); border-left:4px solid var(--c5); border-radius:8px; padding:16px 18px; font-size:13.5px;}
+#diag-out h4{color:var(--c5-dk); font-size:15px; margin-bottom:6px;}
+#diag-out .diag-focus{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; color:var(--c5-dk); background:#fff; display:inline-block; padding:3px 9px; border-radius:20px; margin-bottom:8px;}
+
+/* --- quiz --- */
+.quiz-wrap{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:26px; margin:34px 0;}
+.quiz-item{margin-bottom:20px;}
+.quiz-item p.q{font-weight:600; margin-bottom:8px; font-size:14.5px;}
+.quiz-opts{display:flex; flex-direction:column; gap:6px;}
+.quiz-opt{
+  border:1px solid var(--border-strong); border-radius:6px; padding:8px 12px; cursor:pointer; font-size:13.5px;
+  transition:background .15s;
+}
+.quiz-opt:hover{background:var(--paper2);}
+.quiz-opt.correct{background:#DCF0E7; border-color:var(--c2); color:var(--c2-dk); font-weight:600;}
+.quiz-opt.wrong{background:var(--c3-bg); border-color:var(--c3); color:var(--c3-dk);}
+
+.chart-box{position:relative; height:260px; margin-top:16px;}
+.note{font-size:12px; color:var(--ink-faint); margin-top:10px;}
+@media(max-width:640px){.topic-head{flex-direction:column;} .topic-head .stamp{text-align:left;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="folio">
+    <span>UNIVERSIDAD DE CELAYA · FACULTAD DE INGENIERÍA</span>
+    <span>IIA23-16 · CONTROL ESTADÍSTICO · UNIDAD 1</span>
+  </div>
+  <h1>Unidad 1 — Antecedentes del control de calidad</h1>
+  <p class="sub">Antes de graficar un solo punto de control, hay que entender de dónde viene la calidad: su historia, por qué cuesta no tenerla, cómo maduró la disciplina y qué proponían sus grandes maestros. Esta unidad prepara el terreno para las herramientas (Unidad 2) y las gráficas de control (Unidad 3).</p>
+  <div class="progress-track" id="progress-track">
+    <div class="p-stop" data-t="t1"><b>1.1</b>Historia</div>
+    <div class="p-stop" data-t="t2"><b>1.2</b>Importancia</div>
+    <div class="p-stop" data-t="t3"><b>1.3</b>Costos</div>
+    <div class="p-stop" data-t="t4"><b>1.4</b>Etapas</div>
+    <div class="p-stop" data-t="t5"><b>1.5</b>Filosofías</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section class="topic t1" id="t1">
+  <div class="topic-head">
+    <div><div class="num">1.1</div><h2>Historia del control de calidad</h2></div>
+    <div class="stamp">UDEC-1.1<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+    <h3 class="h-sec">Definición</h3>
+    <p>El control de calidad no nació con una fecha ni un autor único: es la acumulación de más de un siglo de respuestas a un mismo problema — cómo asegurar que lo que se produce cumpla lo que se prometió. Cada era añadió una pieza: primero se inspeccionó el producto terminado, después se controló el proceso con estadística, luego se aseguró la calidad desde el diseño, y hoy se gestiona como estrategia de toda la organización.</p>
+    <h3 class="h-sec">Línea de tiempo interactiva</h3>
+    <p class="note">Haz clic en cada estación para ver qué ocurrió y por qué fue un punto de quiebre.</p>
+    <div class="timeline-scroll">
+      <div class="timeline" id="timeline"></div>
+    </div>
+    <div id="era-detail"></div>
+  </div>
+</section>
+
+<section class="topic t2" id="t2">
+  <div class="topic-head">
+    <div><div class="num">1.2</div><h2>Importancia y puntos para mejorar la calidad</h2></div>
+    <div class="stamp">UDEC-1.2<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+    <h3 class="h-sec">Por qué importa</h3>
+    <p>La calidad no es un departamento, es una condición para competir: reduce desperdicio, evita reclamos, retiene clientes y baja el costo total de operar. La pregunta de fondo de esta unidad es "¿qué le cuesta a Componentes Bajío <em>no</em> tener calidad?" — y esa pregunta se responde con datos, no con opiniones.</p>
+    <h3 class="h-sec">Puntos clave para mejorar la calidad</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">Enfoque</div><h4>Orientación al cliente</h4><p>Definir calidad según lo que el cliente valora, no según lo que es fácil de producir.</p></div>
+      <div class="mini-card"><div class="mc-tag">Método</div><h4>Prevención sobre corrección</h4><p>Invertir en evitar el defecto es más barato que detectarlo o repararlo después.</p></div>
+      <div class="mini-card"><div class="mc-tag">Cultura</div><h4>Compromiso de la dirección</h4><p>Sin liderazgo visible, los programas de calidad se quedan en carteles de pasillo.</p></div>
+      <div class="mini-card"><div class="mc-tag">Gente</div><h4>Participación del personal</h4><p>Quien opera el proceso es quien mejor detecta dónde falla.</p></div>
+      <div class="mini-card"><div class="mc-tag">Método</div><h4>Decisiones con datos</h4><p>Medir antes de actuar: de ahí nacen las siete herramientas básicas (Unidad 2).</p></div>
+      <div class="mini-card"><div class="mc-tag">Proceso</div><h4>Mejora continua</h4><p>La calidad no se certifica una vez; se sostiene con ciclos repetidos de revisión.</p></div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Simulador</span><span class="lt">Impacto de aplicar puntos de mejora</span></div>
+      <p class="note">Activa o desactiva prácticas de calidad y observa el efecto simulado sobre cuatro indicadores de Componentes Bajío S.A. de C.V. Los valores se generan con un modelo simple de impacto acumulado, útil para discutir tendencias, no como predicción exacta.</p>
+      <div class="toggle-grid" id="toggle-grid"></div>
+      <div class="metric-row" id="impact-metrics"></div>
+    </div>
+  </div>
+</section>
+
+<section class="topic t3" id="t3">
+  <div class="topic-head">
+    <div><div class="num">1.3</div><h2>Costos de calidad</h2></div>
+    <div class="stamp">UDEC-1.3<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+    <h3 class="h-sec">Las cuatro categorías clásicas</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">Prevención</div><h4>Evitar el defecto</h4><p>Capacitación, diseño de procesos, mantenimiento preventivo, planeación de calidad.</p></div>
+      <div class="mini-card"><div class="mc-tag">Evaluación</div><h4>Detectar el defecto</h4><p>Inspección, pruebas, auditorías, calibración de equipo de medición.</p></div>
+      <div class="mini-card"><div class="mc-tag">Falla interna</div><h4>Defecto detectado a tiempo</h4><p>Reproceso, desperdicio (scrap), reinspección — antes de salir de la planta.</p></div>
+      <div class="mini-card"><div class="mc-tag">Falla externa</div><h4>Defecto llega al cliente</h4><p>Garantías, devoluciones, quejas, pérdida de reputación — el más caro de todos.</p></div>
+    </div>
+    <h3 class="h-sec">Cómo se calculan</h3>
+    <p>Cada categoría se calcula sumando los gastos reales que caen dentro de su definición durante el periodo que se esté midiendo (normalmente un mes o un trimestre). No hay una fórmula matemática única para "inventar" el número: se contabiliza, partida por partida, en qué categoría cae cada gasto — exactamente como hicieron en el Caso 3 del documento de ejercicios.</p>
+    <div class="formula-grid">
+      <div class="formula-card">
+        <div class="fname">Costo de prevención (CP)</div>
+        <div class="feq">CP = Σ gastos en evitar el defecto</div>
+        <p class="fdesc">Capacitación + planeación de calidad + mantenimiento preventivo + rediseño de proceso/producto.</p>
+      </div>
+      <div class="formula-card">
+        <div class="fname">Costo de evaluación (CE)</div>
+        <div class="feq">CE = Σ gastos en detectar el defecto</div>
+        <p class="fdesc">Inspección + pruebas + auditorías de calidad + calibración de equipo de medición.</p>
+      </div>
+      <div class="formula-card">
+        <div class="fname">Costo de falla interna (CFI)</div>
+        <div class="feq">CFI = (u. rechazadas × costo unitario reproceso) + scrap</div>
+        <p class="fdesc">Reproceso + desperdicio (scrap) + reinspección — defectos detectados antes de salir de la planta.</p>
+      </div>
+      <div class="formula-card">
+        <div class="fname">Costo de falla externa (CFE)</div>
+        <div class="feq">CFE = garantías + devoluciones + créditos + quejas</div>
+        <p class="fdesc">Todo lo que ocurre cuando el defecto ya llegó al cliente, incluida la pérdida de reputación.</p>
+      </div>
+      <div class="formula-card">
+        <div class="fname">Costo total de calidad (CTC)</div>
+        <div class="feq">CTC = CP + CE + CFI + CFE</div>
+        <p class="fdesc">La suma de las cuatro categorías durante el periodo — es el "costo de calidad" que se reporta a dirección.</p>
+      </div>
+      <div class="formula-card">
+        <div class="fname">Índice de calidad sobre ventas</div>
+        <div class="feq">Índice = (CTC ÷ Ventas totales) × 100</div>
+        <p class="fdesc">Permite comparar el costo de calidad entre periodos o plantas de distinto tamaño, en vez de comparar pesos contra pesos.</p>
+      </div>
+    </div>
+    <p class="note">El simulador de abajo aplica esta misma lógica en sentido inverso: en vez de sumar gastos ya ocurridos, parte de la producción y de un porcentaje objetivo de prevención/evaluación para <em>proyectar</em> cuánto costarían las fallas — así se puede comparar "lo que gastamos" contra "lo que podríamos gastar si invirtiéramos distinto".</p>
+    <p>La regla empírica que sostiene esta unidad: <strong>cada peso invertido en prevención evita varios pesos de falla interna y externa</strong>. El simulador siguiente genera un lote de datos mensuales para que lo comprueben.</p>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Simulador de datos</span><span class="lt">Generador de costos de calidad — Componentes Bajío S.A. de C.V.</span></div>
+      <p class="note">Ajusta la producción mensual y el nivel de inversión en prevención e inspección. El simulador genera los cuatro costos de calidad y una tabla de datos que pueden exportar a Excel para practicar.</p>
+
+      <div class="slider-row">
+        <div class="lbl">Producción mensual (unidades) <span class="v" id="v-prod">50,000</span></div>
+        <input type="range" id="s-prod" min="10000" max="150000" step="1000" value="50000">
+      </div>
+      <div class="slider-row">
+        <div class="lbl">Inversión en prevención (% del costo de calidad) <span class="v" id="v-prev">10</span></div>
+        <input type="range" id="s-prev" min="0" max="40" step="1" value="10">
+      </div>
+      <div class="slider-row">
+        <div class="lbl">Nivel de inspección (% del costo de calidad) <span class="v" id="v-eval">15</span></div>
+        <input type="range" id="s-eval" min="0" max="40" step="1" value="15">
+      </div>
+
+      <div class="cost-cards">
+        <div class="cost-card cc-prev"><div class="lbl">Prevención</div><div class="val" id="c-prev">$0</div></div>
+        <div class="cost-card cc-eval"><div class="lbl">Evaluación</div><div class="val" id="c-eval">$0</div></div>
+        <div class="cost-card cc-int"><div class="lbl">Falla interna</div><div class="val" id="c-int">$0</div></div>
+        <div class="cost-card cc-ext"><div class="lbl">Falla externa</div><div class="val" id="c-ext">$0</div></div>
+        <div class="cost-card cc-tot"><div class="lbl">Costo total de calidad</div><div class="val" id="c-tot">$0</div></div>
+      </div>
+
+      <div class="chart-box"><canvas id="costChart" role="img" aria-label="Gráfico de barras apiladas mostrando la distribución de costos de calidad en prevención, evaluación, falla interna y falla externa a lo largo de 6 meses simulados"></canvas></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; flex-wrap:wrap; gap:10px;">
+        <span class="lt" style="font-weight:600; font-size:14px;">Bitácora de datos simulados (6 meses)</span>
+        <button class="btn" id="gen-data">Generar nuevo lote</button>
+      </div>
+      <table class="dtab" id="cost-table"></table>
+      <p class="note">Nota pedagógica: al subir prevención y evaluación, las fallas interna y externa bajan de forma no lineal — esto ilustra la curva clásica de costo de calidad que se retoma con más profundidad en Unidad 4 (Habilidad del proceso).</p>
+    </div>
+  </div>
+</section>
+
+<section class="topic t4" id="t4">
+  <div class="topic-head">
+    <div><div class="num">1.4</div><h2>Etapas de desarrollo del control de la calidad</h2></div>
+    <div class="stamp">UDEC-1.4<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+    <h3 class="h-sec">Cuatro etapas reconocidas</h3>
+    <p>La disciplina no saltó directo de "revisar piezas" a "gestión total de calidad". Pasó por cuatro etapas, cada una construida sobre la anterior. Haz clic en cada una para ver su enfoque, sus herramientas típicas y sus límites.</p>
+    <div class="stage-track" id="stage-track"></div>
+    <div id="stage-detail"></div>
+  </div>
+</section>
+
+<section class="topic t5" id="t5">
+  <div class="topic-head">
+    <div><div class="num">1.5</div><h2>Comparativa de filosofía de los maestros de la calidad</h2></div>
+    <div class="stamp">UDEC-1.5<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+    <h3 class="h-sec">Seis autores, seis enfoques</h3>
+    <p>Todos persiguen lo mismo — procesos consistentes y clientes satisfechos — pero con puntos de partida distintos: unos parten de la estadística, otros del liderazgo, otros del costo. Haz clic en cada tarjeta para voltearla.</p>
+    <div class="guru-grid" id="guru-grid"></div>
+
+    <h3 class="h-sec" style="margin-top:26px;">Comparador rápido</h3>
+    <div class="compare-select">
+      <select id="cmp-a"></select>
+      <span style="align-self:center; color:var(--ink-faint); font-family:var(--font-mono); font-size:12px;">VS</span>
+      <select id="cmp-b"></select>
+    </div>
+    <div id="compare-out"></div>
+
+    <h3 class="h-sec" style="margin-top:26px;">De la filosofía a la decisión de inversión</h3>
+    <p>La comparativa de filosofías no es solo cultura general: cada maestro de la calidad prioriza una categoría distinta de costo (1.3), y eso es exactamente lo que orienta en qué invertir primero. Selecciona qué categoría domina en tu diagnóstico de costos y el simulador te dirá qué enfoque filosófico aplica y dónde conviene invertir más.</p>
+    <div class="diag-row">
+      <select id="diag-select">
+        <option value="ext">Domina la falla externa (quejas, devoluciones, garantías)</option>
+        <option value="int">Domina la falla interna (reproceso, scrap)</option>
+        <option value="eval">Domina la evaluación, sin bajar las fallas</option>
+        <option value="prev">Prevención muy baja frente a las demás categorías</option>
+        <option value="disperso">El gasto está disperso entre áreas, sin dueño claro</option>
+      </select>
+    </div>
+    <div id="diag-out"></div>
+  </div>
+</section>
+
+<div class="quiz-wrap">
+  <h2 style="margin-bottom:16px;">Autoevaluación — Unidad 1</h2>
+  <div id="quiz-body"></div>
+  <p style="margin-top:8px;">Resultado: <span id="quiz-score">0 / 0</span></p>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.p-stop').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.getElementById(el.dataset.t).scrollIntoView({behavior:'smooth'});
+  });
+});
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const stop = document.querySelector('.p-stop[data-t="'+e.target.id+'"]');
+      if(stop) stop.classList.add('done');
+    }
+  });
+},{threshold:0.35});
+document.querySelectorAll('section.topic').forEach(s=>io.observe(s));
+
+const eras = [
+  {yr:"Antes de 1900", lbl:"Oficios y gremios", title:"Calidad artesanal por gremios", text:"El propio artesano inspeccionaba su trabajo; la reputación personal era la garantía de calidad. No existía estandarización entre talleres."},
+  {yr:"1900–1920", lbl:"Taylorismo", title:"Administración científica (Taylor)", text:"La producción se separa en tareas especializadas. Nace la figura del inspector como puesto dedicado, distinto del operario que fabrica."},
+  {yr:"1924", lbl:"Shewhart", title:"Walter Shewhart y la carta de control", text:"En los Laboratorios Bell, Shewhart propone la primera gráfica de control: distingue variación normal (causas comunes) de variación anormal (causas asignables). Es el nacimiento formal del control estadístico de procesos, base de la Unidad 3."},
+  {yr:"1940s", lbl:"Segunda Guerra Mundial", title:"Estándares militares de calidad", text:"EE. UU. exige control estadístico en la industria bélica; nacen los primeros planes de muestreo militares (antecedentes de MIL-STD-105D, Unidad 5)."},
+  {yr:"1950s", lbl:"Japón de posguerra", title:"Deming y Juran llegan a Japón", text:"Invitados por la JUSE, enseñan control estadístico y gestión de calidad a la industria japonesa en reconstrucción. Sientan las bases del ‘milagro industrial japonés’."},
+  {yr:"1960s–70s", lbl:"Círculos de calidad", title:"Ishikawa y la participación del operario", text:"Kaoru Ishikawa impulsa los círculos de calidad y difunde herramientas simples (como su propio diagrama causa-efecto) para que cualquier trabajador participe en la mejora."},
+  {yr:"1980s", lbl:"Calidad total (TQM)", title:"Occidente adopta la Gestión Total de Calidad", text:"Ante la competencia japonesa, EE. UU. y Europa adoptan TQM: la calidad deja de ser tarea de un departamento y se vuelve responsabilidad de toda la organización."},
+  {yr:"1987–hoy", lbl:"ISO y Six Sigma", title:"Estandarización global", text:"Aparecen las normas ISO 9000 (1987) y metodologías como Six Sigma (Motorola, 1986). La calidad se certifica, se audita y se integra a la estrategia del negocio."}
+];
+const tl = document.getElementById('timeline');
+eras.forEach((e,i)=>{
+  const d = document.createElement('div');
+  d.className='era'+(i===0?' active':'');
+  d.dataset.i=i;
+  d.innerHTML = '<div class="line"></div><div class="dot"></div><div class="yr">'+e.yr+'</div><div class="lbl">'+e.lbl+'</div>';
+  d.addEventListener('click',()=>{
+    document.querySelectorAll('.era').forEach(x=>x.classList.remove('active'));
+    d.classList.add('active');
+    showEra(i);
+  });
+  tl.appendChild(d);
+});
+function showEra(i){
+  const e = eras[i];
+  document.getElementById('era-detail').innerHTML = '<h4>'+e.yr+' — '+e.title+'</h4><p>'+e.text+'</p>';
+}
+showEra(0);
+
+const points = [
+  {k:'cliente', label:'Orientación al cliente', w:{costo:-8,satisfaccion:14,productividad:2,desperdicio:-4}},
+  {k:'prevencion', label:'Prevención sobre corrección', w:{costo:-14,satisfaccion:6,productividad:6,desperdicio:-16}},
+  {k:'liderazgo', label:'Compromiso de la dirección', w:{costo:-4,satisfaccion:8,productividad:8,desperdicio:-4}},
+  {k:'personal', label:'Participación del personal', w:{costo:-6,satisfaccion:5,productividad:9,desperdicio:-6}},
+  {k:'datos', label:'Decisiones con datos', w:{costo:-10,satisfaccion:4,productividad:7,desperdicio:-9}},
+  {k:'continua', label:'Mejora continua', w:{costo:-9,satisfaccion:9,productividad:5,desperdicio:-11}}
+];
+const base = {costo:100, satisfaccion:62, productividad:70, desperdicio:100};
+const tg = document.getElementById('toggle-grid');
+points.forEach(p=>{
+  const label = document.createElement('label');
+  label.className='toggle-item';
+  label.innerHTML = '<input type="checkbox" data-k="'+p.k+'"><span>'+p.label+'</span>';
+  tg.appendChild(label);
+});
+function renderImpact(){
+  const checked = Array.from(document.querySelectorAll('#toggle-grid input:checked')).map(i=>i.dataset.k);
+  document.querySelectorAll('.toggle-item').forEach(t=>{
+    const cb = t.querySelector('input');
+    t.classList.toggle('on', cb.checked);
+  });
+  let vals = {...base};
+  points.forEach(p=>{
+    if(checked.includes(p.k)){
+      vals.costo += p.w.costo;
+      vals.satisfaccion += p.w.satisfaccion;
+      vals.productividad += p.w.productividad;
+      vals.desperdicio += p.w.desperdicio;
+    }
+  });
+  vals.costo = Math.max(35, Math.round(vals.costo));
+  vals.satisfaccion = Math.min(99, Math.round(vals.satisfaccion));
+  vals.productividad = Math.min(100, Math.round(vals.productividad));
+  vals.desperdicio = Math.max(15, Math.round(vals.desperdicio));
+  const metrics = [
+    {lbl:'Costo de no calidad (índice)', v:vals.costo, max:100},
+    {lbl:'Satisfacción del cliente (%)', v:vals.satisfaccion, max:100},
+    {lbl:'Productividad (índice)', v:vals.productividad, max:100},
+    {lbl:'Desperdicio (índice)', v:vals.desperdicio, max:100}
+  ];
+  document.getElementById('impact-metrics').innerHTML = metrics.map(m=>
+    '<div class="metric"><div class="lbl">'+m.lbl+'</div><div class="val">'+m.v+'</div><div class="bar"><i style="width:'+m.v+'%"></i></div></div>'
+  ).join('');
+}
+document.getElementById('toggle-grid').addEventListener('change', renderImpact);
+renderImpact();
+
+const sProd = document.getElementById('s-prod');
+const sPrev = document.getElementById('s-prev');
+const sEval = document.getElementById('s-eval');
+const fmt = n => '$' + Math.round(n).toLocaleString('es-MX');
+let costChart;
+function computeCosts(){
+  const prod = parseInt(sProd.value,10);
+  const prevPct = parseInt(sPrev.value,10);
+  const evalPct = parseInt(sEval.value,10);
+  document.getElementById('v-prod').textContent = prod.toLocaleString('es-MX');
+  document.getElementById('v-prev').textContent = prevPct;
+  document.getElementById('v-eval').textContent = evalPct;
+
+  const baseQualityCost = prod * 2.4;
+  const prev = baseQualityCost * (prevPct/100);
+  const evalC = baseQualityCost * (evalPct/100);
+  const shield = Math.min(0.85, (prevPct*1.4 + evalPct*0.9)/100);
+  const intBase = baseQualityCost * 0.55;
+  const extBase = baseQualityCost * 0.75;
+  const intC = intBase * (1-shield);
+  const extC = extBase * (1-shield*1.05);
+  const total = prev + evalC + intC + extC;
+
+  document.getElementById('c-prev').textContent = fmt(prev);
+  document.getElementById('c-eval').textContent = fmt(evalC);
+  document.getElementById('c-int').textContent = fmt(intC);
+  document.getElementById('c-ext').textContent = fmt(extC);
+  document.getElementById('c-tot').textContent = fmt(total);
+  return {prev, evalC, intC, extC, total, prod};
+}
+function genMonthlyData(){
+  const months = ['Mes 1','Mes 2','Mes 3','Mes 4','Mes 5','Mes 6'];
+  const c = computeCosts();
+  const rows = months.map(m=>{
+    const noise = 0.9 + Math.random()*0.2;
+    return {
+      m,
+      prev: Math.round(c.prev*noise),
+      evalC: Math.round(c.evalC*noise),
+      intC: Math.round(c.intC*(1.1-Math.random()*0.2)),
+      extC: Math.round(c.extC*(1.1-Math.random()*0.2))
+    };
+  });
+  const tbl = document.getElementById('cost-table');
+  let html = '<tr><th>Mes</th><th>Prevención</th><th>Evaluación</th><th>Falla interna</th><th>Falla externa</th><th>Total</th></tr>';
+  let tot=[0,0,0,0,0];
+  rows.forEach(r=>{
+    const t = r.prev+r.evalC+r.intC+r.extC;
+    tot[0]+=r.prev; tot[1]+=r.evalC; tot[2]+=r.intC; tot[3]+=r.extC; tot[4]+=t;
+    html += '<tr><td>'+r.m+'</td><td>'+fmt(r.prev)+'</td><td>'+fmt(r.evalC)+'</td><td>'+fmt(r.intC)+'</td><td>'+fmt(r.extC)+'</td><td>'+fmt(t)+'</td></tr>';
+  });
+  html += '<tr><td>Promedio</td><td>'+fmt(tot[0]/6)+'</td><td>'+fmt(tot[1]/6)+'</td><td>'+fmt(tot[2]/6)+'</td><td>'+fmt(tot[3]/6)+'</td><td>'+fmt(tot[4]/6)+'</td></tr>';
+  tbl.innerHTML = html;
+
+  const ctx = document.getElementById('costChart');
+  const data = {
+    labels: months,
+    datasets: [
+      {label:'Prevención', data: rows.map(r=>r.prev), backgroundColor:'#2F8F6E'},
+      {label:'Evaluación', data: rows.map(r=>r.evalC), backgroundColor:'#2C5F8A'},
+      {label:'Falla interna', data: rows.map(r=>r.intC), backgroundColor:'#D4A017'},
+      {label:'Falla externa', data: rows.map(r=>r.extC), backgroundColor:'#C4302B'}
+    ]
+  };
+  if(costChart) costChart.destroy();
+  costChart = new Chart(ctx,{
+    type:'bar',
+    data,
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{x:{stacked:true, grid:{display:false}}, y:{stacked:true, ticks:{callback:v=>'$'+(v/1000)+'k'}}},
+      plugins:{legend:{position:'bottom', labels:{boxWidth:12, font:{size:11}}}}
+    }
+  });
+}
+[sProd,sPrev,sEval].forEach(s=>s.addEventListener('input', genMonthlyData));
+document.getElementById('gen-data').addEventListener('click', genMonthlyData);
+genMonthlyData();
+
+const stages = [
+  {n:'Etapa 1', t:'Inspección', period:'Hasta 1920s', desc:'La calidad se verifica al final de la línea: se separan piezas buenas de malas ya fabricadas.', items:['Enfoque: detectar, no prevenir','Herramienta típica: inspección visual y calibres','Límite: no reduce el defecto, solo lo filtra — cuesta caro reprocesar']},
+  {n:'Etapa 2', t:'Control estadístico de procesos', period:'1930s–1950s', desc:'Se usa estadística para monitorear el proceso mientras ocurre, no solo el resultado final (base de la carta de control de Shewhart).', items:['Enfoque: prevenir mientras se produce','Herramienta típica: cartas de control, muestreo de aceptación','Límite: sigue enfocado en manufactura, poco en diseño o servicio']},
+  {n:'Etapa 3', t:'Aseguramiento de la calidad', period:'1950s–1970s', desc:'La calidad se planea desde el diseño del producto y del proceso, con sistemas documentados (costos de calidad, auditorías).', items:['Enfoque: prevenir desde el diseño','Herramienta típica: costos de calidad, planeación, auditorías internas','Límite: aún puede quedar aislado en un departamento de calidad']},
+  {n:'Etapa 4', t:'Administración estratégica de la calidad (TQM)', period:'1980s–hoy', desc:'La calidad se integra a la estrategia de toda la organización: todos los procesos y todo el personal son responsables.', items:['Enfoque: calidad como ventaja competitiva','Herramienta típica: TQM, ISO 9000, Six Sigma','Reto actual: sostenerla frente a la variabilidad diaria del proceso — de ahí las gráficas de control (Unidad 3)']}
+];
+const st = document.getElementById('stage-track');
+stages.forEach((s,i)=>{
+  const b = document.createElement('div');
+  b.className='stage-btn'+(i===0?' active':'');
+  b.innerHTML = '<div class="n">'+s.n+' · '+s.period+'</div><div class="t">'+s.t+'</div>';
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.stage-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    showStage(i);
+  });
+  st.appendChild(b);
+});
+function showStage(i){
+  const s = stages[i];
+  document.getElementById('stage-detail').innerHTML = '<h4>'+s.t+'</h4><p>'+s.desc+'</p><ul>'+s.items.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+}
+showStage(0);
+
+const gurus = [
+  {name:'W. Edwards Deming', tag:'Estadística y gestión', enfoque:'Reducir la variación del proceso mediante estadística y transformar el estilo de dirección.', aporte:'Ciclo PHVA (Planear-Hacer-Verificar-Actuar) y los 14 puntos para la gestión.', idea:'La calidad se construye en el proceso, no se inspecciona al final.'},
+  {name:'Joseph Juran', tag:'Trilogía de calidad', enfoque:'La calidad es "aptitud para el uso": debe definirse desde la perspectiva del cliente.', aporte:'Trilogía de la calidad: planeación, control y mejora.', idea:'La mayoría de los problemas de calidad son responsabilidad de la administración, no del operario.'},
+  {name:'Philip Crosby', tag:'Cero defectos', enfoque:'La calidad es gratis: cuesta más no tenerla que prevenirla.', aporte:'Filosofía de "cero defectos" y los 14 pasos para la mejora de calidad.', idea:'Hacerlo bien a la primera vez, siempre.'},
+  {name:'Kaoru Ishikawa', tag:'Participación total', enfoque:'La calidad involucra a toda la empresa, incluido el operario de línea.', aporte:'Diagrama causa-efecto (Ishikawa) y los círculos de calidad.', idea:'Democratizar las herramientas de calidad para que cualquiera las use.'},
+  {name:'Armand Feigenbaum', tag:'Control total de calidad', enfoque:'La calidad requiere coordinación entre todas las áreas, no solo producción.', aporte:'Acuñó el concepto de Control Total de Calidad (TQC).', idea:'La calidad es trabajo de todos, desde diseño hasta servicio postventa.'},
+  {name:'Genichi Taguchi', tag:'Diseño robusto', enfoque:'Diseñar productos y procesos que sean insensibles a la variación.', aporte:'Función de pérdida de calidad: todo alejamiento del valor objetivo genera costo.', idea:'Prevenir la variación desde el diseño es más eficaz que controlarla después.'}
+];
+const gg = document.getElementById('guru-grid');
+gurus.forEach((g,i)=>{
+  const c = document.createElement('div');
+  c.className='guru-card';
+  c.innerHTML = '<div class="guru-inner">'+
+    '<div class="guru-face guru-front"><div class="gi">'+g.tag+'</div><h4>'+g.name+'</h4><div class="hint">Clic para ver su aporte</div></div>'+
+    '<div class="guru-face guru-back"><b>Enfoque principal</b><p>'+g.enfoque+'</p><b>Aporte clave</b><p>'+g.aporte+'</p><b>Idea central</b><p>'+g.idea+'</p></div>'+
+  '</div>';
+  c.addEventListener('click',()=>c.classList.toggle('flip'));
+  gg.appendChild(c);
+});
+const selA = document.getElementById('cmp-a');
+const selB = document.getElementById('cmp-b');
+gurus.forEach((g,i)=>{
+  selA.innerHTML += '<option value="'+i+'">'+g.name+'</option>';
+  selB.innerHTML += '<option value="'+i+'">'+g.name+'</option>';
+});
+selB.value = 1;
+function renderCompare(){
+  const a = gurus[selA.value], b = gurus[selB.value];
+  document.getElementById('compare-out').innerHTML =
+    '<table><tr><th>Dimensión</th><th>'+a.name+'</th><th>'+b.name+'</th></tr>'+
+    '<tr><td>Enfoque</td><td>'+a.enfoque+'</td><td>'+b.enfoque+'</td></tr>'+
+    '<tr><td>Aporte clave</td><td>'+a.aporte+'</td><td>'+b.aporte+'</td></tr>'+
+    '<tr><td>Idea central</td><td>'+a.idea+'</td><td>'+b.idea+'</td></tr></table>';
+}
+selA.addEventListener('change', renderCompare);
+selB.addEventListener('change', renderCompare);
+renderCompare();
+
+const diagnoses = {
+  ext: {
+    focus: 'Invertir en diseño robusto y en prevención',
+    gurus: 'Genichi Taguchi y Philip Crosby',
+    text: 'Si la falla externa domina, el defecto ya está llegando al cliente — el momento para actuar ya pasó dentro del proceso. Taguchi propone diseñar el producto y el proceso para que sean insensibles a la variación desde el origen (función de pérdida de calidad), y Crosby recuerda que "hacerlo bien a la primera vez" siempre sale más barato que pagar garantías y devoluciones. La inversión debe moverse de evaluación/corrección hacia rediseño y prevención en la fuente.'
+  },
+  int: {
+    focus: 'Invertir en control estadístico del proceso',
+    gurus: 'W. Edwards Deming',
+    text: 'Si la falla interna domina (mucho reproceso y scrap), el problema está en la variación del proceso mismo, no en el diseño ni en el cliente. Deming propone reducir esa variación con análisis estadístico y el ciclo PHVA, monitoreando el proceso mientras ocurre — el mismo principio detrás de las cartas de control de Shewhart que se estudian en la Unidad 3. Invertir aquí en instrumentación, capacitación técnica y control de proceso rinde más que seguir inspeccionando al final.'
+  },
+  eval: {
+    focus: 'Invertir en planeación de calidad, no en más inspección',
+    gurus: 'Joseph Juran',
+    text: 'Gastar cada vez más en inspección sin que bajen las fallas es una señal clásica de que el problema no es de detección sino de planeación. Juran insiste en que la mayoría de los problemas de calidad son responsabilidad de la administración: su Trilogía de la Calidad ordena primero planear la calidad, después controlarla y solo entonces mejorarla. Aquí conviene invertir en rediseñar el plan de calidad antes de seguir contratando inspectores.'
+  },
+  prev: {
+    focus: 'Invertir en capacitación y participación del personal',
+    gurus: 'Kaoru Ishikawa',
+    text: 'Cuando casi no hay gasto en prevención, suele faltar la base más barata de construir: gente capacitada que detecte y corrija causas raíz antes de que se conviertan en defectos. Ishikawa propone círculos de calidad y herramientas simples (como el diagrama causa-efecto de la Unidad 2) para que el propio operador prevenga el problema en piso, sin depender siempre de ingeniería.'
+  },
+  disperso: {
+    focus: 'Invertir en coordinación entre áreas, no solo en producción',
+    gurus: 'Armand Feigenbaum',
+    text: 'Si el gasto de calidad está repartido sin un responsable claro entre diseño, compras, producción y servicio, el problema es de coordinación, no de una sola categoría de costo. Feigenbaum acuñó el Control Total de Calidad precisamente para esto: la calidad es trabajo de todas las áreas a la vez, no solo del departamento de calidad. La inversión más rentable aquí es un sistema que integre y dé seguimiento conjunto a los cuatro costos.'
+  }
+};
+function renderDiag(){
+  const d = diagnoses[document.getElementById('diag-select').value];
+  document.getElementById('diag-out').innerHTML =
+    '<span class="diag-focus">'+d.focus+'</span>'+
+    '<h4>Filosofía aplicable: '+d.gurus+'</h4>'+
+    '<p>'+d.text+'</p>';
+}
+document.getElementById('diag-select').addEventListener('change', renderDiag);
+renderDiag();
+
+const quizData = [
+  {q:'¿Quién introdujo la primera carta de control estadístico en 1924?', opts:['Joseph Juran','Walter Shewhart','Philip Crosby','Kaoru Ishikawa'], correct:1},
+  {q:'¿Cuál de las siguientes NO es una de las cuatro categorías clásicas de costos de calidad?', opts:['Prevención','Evaluación','Producción','Falla externa'], correct:2},
+  {q:'Según la etapa de "aseguramiento de la calidad", ¿dónde se empieza a planear la calidad?', opts:['Solo en la inspección final','Desde el diseño del producto y del proceso','Únicamente en el área de ventas','En la etapa de reclamos del cliente'], correct:1},
+  {q:'¿Qué autor es reconocido por la filosofía de "cero defectos"?', opts:['Philip Crosby','Genichi Taguchi','Armand Feigenbaum','W. Edwards Deming'], correct:0},
+  {q:'Un defecto detectado y reprocesado ANTES de salir de la planta es un costo de:', opts:['Falla externa','Prevención','Falla interna','Evaluación'], correct:2},
+  {q:'¿Qué etapa del desarrollo del control de calidad integra la calidad como estrategia de toda la organización?', opts:['Inspección','Control estadístico de procesos','Aseguramiento de la calidad','Administración estratégica (TQM)'], correct:3}
+];
+function buildQuiz(){
+  const body = document.getElementById('quiz-body');
+  let html='';
+  quizData.forEach((item,qi)=>{
+    html += '<div class="quiz-item"><p class="q">'+(qi+1)+'. '+item.q+'</p><div class="quiz-opts">';
+    item.opts.forEach((o,oi)=>{
+      html += '<div class="quiz-opt" id="q'+qi+'o'+oi+'" onclick="answerQuiz('+qi+','+oi+')">'+o+'</div>';
+    });
+    html += '</div></div>';
+  });
+  body.innerHTML = html;
+  document.getElementById('quiz-score').textContent = '0 / '+quizData.length;
+}
+let quizAnswered = new Array(quizData.length).fill(false);
+let quizScore=0;
+function answerQuiz(qi,oi){
+  if(quizAnswered[qi]) return;
+  quizAnswered[qi]=true;
+  const item = quizData[qi];
+  item.opts.forEach((o,i)=>{
+    const el = document.getElementById('q'+qi+'o'+i);
+    if(i===item.correct) el.classList.add('correct');
+    else if(i===oi) el.classList.add('wrong');
+  });
+  if(oi===item.correct) quizScore++;
+  document.getElementById('quiz-score').textContent = quizScore+' / '+quizData.length;
+}
+buildQuiz();
+</script>
+</body>
+</html>

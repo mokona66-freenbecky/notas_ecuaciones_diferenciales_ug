@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Cómo publicar tu herramienta HTML en línea (gratis)</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; line-height: 1.6; }
+  h1 { font-size: 1.7em; border-bottom: 3px solid #7a2e2e; padding-bottom: 8px; }
+  h2 { font-size: 1.3em; color: #7a2e2e; margin-top: 2em; border-left: 4px solid #7a2e2e; padding-left: 10px; }
+  h3 { font-size: 1.05em; color: #333; margin-top: 1.2em; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f0e6e6; }
+  code { font-family: Consolas, 'Courier New', monospace; background: #f4f0ec; padding: 1px 5px; border-radius: 3px; }
+  a { color: #7a2e2e; }
+  .paso { background: #faf5f0; border: 1px solid #e0d5c5; border-radius: 6px; padding: 12px 16px; margin: 14px 0; }
+  .nota { font-size: 0.9em; color: #555; font-style: italic; }
+  .destacado { background: #fdf2f2; border: 1px solid #f0c9c9; border-radius: 6px; padding: 12px 16px; margin: 14px 0; }
+  .plataforma { border-left: 3px solid #c0392b; padding-left: 16px; margin: 22px 0; }
+  .plataforma h3 { color: #c0392b; margin-top: 0; }
+</style>
+</head>
+<body>
+
+<h1>Cómo publicar tu herramienta HTML en línea (gratis)</h1>
+<p>Para que tu calculadora de costos sea accesible mediante un enlace, necesitas subir tu archivo <code>.html</code> a algún servicio de hosting gratuito. Aquí tienes el paso a paso de las opciones más comunes mencionadas en el proyecto.</p>
+
+<h2>¿Cuál elijo?</h2>
+<div class="paso">
+<table>
+<tr><th>Plataforma</th><th>¿Necesita cuenta?</th><th>Dificultad</th><th>Ideal para</th></tr>
+<tr><td>Netlify Drop</td><td>No (opcional para editar después)</td><td>Muy fácil</td><td>Publicar rápido un solo archivo HTML</td></tr>
+<tr><td>GitHub Pages</td><td>Sí, cuenta gratuita</td><td>Media</td><td>Quienes ya usan o quieren aprender Git/GitHub</td></tr>
+<tr><td>Vercel</td><td>Sí, cuenta gratuita</td><td>Media</td><td>Proyectos con varios archivos (HTML + CSS + JS)</td></tr>
+<tr><td>Google Sites</td><td>Sí, cuenta de Google</td><td>Fácil</td><td>Insertar el HTML dentro de un sitio tipo página web</td></tr>
+<tr><td>Replit</td><td>Sí, cuenta gratuita</td><td>Fácil</td><td>Ver y editar el código en vivo, útil si sigues iterando</td></tr>
+</table>
+</div>
+
+<div class="destacado">
+<p><strong>¿No sabes cuál elegir?</strong> Si tu herramienta es un solo archivo <code>.html</code> y quieres publicarla en menos de un minuto sin crear cuenta, usa <strong>Netlify Drop</strong> (Opción 1).</p>
+</div>
+
+<h2>Opciones paso a paso</h2>
+
+<div class="plataforma">
+<h3>Opción 1: Netlify Drop</h3>
+<p class="nota">La forma más simple. No necesitas cuenta para publicar (sí la necesitas si luego quieres editar el sitio).</p>
+<ol>
+<li>Entra a <a href="https://app.netlify.com/drop">app.netlify.com/drop</a></li>
+<li>Arrastra tu archivo <code>.html</code> (o la carpeta completa, si tienes varios archivos) a la zona marcada en la página.</li>
+<li>Netlify sube el archivo automáticamente y te da una URL pública al instante (algo como <code>nombre-aleatorio.netlify.app</code>).</li>
+<li>(Opcional) Crea una cuenta gratuita si quieres poder editar o actualizar el sitio más adelante, en vez de que quede como un enlace temporal.</li>
+<li>Copia el enlace generado y agrégalo a tu reporte.</li>
+</ol>
+</div>
+
+<div class="plataforma">
+<h3>Opción 2: GitHub Pages</h3>
+<p class="nota">Requiere cuenta de GitHub. Es la opción más usada en el mundo del desarrollo y vale la pena aprenderla.</p>
+<ol>
+<li>Crea una cuenta gratuita en <a href="https://github.com">github.com</a> si no tienes una.</li>
+<li>Crea un repositorio nuevo (botón "New repository"), márcalo como <strong>público</strong> y ponle el nombre que quieras.</li>
+<li>Sube tu archivo dentro del repositorio y renómbralo exactamente <code>index.html</code>.</li>
+<li>Ve a la pestaña <strong>Settings</strong> del repositorio → menú <strong>Pages</strong> (en el panel izquierdo).</li>
+<li>En "Source", elige la rama <code>main</code> y la carpeta <code>/ (root)</code>, luego guarda.</li>
+<li>Espera uno o dos minutos. Tu sitio quedará publicado en <code>https://tu-usuario.github.io/nombre-del-repositorio/</code>.</li>
+<li>Copia ese enlace y agrégalo a tu reporte.</li>
+</ol>
+</div>
+
+<div class="plataforma">
+<h3>Opción 3: Vercel</h3>
+<p class="nota">Útil si tu herramienta tiene varios archivos (por ejemplo HTML, CSS y JS separados).</p>
+<ol>
+<li>Crea una cuenta gratuita en <a href="https://vercel.com">vercel.com</a> (puedes registrarte con tu cuenta de GitHub para que sea más rápido).</li>
+<li>Haz clic en <strong>Add New</strong> → <strong>Project</strong>.</li>
+<li>Puedes conectar un repositorio de GitHub que ya tengas subido, o arrastrar directamente tu carpeta de archivos si la plataforma te da esa opción.</li>
+<li>Vercel detecta que es un sitio estático (HTML) y lo publica automáticamente, sin configuración adicional.</li>
+<li>Copia la URL generada (termina en <code>.vercel.app</code>) y agrégala a tu reporte.</li>
+</ol>
+</div>
+
+<div class="plataforma">
+<h3>Opción 4: Google Sites</h3>
+<p class="nota">Buena opción si además quieres presentar tu herramienta dentro de una página con más contexto (portada, explicación, etc.).</p>
+<ol>
+<li>Entra a <a href="https://sites.google.com">sites.google.com</a> con tu cuenta de Google y crea un sitio nuevo (en blanco).</li>
+<li>En el panel de la derecha, elige <strong>Insertar</strong> → <strong>Insertar código</strong> (Embed).</li>
+<li>Pega ahí el código HTML completo de tu herramienta.</li>
+<li>Ajusta el tamaño del bloque insertado si es necesario para que se vea completo.</li>
+<li>Haz clic en <strong>Publicar</strong> (botón arriba a la derecha) y define la dirección de tu sitio.</li>
+<li>Copia el enlace del sitio ya publicado y agrégalo a tu reporte.</li>
+</ol>
+</div>
+
+<div class="plataforma">
+<h3>Opción 5: Replit</h3>
+<p class="nota">Ideal si quieres seguir editando el código en línea y compartir tanto el código como la vista en vivo.</p>
+<ol>
+<li>Crea una cuenta gratuita en <a href="https://replit.com">replit.com</a>.</li>
+<li>Crea un nuevo "Repl" y elige la plantilla <strong>HTML, CSS, JS</strong>.</li>
+<li>Pega tu código dentro del archivo <code>index.html</code> (y en <code>style.css</code> / <code>script.js</code> si tu herramienta los usa por separado).</li>
+<li>Presiona el botón <strong>Run</strong>. Replit abrirá una vista previa en vivo con su propia URL (webview).</li>
+<li>Copia el enlace de esa vista previa (o usa el botón para abrirla en una pestaña nueva y copia esa URL) y agrégalo a tu reporte.</li>
+</ol>
+</div>
+
+<h2>Antes de entregar el enlace</h2>
+<div class="paso">
+<ul>
+<li>Abre el enlace en una ventana de incógnito (o pídele a alguien más que lo abra) para confirmar que <strong>cualquier persona puede verlo sin iniciar sesión</strong> ni pedir permiso.</li>
+<li>Si tu herramienta usa varios archivos (HTML, CSS, JS separados), verifica que todos se hayan subido juntos y que las rutas entre ellos coincidan; si falta un archivo, la página puede verse "rota" o sin estilos.</li>
+<li>Prueba al menos una conversión/cálculo directamente desde el enlace publicado, no solo en tu computadora, para confirmar que funciona igual en línea.</li>
+<li>Copia el enlace final tal cual (sin acortar ni modificar) en la sección correspondiente de tu reporte.</li>
+</ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 2 · Herramientas básicas de calidad · UDEC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --paper:#F5F1E4;
+  --paper2:#ECE4C8;
+  --card:#FFFDF7;
+  --ink:#161B33;
+  --ink-soft:#3E4468;
+  --ink-faint:#8A88A8;
+  --grid-line: rgba(22,27,51,0.07);
+  --accent-caution:#FF6B1A;
+  --accent-caution-dk:#B34710;
+  --accent-ok:#00A878;
+  --accent-ok-dk:#00734F;
+  --accent-signal:#EF233C;
+  --accent-signal-dk:#A3122A;
+  --accent-blue:#3D5AF1;
+  --accent-blue-dk:#2439B0;
+  --accent-amber:#FFC933;
+  --accent-purple:#8B5CF6;
+  --accent-pink:#EC4899;
+  --border:#D8CE9E;
+  --border-strong:#C4B571;
+  --radius:10px;
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'IBM Plex Sans',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size:28px 28px;
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.6;
+}
+::selection{background:var(--accent-caution);color:#fff;}
+
+/* ---------- top production line ---------- */
+.lineheader{
+  position:sticky; top:0; z-index:50;
+  background:linear-gradient(90deg,#161B33 0%,#22285A 55%,#161B33 100%);
+  border-bottom:3px solid var(--accent-caution);
+  padding:10px 20px;
+}
+.lineheader-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;gap:18px;
+}
+.lineheader-title{
+  font-family:var(--font-display);color:#F1EFE6;font-weight:600;font-size:14px;
+  white-space:nowrap;letter-spacing:.02em;
+}
+.stations{display:flex;align-items:center;gap:4px;flex:1;overflow-x:auto;}
+.station{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 9px;border-radius:20px;border:1px solid rgba(255,255,255,0.18);
+  font-family:var(--font-mono);font-size:11px;color:rgba(241,239,230,0.55);
+  white-space:nowrap;cursor:pointer;transition:all .25s;flex-shrink:0;
+}
+.station .dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.25);transition:all .25s;}
+.station.active{border-color:var(--accent-caution);color:#F1EFE6;background:rgba(226,102,42,0.12);}
+.station.done .dot{background:var(--accent-ok);box-shadow:0 0 0 3px rgba(47,122,92,0.25);}
+.station.active .dot{background:var(--accent-caution);box-shadow:0 0 0 3px rgba(226,102,42,0.28);}
+.rail{flex:1;height:2px;background:rgba(255,255,255,0.12);min-width:6px;}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:230px 1fr;gap:0;}
+.sidebar{
+  position:sticky; top:52px; align-self:start; height:calc(100vh - 52px);
+  overflow-y:auto; padding:26px 14px 40px 20px; border-right:1px solid var(--border);
+}
+.sidebar a{
+  display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink-soft);
+  padding:7px 10px;border-radius:6px;font-size:13px;font-weight:500;margin-bottom:1px;
+  transition:background .2s,color .2s;
+}
+.sidebar a:hover{background:var(--paper2);color:var(--ink);}
+.sidebar a .num{font-family:var(--font-mono);font-size:11px;color:var(--accent-caution);min-width:26px;}
+.sidebar .grp-label{
+  font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--ink-faint);margin:18px 0 6px 10px;
+}
+main{padding:36px 44px 100px;min-width:0;}
+
+/* ---------- hero ---------- */
+.hero{
+  padding:44px 40px 40px;background:linear-gradient(135deg,#161B33 0%,#242B5C 60%,#2E1F5E 100%);border-radius:14px;color:#F5F1E4;position:relative;overflow:hidden;
+  margin-bottom:40px;
+}
+.hero::after{
+  content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;
+  border:2px solid rgba(255,107,26,0.35);border-radius:50%;
+}
+.hero::before{
+  content:"";position:absolute;right:20px;top:20px;width:180px;height:180px;
+  border:1px dashed rgba(255,201,51,0.25);border-radius:50%;
+}
+.hero-eyebrow{
+  font-family:var(--font-mono);font-size:12px;color:var(--accent-caution);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.hero h1{
+  font-family:var(--font-display);font-size:clamp(28px,4vw,42px);font-weight:700;margin:0 0 14px;
+  max-width:680px;line-height:1.15;
+}
+.hero p{font-size:15px;color:rgba(241,239,230,0.78);max-width:620px;margin:0 0 22px;}
+.hero-meta{display:flex;gap:26px;flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;color:rgba(241,239,230,0.6);}
+.hero-meta b{color:#F1EFE6;font-weight:600;}
+
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:26px;position:relative;}
+.tool-chip{
+  border:1px solid rgba(241,239,230,0.18);border-radius:8px;padding:12px 14px;
+  background:rgba(241,239,230,0.04);
+}
+.tool-chip .tc-num{font-family:var(--font-mono);font-size:11px;color:var(--accent-caution);}
+.tool-chip .tc-name{font-size:12.5px;font-weight:500;margin-top:4px;color:#F1EFE6;}
+
+/* ---------- section card (datasheet) ---------- */
+section.topic{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:46px;
+  scroll-margin-top:70px;
+  overflow:hidden;
+}
+section.topic{border-top:5px solid var(--tc,var(--accent-caution));}
+.topic-head{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:20px;
+  padding:26px 32px 20px;border-bottom:1px solid var(--border);
+  background:
+    repeating-linear-gradient(135deg, rgba(22,27,51,0.025) 0 10px, transparent 10px 20px);
+}
+.topic-head-left{display:flex;gap:16px;align-items:flex-start;}
+.stamp{
+  flex-shrink:0;width:56px;height:56px;border-radius:50%;border:2.5px solid var(--tc,var(--accent-caution));
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-display);
+  font-weight:700;font-size:15px;color:var(--tc,var(--accent-caution));transform:rotate(-6deg);
+  background:color-mix(in srgb, var(--tc,var(--accent-caution)) 10%, transparent);
+}
+.topic-head h2{font-family:var(--font-display);font-size:23px;margin:0 0 4px;font-weight:600;}
+.topic-head .sub{color:var(--ink-soft);font-size:13.5px;max-width:520px;}
+.folio{
+  font-family:var(--font-mono);font-size:10.5px;color:var(--ink-faint);text-align:right;
+  line-height:1.7;white-space:nowrap;
+}
+.topic-body{padding:28px 32px 34px;}
+
+h3.h-sec{
+  font-family:var(--font-display);font-size:15px;font-weight:600;margin:26px 0 10px;
+  padding-bottom:6px;border-bottom:1px solid var(--border);color:var(--ink);
+}
+h3.h-sec:first-child{margin-top:0;}
+p{margin:0 0 12px;font-size:14.5px;}
+ul,ol{margin:0 0 14px;padding-left:20px;font-size:14.5px;}
+li{margin-bottom:5px;}
+strong{color:var(--ink);}
+code, .k{font-family:var(--font-mono);background:var(--paper2);padding:1px 6px;border-radius:4px;font-size:.88em;}
+
+.callout{
+  border-left:3px solid var(--accent-blue);background:rgba(44,95,138,0.06);
+  padding:12px 16px;border-radius:0 8px 8px 0;font-size:13.5px;margin:14px 0;
+}
+.callout.warn{border-color:var(--accent-caution);background:rgba(226,102,42,0.07);}
+.callout.ok{border-color:var(--accent-ok);background:rgba(47,122,92,0.07);}
+.callout b{display:block;font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;color:var(--ink-soft);}
+
+/* grids of small cards */
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0 20px;}
+.mini-card{
+  border:1px solid var(--border);border-radius:8px;padding:14px 16px;background:var(--paper);
+}
+.mini-card .mc-tag{font-family:var(--font-mono);font-size:10.5px;color:var(--accent-caution);text-transform:uppercase;letter-spacing:.06em;}
+.mini-card h4{font-size:14px;margin:6px 0 4px;font-family:var(--font-body);font-weight:600;}
+.mini-card p{font-size:12.8px;color:var(--ink-soft);margin:0;}
+
+table.datatable{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13px;}
+table.datatable th{
+  background:var(--ink);color:#F1EFE6;text-align:left;padding:9px 12px;font-weight:500;
+  font-family:var(--font-mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;
+}
+table.datatable td{padding:8px 12px;border-bottom:1px solid var(--border);}
+table.datatable tr:last-child td{border-bottom:none;}
+table.datatable tr:nth-child(even) td{background:rgba(28,43,57,0.02);}
+
+/* ---------- interactive lab box ---------- */
+.lab{
+  border:1.5px dashed var(--border-strong);border-radius:12px;padding:22px 24px;margin:18px 0 8px;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(28,43,57,0.025) 20px, rgba(28,43,57,0.025) 21px),
+    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(28,43,57,0.025) 20px, rgba(28,43,57,0.025) 21px);
+}
+.lab-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.lab-badge{
+  font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  background:var(--tc,var(--accent-caution));color:#fff;padding:4px 9px;border-radius:4px;font-weight:600;
+}
+.lab-head span.lt{font-family:var(--font-display);font-weight:600;font-size:14.5px;}
+.controls-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:16px;}
+.controls-row label{font-size:12.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px;font-weight:500;}
+button.qbtn{
+  font-family:var(--font-body);font-weight:600;font-size:12.5px;padding:8px 15px;border-radius:7px;
+  border:1px solid var(--tc,var(--ink));background:var(--tc,var(--ink));color:#fff;cursor:pointer;transition:all .15s;
+}
+button.qbtn:hover{filter:brightness(1.12);box-shadow:0 3px 10px color-mix(in srgb, var(--tc,var(--accent-caution)) 45%, transparent);}
+button.qbtn:active{transform:scale(.97);}
+button.qbtn.alt{background:transparent;color:var(--ink);border-color:var(--border-strong);}
+button.qbtn.alt:hover{background:var(--paper2);}
+button.tally-btn{
+  font-family:var(--font-mono);font-weight:600;font-size:12px;padding:5px 10px;border-radius:5px;
+  border:1px solid var(--accent-blue);background:#fff;color:var(--accent-blue);cursor:pointer;
+}
+button.tally-btn:hover{background:var(--accent-blue);color:#fff;}
+select, input[type=text], input[type=number]{
+  font-family:var(--font-body);font-size:13px;padding:6px 10px;border-radius:6px;border:1px solid var(--border-strong);
+  background:#fff;color:var(--ink);
+}
+input[type=range]{accent-color:var(--accent-caution);}
+.chartwrap{position:relative;width:100%;background:#fff;border-radius:8px;border:1px solid var(--border);padding:12px;}
+
+/* flowchart svg */
+.fc-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:12px;color:var(--ink-soft);}
+.fc-legend span{display:flex;align-items:center;gap:6px;}
+.fc-legend i{width:14px;height:14px;border-radius:3px;display:inline-block;border:1.5px solid var(--ink);}
+.fc-node{transition:filter .3s, transform .3s;}
+.fc-node.lit{filter:drop-shadow(0 0 0 var(--accent-caution));}
+.fc-node.lit rect, .fc-node.lit polygon, .fc-node.lit ellipse, .fc-node.lit circle, .fc-node.lit path{stroke:var(--accent-caution) !important; stroke-width:3 !important;}
+.fc-edge{transition:stroke .3s, stroke-width .3s;}
+.fc-edge.lit{stroke:var(--accent-caution) !important;stroke-width:3 !important;}
+
+/* checksheet */
+.check-table{width:100%;border-collapse:collapse;font-size:13px;}
+.check-table th,.check-table td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+.check-table th{background:var(--paper2);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;}
+.check-table td:first-child, .check-table th:first-child{text-align:left;font-weight:500;}
+.tally-mark{font-family:var(--font-mono);color:var(--accent-blue);letter-spacing:1px;font-size:13px;}
+.tally-count{font-weight:700;color:var(--ink);margin-left:6px;}
+
+/* fishbone */
+.fish-controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center;}
+.fish-svgwrap{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px;overflow-x:auto;}
+.cause-tag{font-size:11px;}
+
+/* quiz */
+.quiz-q{border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:14px;background:var(--paper);}
+.quiz-q p.qtext{font-weight:600;margin-bottom:12px;font-size:14px;}
+.quiz-opts{display:flex;flex-direction:column;gap:7px;}
+.quiz-opt{
+  padding:9px 13px;border:1px solid var(--border-strong);border-radius:7px;cursor:pointer;font-size:13.5px;
+  background:#fff;transition:all .15s;
+}
+.quiz-opt:hover{background:var(--paper2);}
+.quiz-opt.correct{background:rgba(47,122,92,0.14);border-color:var(--accent-ok);color:var(--accent-ok-dk);font-weight:600;}
+.quiz-opt.wrong{background:rgba(196,48,43,0.12);border-color:var(--accent-signal);color:var(--accent-signal-dk);font-weight:600;}
+#quiz-score{font-family:var(--font-mono);font-weight:600;}
+
+.footer-bar{
+  max-width:1400px;margin:0 auto;padding:30px 44px 60px;color:var(--ink-faint);font-size:12px;font-family:var(--font-mono);
+  border-top:1px solid var(--border);
+}
+
+@media (max-width:980px){
+  .wrap{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);}
+  main{padding:26px 18px 80px;}
+  .topic-body{padding:22px 18px 26px;}
+  .topic-head{padding:20px 18px 16px;flex-direction:column;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="lineheader">
+  <div class="lineheader-inner">
+    <div class="lineheader-title">UDEC · UNIDAD 2</div>
+    <div class="stations" id="stations">
+      <div class="station" data-target="s21"><span class="dot"></span>2.1 Flujo</div>
+      <div class="rail"></div>
+      <div class="station" data-target="s22"><span class="dot"></span>2.2 Verificación</div>
+      <div class="rail"></div>
+      <div class="station" data-target="s23"><span class="dot"></span>2.3 Estratif.</div>
+      <div class="rail"></div>
+      <div class="station" data-target="s24"><span class="dot"></span>2.4 Pareto</div>
+      <div class="rail"></div>
+      <div class="station" data-target="s25"><span class="dot"></span>2.5 Histograma</div>
+      <div class="rail"></div>
+      <div class="station" data-target="s26"><span class="dot"></span>2.6 Causa-efecto</div>
+      <div class="rail"></div>
+      <div class="station" data-target="s27"><span class="dot"></span>2.7 Dispersión</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+<nav class="sidebar">
+  <a href="#inicio"><span class="num">00</span> Introducción</a>
+  <div class="grp-label">Las 7 herramientas</div>
+  <a href="#s21"><span class="num">2.1</span> Diagrama de flujo</a>
+  <a href="#s22"><span class="num">2.2</span> Hoja de verificación</a>
+  <a href="#s23"><span class="num">2.3</span> Estratificación</a>
+  <a href="#s24"><span class="num">2.4</span> Diagrama de Pareto</a>
+  <a href="#s25"><span class="num">2.5</span> Histograma</a>
+  <a href="#s26"><span class="num">2.6</span> Causa-efecto</a>
+  <a href="#s27"><span class="num">2.7</span> Diagrama de dispersión</a>
+  <div class="grp-label">Cierre</div>
+  <a href="#quiz"><span class="num">✓</span> Autoevaluación</a>
+</nav>
+
+<main>
+
+<section id="inicio">
+  <div class="hero">
+    <div class="hero-eyebrow">Ingeniería Industrial Administrativa · Facultad de Ingeniería</div>
+    <h1>Unidad 2 — Herramientas básicas de calidad</h1>
+    <p>Las siete herramientas clásicas propuestas por Kaoru Ishikawa permiten recopilar, ordenar y analizar datos de un proceso para detectar problemas, identificar sus causas y sustentar decisiones de mejora continua con evidencia — no con opiniones. Se estima que con estas siete herramientas se puede resolver entre el 90% y 95% de los problemas de calidad de un proceso productivo o administrativo.</p>
+    <div class="hero-meta">
+      <span>Programa: <b>Ingeniería Industrial Administrativa</b></span>
+      <span>Documento: <b>UDEC-ING-U2</b></span>
+      <span>Revisión: <b>2026-A</b></span>
+    </div>
+    <div class="tool-grid">
+      <div class="tool-chip"><div class="tc-num">2.1</div><div class="tc-name">Diagrama de flujo</div></div>
+      <div class="tool-chip"><div class="tc-num">2.2</div><div class="tc-name">Hoja de verificación</div></div>
+      <div class="tool-chip"><div class="tc-num">2.3</div><div class="tc-name">Estratificación</div></div>
+      <div class="tool-chip"><div class="tc-num">2.4</div><div class="tc-name">Diagrama de Pareto</div></div>
+      <div class="tool-chip"><div class="tc-num">2.5</div><div class="tc-name">Histograma</div></div>
+      <div class="tool-chip"><div class="tc-num">2.6</div><div class="tc-name">Causa-efecto (Ishikawa)</div></div>
+      <div class="tool-chip"><div class="tc-num">2.7</div><div class="tc-name">Diagrama de dispersión</div></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>Cómo usar este material</b>
+    Cada estación incluye la teoría, el procedimiento de construcción y un laboratorio interactivo donde puedes manipular datos reales y observar cómo cambia el diagrama. Los datos de la <b>hoja de verificación (2.2)</b> se pueden enviar directamente al <b>diagrama de Pareto (2.4)</b> para que veas cómo una herramienta alimenta a la siguiente, tal como ocurre en un análisis de calidad real.
+  </div>
+</section>
+
+<!-- ============================================================ 2.1 DIAGRAMA DE FLUJO ============================================================ -->
+<section class="topic" id="s21" style="--tc:#3D5AF1;">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp">DF</div>
+      <div>
+        <h2>2.1 Diagrama de flujo</h2>
+        <div class="sub">Representación gráfica de la secuencia de pasos de un proceso, útil para entenderlo, documentarlo y encontrar puntos de falla.</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.1<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+
+    <h3 class="h-sec">Definición</h3>
+    <p>El <strong>diagrama de flujo</strong> (o flujograma) es la representación gráfica de la secuencia de pasos, decisiones y actividades que componen un proceso, desde su inicio hasta su fin. Es la primera herramienta que se utiliza en cualquier proyecto de calidad porque permite <strong>visualizar el proceso tal como realmente ocurre</strong> (no como se supone que debería ocurrir), lo cual facilita identificar cuellos de botella, actividades redundantes, retrabajos y puntos de inspección.</p>
+
+    <h3 class="h-sec">Simbología estándar (ANSI)</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">Óvalo</div><h4>Inicio / Fin</h4><p>Marca el punto donde comienza o termina el proceso.</p></div>
+      <div class="mini-card"><div class="mc-tag">Rectángulo</div><h4>Proceso / Actividad</h4><p>Representa una acción o tarea que se ejecuta.</p></div>
+      <div class="mini-card"><div class="mc-tag">Rombo</div><h4>Decisión</h4><p>Pregunta con salidas alternativas, típicamente sí / no.</p></div>
+      <div class="mini-card"><div class="mc-tag">Flecha</div><h4>Línea de flujo</h4><p>Indica la dirección y secuencia entre símbolos.</p></div>
+      <div class="mini-card"><div class="mc-tag">Rectángulo con base ondulada</div><h4>Documento</h4><p>Se genera o consulta un documento o registro.</p></div>
+      <div class="mini-card"><div class="mc-tag">Círculo pequeño</div><h4>Conector</h4><p>Enlaza partes del diagrama que están separadas en la hoja.</p></div>
+    </div>
+
+    <h3 class="h-sec">Reglas de construcción</h3>
+    <ol>
+      <li>Definir con claridad el <strong>inicio y el fin</strong> del proceso a diagramar.</li>
+      <li>Identificar y ordenar cronológicamente todas las actividades, decisiones y documentos involucrados.</li>
+      <li>Usar un solo símbolo de inicio y, de preferencia, un solo símbolo de fin por rama.</li>
+      <li>Cada rombo de decisión debe tener exactamente dos o más salidas claramente etiquetadas.</li>
+      <li>Mantener un único sentido de flujo (de arriba hacia abajo o de izquierda a derecha) y usar conectores cuando el diagrama no quepa en una sola hoja.</li>
+      <li>Validar el diagrama con las personas que ejecutan el proceso realmente.</li>
+    </ol>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Laboratorio interactivo</span><span class="lt">Simulador de inspección de calidad de un lote</span></div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Elige un escenario y observa cómo la ruta se ilumina paso a paso sobre el diagrama de flujo del proceso de inspección de un lote de producción.</p>
+      <div class="controls-row">
+        <button class="qbtn" onclick="runFlow('ok')">▶ Simular: lote conforme</button>
+        <button class="qbtn" onclick="runFlow('reproceso')">▶ Simular: no conforme, con reproceso</button>
+        <button class="qbtn" onclick="runFlow('scrap')">▶ Simular: no conforme, a scrap</button>
+        <button class="qbtn alt" onclick="resetFlow()">Reiniciar</button>
+      </div>
+      <div style="overflow-x:auto;">
+      <svg viewBox="0 0 1000 1180" width="100%" style="min-width:760px;max-width:1000px;" id="flowsvg">
+        <defs>
+          <marker id="fah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#161B33" stroke-width="1.5"/>
+          </marker>
+        </defs>
+
+        <!-- ===== columna A: flujo principal ===== -->
+        <g id="fc-start" class="fc-node">
+          <ellipse cx="180" cy="40" rx="90" ry="26" fill="#E8FBF3" stroke="#00A878" stroke-width="1.5"/>
+          <text x="180" y="45" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#00734F">Inicio</text>
+        </g>
+        <line x1="180" y1="66" x2="180" y2="92" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-start-doc1"/>
+
+        <g id="fc-doc1" class="fc-node">
+          <path d="M90,92 L270,92 L270,128 Q225,142 180,132 Q135,122 90,128 Z" fill="#F5F0FF" stroke="#8B5CF6" stroke-width="1.5"/>
+          <text x="180" y="112" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#5B21B6">Orden de producción</text>
+          <text x="180" y="127" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#5B21B6">Emitida por Planeación</text>
+        </g>
+        <line x1="180" y1="140" x2="180" y2="168" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-doc1-p1"/>
+
+        <g id="fc-p1" class="fc-node">
+          <rect x="90" y="168" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="180" y="188" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Recibir lote de producción</text>
+          <text x="180" y="204" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">Entrega del área de moldeo</text>
+        </g>
+        <line x1="180" y1="218" x2="180" y2="244" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p1-p2"/>
+
+        <g id="fc-p2" class="fc-node">
+          <rect x="90" y="244" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="180" y="264" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Tomar muestra aleatoria</text>
+          <text x="180" y="280" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">n = 50 piezas (norma NI-014)</text>
+        </g>
+        <line x1="270" y1="269" x2="272" y2="269" stroke="none"/>
+        <line x1="180" y1="294" x2="180" y2="320" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p2-doc2"/>
+
+        <g id="fc-doc2" class="fc-node">
+          <path d="M90,320 L270,320 L270,356 Q225,370 180,360 Q135,350 90,356 Z" fill="#F5F0FF" stroke="#8B5CF6" stroke-width="1.5"/>
+          <text x="180" y="340" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#5B21B6">Hoja de verificación</text>
+          <text x="180" y="355" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#5B21B6">Se abre el registro (ver 2.2)</text>
+        </g>
+        <line x1="180" y1="368" x2="180" y2="396" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-doc2-p3"/>
+
+        <g id="fc-p3" class="fc-node">
+          <rect x="90" y="396" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="180" y="416" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Inspección visual</text>
+          <text x="180" y="432" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">Rebaba, deformación, color</text>
+        </g>
+        <line x1="180" y1="446" x2="180" y2="472" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p3-p4"/>
+
+        <g id="fc-p4" class="fc-node">
+          <rect x="90" y="472" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="180" y="492" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Medición dimensional</text>
+          <text x="180" y="508" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">Espesor con micrómetro</text>
+        </g>
+        <line x1="180" y1="522" x2="180" y2="548" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p4-d1"/>
+
+        <g id="fc-d1" class="fc-node">
+          <polygon points="180,548 290,608 180,668 70,608" fill="#FFF4E0" stroke="#FF6B1A" stroke-width="1.5"/>
+          <text x="180" y="602" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#B34710">¿Cumple</text>
+          <text x="180" y="618" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#B34710">especificación?</text>
+        </g>
+
+        <!-- SI: columna B fila 1 -->
+        <line x1="290" y1="608" x2="430" y2="608" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-d1-p5"/>
+        <text x="360" y="598" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#00734F" font-weight="700">SÍ</text>
+        <g id="fc-p5" class="fc-node">
+          <rect x="430" y="583" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="520" y="603" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Liberar lote</text>
+          <text x="520" y="619" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">Se envía a almacén</text>
+        </g>
+        <line x1="520" y1="633" x2="520" y2="659" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p5-doc3"/>
+        <g id="fc-doc3" class="fc-node">
+          <path d="M430,659 L610,659 L610,695 Q565,709 520,699 Q475,689 430,695 Z" fill="#F5F0FF" stroke="#8B5CF6" stroke-width="1.5"/>
+          <text x="520" y="679" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#5B21B6">Reporte de conformidad</text>
+          <text x="520" y="694" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#5B21B6">Se archiva con el lote</text>
+        </g>
+        <line x1="520" y1="707" x2="520" y2="735" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-doc3-end1"/>
+        <g id="fc-end1" class="fc-node">
+          <ellipse cx="520" cy="761" rx="85" ry="26" fill="#E8FBF3" stroke="#00A878" stroke-width="1.5"/>
+          <text x="520" y="766" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#00734F">Fin</text>
+        </g>
+
+        <!-- NO: continúa columna A -->
+        <line x1="180" y1="668" x2="180" y2="694" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-d1-p6"/>
+        <text x="200" y="686" text-anchor="start" font-family="IBM Plex Mono" font-size="11" fill="#A3122A" font-weight="700">NO</text>
+        <g id="fc-p6" class="fc-node">
+          <rect x="90" y="694" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="180" y="714" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Separar y etiquetar</text>
+          <text x="180" y="730" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">Lote no conforme, cuarentena</text>
+        </g>
+        <line x1="180" y1="744" x2="180" y2="770" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p6-d2"/>
+
+        <g id="fc-d2" class="fc-node">
+          <polygon points="180,770 290,830 180,890 70,830" fill="#FFF4E0" stroke="#FF6B1A" stroke-width="1.5"/>
+          <text x="180" y="824" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#B34710">¿Es</text>
+          <text x="180" y="840" text-anchor="middle" font-family="IBM Plex Sans" font-size="12" font-weight="600" fill="#B34710">reprocesable?</text>
+        </g>
+
+        <!-- SI: columna B fila 2 + conector A -->
+        <line x1="290" y1="830" x2="430" y2="830" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-d2-p7"/>
+        <text x="360" y="820" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#00734F" font-weight="700">SÍ</text>
+        <g id="fc-p7" class="fc-node">
+          <rect x="430" y="805" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="520" y="825" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Reprocesar</text>
+          <text x="520" y="841" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">Refundido de material</text>
+        </g>
+        <line x1="610" y1="830" x2="634" y2="830" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p7-connA"/>
+        <g id="fc-connA" class="fc-node">
+          <circle cx="650" cy="830" r="16" fill="#FFE8EC" stroke="#EF233C" stroke-width="1.5"/>
+          <text x="650" y="835" text-anchor="middle" font-family="Space Grotesk" font-size="13" font-weight="700" fill="#A3122A">A</text>
+        </g>
+        <text x="650" y="864" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#8A88A8">continúa en «Tomar muestra»</text>
+
+        <g id="fc-connA2" class="fc-node">
+          <circle cx="356" cy="269" r="16" fill="#FFE8EC" stroke="#EF233C" stroke-width="1.5"/>
+          <text x="356" y="274" text-anchor="middle" font-family="Space Grotesk" font-size="13" font-weight="700" fill="#A3122A">A</text>
+        </g>
+        <text x="356" y="248" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#8A88A8">retorno de «Reprocesar»</text>
+        <line x1="340" y1="269" x2="272" y2="269" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-connA2-p2"/>
+
+        <!-- NO: elbow hacia columna C -->
+        <line x1="70" y1="830" x2="180" y2="890" stroke="none"/>
+        <path d="M 180 890 L 180 926 L 800 926" fill="none" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-d2-p8"/>
+        <text x="200" y="912" text-anchor="start" font-family="IBM Plex Mono" font-size="11" fill="#A3122A" font-weight="700">NO</text>
+
+        <g id="fc-p8" class="fc-node">
+          <rect x="710" y="926" width="180" height="50" rx="6" fill="#EEF1FE" stroke="#3D5AF1" stroke-width="1.5"/>
+          <text x="800" y="946" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#1E3A8A">Disposición final</text>
+          <text x="800" y="962" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#3B4C99">Merma o devolución a proveedor</text>
+        </g>
+        <line x1="800" y1="976" x2="800" y2="1002" stroke="#161B33" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-p8-doc4"/>
+
+        <g id="fc-doc4" class="fc-node">
+          <path d="M710,1002 L890,1002 L890,1038 Q845,1052 800,1042 Q755,1032 710,1038 Z" fill="#F5F0FF" stroke="#8B5CF6" stroke-width="1.5"/>
+          <text x="800" y="1022" text-anchor="middle" font-family="IBM Plex Sans" font-size="12.5" font-weight="600" fill="#5B21B6">Reporte de no conformidad</text>
+          <text x="800" y="1037" text-anchor="middle" font-family="IBM Plex Sans" font-size="10.5" fill="#5B21B6">Se notifica a compras</text>
+        </g>
+        <line x1="800" y1="1051" x2="800" y2="1078" stroke="#161B39" stroke-width="1.5" marker-end="url(#fah)" class="fc-edge" id="e-doc4-end2"/>
+
+        <g id="fc-end2" class="fc-node">
+          <ellipse cx="800" cy="1104" rx="85" ry="26" fill="#E8FBF3" stroke="#00A878" stroke-width="1.5"/>
+          <text x="800" y="1109" text-anchor="middle" font-family="IBM Plex Sans" font-size="13" font-weight="600" fill="#00734F">Fin</text>
+        </g>
+      </svg>
+      </div>
+      <div class="fc-legend">
+        <span><i style="border-radius:50%;background:#E8FBF3;border-color:#00A878;"></i> Inicio / Fin</span>
+        <span><i style="background:#EEF1FE;border-color:#3D5AF1;"></i> Proceso</span>
+        <span><i style="transform:rotate(45deg);width:11px;height:11px;background:#FFF4E0;border-color:#FF6B1A;"></i> Decisión</span>
+        <span><i style="border-radius:3px 3px 8px 8px;background:#F5F0FF;border-color:#8B5CF6;"></i> Documento</span>
+        <span><i style="border-radius:50%;background:#FFE8EC;border-color:#EF233C;"></i> Conector (A)</span>
+        <span style="color:var(--accent-caution);font-weight:600;">■ Ruta activa durante la simulación</span>
+      </div>
+    </div>
+
+
+    <div class="callout ok"><b>Aplicación típica</b> Mapear el proceso de recepción de materia prima, atención a clientes, tramitación de una orden de compra, o cualquier procedimiento administrativo antes de intentar mejorarlo.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 2.2 HOJA DE VERIFICACIÓN ============================================================ -->
+<section class="topic" id="s22" style="--tc:#00A878;">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp">HV</div>
+      <div>
+        <h2>2.2 Hoja de verificación</h2>
+        <div class="sub">Formato estructurado para recolectar y registrar datos de manera sistemática en el punto donde se generan.</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.2<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+
+    <h3 class="h-sec">Definición</h3>
+    <p>La <strong>hoja de verificación</strong> (check sheet) es un formato diseñado para <strong>registrar datos de forma ordenada y en tiempo real</strong>, mientras se observa el proceso. Su propósito es convertir la simple observación en datos cuantificables, útiles para las herramientas posteriores (Pareto, estratificación, histograma). Reduce errores de transcripción y facilita ver patrones directamente en el formato de recolección.</p>
+
+    <h3 class="h-sec">Tipos de hoja de verificación</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">Tipo 1</div><h4>De registro / clasificación</h4><p>Registra la frecuencia de ocurrencia de distintos tipos de defecto o evento.</p></div>
+      <div class="mini-card"><div class="mc-tag">Tipo 2</div><h4>De localización</h4><p>Usa un dibujo o esquema de la pieza para marcar dónde ocurre el defecto.</p></div>
+      <div class="mini-card"><div class="mc-tag">Tipo 3</div><h4>De medición</h4><p>Registra datos de variables continuas (peso, longitud, tiempo) en rangos o clases.</p></div>
+      <div class="mini-card"><div class="mc-tag">Tipo 4</div><h4>De causas</h4><p>Relaciona el defecto observado con su causa probable en el momento del registro.</p></div>
+    </div>
+
+    <h3 class="h-sec">Pasos de construcción</h3>
+    <ol>
+      <li>Definir con precisión <strong>qué evento o característica</strong> se va a registrar.</li>
+      <li>Determinar el <strong>periodo y la frecuencia</strong> de recolección (por turno, por lote, por día).</li>
+      <li>Diseñar un formato simple, de fácil llenado, con las categorías predefinidas.</li>
+      <li>Capacitar a quien recolecta los datos para asegurar consistencia.</li>
+      <li>Registrar los datos en el momento en que ocurren, no de memoria.</li>
+      <li>Totalizar y resumir los datos al cierre del periodo de recolección.</li>
+    </ol>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Laboratorio interactivo</span><span class="lt">Hoja de verificación en vivo — defectos de línea de ensamble</span></div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Simula el registro de defectos por turno. Cada clic representa una observación real durante la inspección. Al terminar, envía los totales al diagrama de Pareto (2.4).</p>
+      <table class="check-table" id="checktable">
+        <thead>
+          <tr><th>Tipo de defecto</th><th>Matutino</th><th>Vespertino</th><th>Nocturno</th><th>Total</th></tr>
+        </thead>
+        <tbody id="checktbody"></tbody>
+      </table>
+      <div class="controls-row" style="margin-top:16px;">
+        <button class="qbtn" onclick="sendChecksToPareto()">→ Enviar totales al diagrama de Pareto (2.4)</button>
+        <button class="qbtn alt" onclick="resetCheck()">Reiniciar conteos</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 2.3 ESTRATIFICACIÓN ============================================================ -->
+<section class="topic" id="s23" style="--tc:#8B5CF6;">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp">ES</div>
+      <div>
+        <h2>2.3 Estratificación</h2>
+        <div class="sub">Técnica para dividir un conjunto de datos en subgrupos (estratos) según un factor común, con el fin de descubrir patrones ocultos.</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.3<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+
+    <h3 class="h-sec">Definición</h3>
+    <p>La <strong>estratificación</strong> consiste en clasificar los datos disponibles por grupos con características comunes (estratos), a fin de identificar en cuál de ellos se concentra el problema. Un conjunto de datos analizado en su totalidad puede ocultar diferencias importantes que solo aparecen al separarlo por máquina, turno, operario, proveedor o cualquier otro factor.</p>
+
+    <h3 class="h-sec">Factores comunes de estratificación (las 4M + 2)</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">Máquina</div><h4>Equipo utilizado</h4><p>¿El defecto se concentra en una máquina o línea específica?</p></div>
+      <div class="mini-card"><div class="mc-tag">Mano de obra</div><h4>Operario / turno</h4><p>¿Existe diferencia entre operarios, turnos o niveles de experiencia?</p></div>
+      <div class="mini-card"><div class="mc-tag">Material</div><h4>Lote / proveedor</h4><p>¿El problema aparece con un proveedor o lote de materia prima en particular?</p></div>
+      <div class="mini-card"><div class="mc-tag">Método</div><h4>Procedimiento</h4><p>¿Se siguió el mismo procedimiento o hubo variaciones no documentadas?</p></div>
+      <div class="mini-card"><div class="mc-tag">Medición</div><h4>Instrumento</h4><p>¿El instrumento de medición o el calibrador utilizado influye en el resultado?</p></div>
+      <div class="mini-card"><div class="mc-tag">Medio ambiente</div><h4>Condiciones</h4><p>¿Temperatura, humedad o iluminación varían entre observaciones?</p></div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Laboratorio interactivo</span><span class="lt">Estratificación de 60 defectos registrados en planta</span></div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">El mismo conjunto de 60 defectos se ve distinto según el factor que elijas. Cambia el estrato y observa dónde se concentra realmente el problema.</p>
+      <div class="controls-row">
+        <label>Estratificar por:
+          <select id="stratSelect" onchange="renderStrat()">
+            <option value="maquina">Máquina</option>
+            <option value="turno">Turno</option>
+            <option value="operario">Operario</option>
+            <option value="defecto">Tipo de defecto</option>
+          </select>
+        </label>
+      </div>
+      <div class="chartwrap" style="height:300px;"><canvas id="stratChart" role="img" aria-label="Gráfico de barras de defectos estratificados"></canvas></div>
+      <div class="callout warn" id="stratInsight" style="margin-top:14px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 2.4 PARETO ============================================================ -->
+<section class="topic" id="s24" style="--tc:#FF6B1A;">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp">DP</div>
+      <div>
+        <h2>2.4 Diagrama de Pareto</h2>
+        <div class="sub">Gráfico de barras ordenado que aplica el principio 80/20 para separar los «pocos vitales» de los «muchos triviales».</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.4<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+
+    <h3 class="h-sec">Definición y principio 80/20</h3>
+    <p>El <strong>diagrama de Pareto</strong> es un gráfico de barras verticales ordenadas de mayor a menor frecuencia, acompañado de una línea de porcentaje acumulado. Se basa en el <strong>principio de Pareto</strong>: aproximadamente el 80% de los efectos (defectos, quejas, costos) provienen del 20% de las causas. Su objetivo es enfocar los recursos limitados de mejora en las pocas causas que generan el mayor impacto, en vez de repartir el esfuerzo por igual entre todas.</p>
+
+    <h3 class="h-sec">Pasos de construcción</h3>
+    <ol>
+      <li>Definir las categorías de datos a analizar (tipos de defecto, causas, áreas).</li>
+      <li>Recolectar la frecuencia u otro indicador (costo, tiempo) de cada categoría, normalmente con una hoja de verificación.</li>
+      <li>Ordenar las categorías de <strong>mayor a menor</strong> frecuencia.</li>
+      <li>Calcular el porcentaje que representa cada categoría y el <strong>porcentaje acumulado</strong>.</li>
+      <li>Graficar las barras en orden descendente y superponer la línea de porcentaje acumulado.</li>
+      <li>Trazar la línea de referencia del 80% e identificar las categorías vitales que están antes de cruzarla.</li>
+    </ol>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Laboratorio interactivo</span><span class="lt">Diagrama de Pareto dinámico</span></div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;" id="pareto-source-note">Usa el conjunto de datos por defecto o los totales que enviaste desde la hoja de verificación (2.2).</p>
+      <div class="controls-row">
+        <button class="qbtn alt" onclick="loadDefaultPareto()">Cargar datos de ejemplo</button>
+        <span style="font-size:12.5px;color:var(--ink-soft);font-family:var(--font-mono);">Categorías vitales (80/20): <span id="paretoVitalCount" class="k">—</span></span>
+      </div>
+      <div class="chartwrap" style="height:340px;"><canvas id="paretoChart" role="img" aria-label="Diagrama de Pareto de tipos de defecto con porcentaje acumulado"></canvas></div>
+    </div>
+
+    <div class="callout ok"><b>Lectura del diagrama</b> Las categorías ubicadas a la izquierda, antes de que la línea acumulada cruce el 80%, son las prioritarias para atacar primero: ahí está la mayor parte del problema con el menor número de causas.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 2.5 HISTOGRAMA ============================================================ -->
+<section class="topic" id="s25" style="--tc:#EC4899;">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp">HG</div>
+      <div>
+        <h2>2.5 Histograma</h2>
+        <div class="sub">Gráfico de barras que muestra la distribución de frecuencias de una variable continua, revelando su forma, centro y dispersión.</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.5<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+
+    <h3 class="h-sec">Definición</h3>
+    <p>El <strong>histograma</strong> es una representación gráfica de la distribución de un conjunto de datos numéricos continuos, agrupados en clases o intervalos. A diferencia del diagrama de Pareto, que compara categorías discretas, el histograma describe cómo se comporta una <strong>variable medible</strong> (dimensión, peso, tiempo de ciclo) y permite compararla contra los límites de especificación.</p>
+
+    <h3 class="h-sec">Pasos de construcción</h3>
+    <ol>
+      <li>Recolectar un número suficiente de datos (idealmente n ≥ 30).</li>
+      <li>Calcular el <strong>rango</strong>: R = valor máximo − valor mínimo.</li>
+      <li>Determinar el <strong>número de clases (k)</strong>, comúnmente con la regla de Sturges: <code>k = 1 + 3.322 · log(n)</code>, redondeado al entero más cercano.</li>
+      <li>Calcular la <strong>amplitud de clase</strong>: A = R / k.</li>
+      <li>Definir los límites de cada clase y contar la frecuencia de datos en cada una.</li>
+      <li>Graficar barras contiguas (sin espacio entre ellas) de alto proporcional a la frecuencia.</li>
+    </ol>
+
+    <h3 class="h-sec">Interpretación de formas</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">Normal</div><h4>Campana simétrica</h4><p>El proceso está bajo control estadístico y centrado.</p></div>
+      <div class="mini-card"><div class="mc-tag">Sesgada</div><h4>Asimetría a un lado</h4><p>Existe una barrera física o de proceso que limita valores de un lado.</p></div>
+      <div class="mini-card"><div class="mc-tag">Bimodal</div><h4>Dos picos</h4><p>Los datos provienen de dos fuentes distintas mezcladas (dos máquinas, turnos).</p></div>
+      <div class="mini-card"><div class="mc-tag">Achatada / plana</div><h4>Sin pico claro</h4><p>Alta variabilidad; posible mezcla de varias distribuciones.</p></div>
+    </div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Laboratorio interactivo</span><span class="lt">Histograma de diámetro de pieza (mm) — n = 40</span></div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Ajusta el número de clases y compara contra la recomendación de la regla de Sturges. También puedes activar los límites de especificación para ver cuántas piezas quedan fuera de tolerancia.</p>
+      <div class="controls-row">
+        <label>Número de clases: <input type="range" id="binSlider" min="3" max="12" value="6" oninput="renderHist()" style="width:160px;"><span id="binVal" class="k">6</span></label>
+        <label><input type="checkbox" id="specToggle" checked onchange="renderHist()"> Mostrar límites de especificación (24.85 – 25.15 mm)</label>
+        <span style="font-size:12px;color:var(--ink-soft);">Sturges sugiere: <span id="sturgesVal" class="k">—</span> clases</span>
+      </div>
+      <div class="chartwrap" style="height:320px;"><canvas id="histChart" role="img" aria-label="Histograma de diámetro de pieza en milímetros"></canvas></div>
+      <div class="callout" id="histInsight" style="margin-top:14px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 2.6 CAUSA-EFECTO ============================================================ -->
+<section class="topic" id="s26" style="--tc:#EF233C;">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp">CE</div>
+      <div>
+        <h2>2.6 Diagrama causa-efecto</h2>
+        <div class="sub">También llamado diagrama de Ishikawa o de espina de pescado: organiza visualmente las causas potenciales de un problema.</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.6<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+
+    <h3 class="h-sec">Definición</h3>
+    <p>El <strong>diagrama causa-efecto</strong> (Ishikawa o espina de pescado) organiza gráficamente las posibles causas de un problema (el «efecto», colocado en la cabeza del pez) alrededor de categorías principales (las «espinas»). Se construye normalmente en sesiones de <strong>lluvia de ideas</strong> en equipo, después de haber usado la hoja de verificación y el Pareto para identificar cuál es el problema prioritario a analizar.</p>
+
+    <h3 class="h-sec">Las 6M — categorías clásicas para procesos de manufactura</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">Método</div><h4>Procedimiento</h4><p>Instrucciones de trabajo, estándares, secuencia de operaciones.</p></div>
+      <div class="mini-card"><div class="mc-tag">Mano de obra</div><h4>Personal</h4><p>Capacitación, experiencia, fatiga, motivación del operario.</p></div>
+      <div class="mini-card"><div class="mc-tag">Maquinaria</div><h4>Equipo</h4><p>Mantenimiento, desgaste, calibración de la máquina.</p></div>
+      <div class="mini-card"><div class="mc-tag">Material</div><h4>Insumos</h4><p>Calidad de la materia prima, variabilidad del proveedor.</p></div>
+      <div class="mini-card"><div class="mc-tag">Medición</div><h4>Instrumentos</h4><p>Precisión y calibración de equipos de medición.</p></div>
+      <div class="mini-card"><div class="mc-tag">Medio ambiente</div><h4>Entorno</h4><p>Temperatura, humedad, limpieza, iluminación del área.</p></div>
+    </div>
+    <div class="callout"><b>Nota</b> Para procesos administrativos o de servicio suele usarse la variante de las 4P: Personas, Procesos, Políticas y Planta (entorno físico).</div>
+
+    <h3 class="h-sec">Pasos de construcción</h3>
+    <ol>
+      <li>Definir claramente el <strong>problema o efecto</strong> y colocarlo en la «cabeza» del pescado.</li>
+      <li>Trazar la <strong>espina central</strong> y las espinas principales con las categorías (6M) elegidas.</li>
+      <li>Realizar lluvia de ideas y ubicar cada causa probable como una espina secundaria de la categoría correspondiente.</li>
+      <li>Profundizar preguntando «¿por qué?» varias veces sobre cada causa (técnica de los 5 porqués).</li>
+      <li>Identificar las causas más probables y priorizarlas para su verificación con datos.</li>
+    </ol>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Laboratorio interactivo</span><span class="lt">Constructor de diagrama de Ishikawa</span></div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Problema base precargado: <em>«Piezas con dimensión fuera de tolerancia»</em>. Agrega tus propias causas en cada categoría (6M) y obsérvalas aparecer en el diagrama.</p>
+      <div class="fish-controls">
+        <label>Problema: <input type="text" id="fishProblem" value="Piezas con dimensión fuera de tolerancia" style="width:260px;" oninput="renderFish()"></label>
+      </div>
+      <div class="fish-controls">
+        <select id="fishCat">
+          <option value="Método">Método</option>
+          <option value="Mano de obra">Mano de obra</option>
+          <option value="Maquinaria">Maquinaria</option>
+          <option value="Material">Material</option>
+          <option value="Medición">Medición</option>
+          <option value="Medio ambiente">Medio ambiente</option>
+        </select>
+        <input type="text" id="fishCause" placeholder="Escribe una causa, ej. Calibración vencida del vernier" style="width:300px;">
+        <button class="qbtn" onclick="addCause()">+ Agregar causa</button>
+        <button class="qbtn alt" onclick="resetFish()">Reiniciar</button>
+      </div>
+      <div class="fish-svgwrap">
+        <svg viewBox="0 0 980 620" width="100%" id="fishsvg" style="min-width:760px;"></svg>
+      </div>
+      <div class="fc-legend" style="margin-top:12px;">
+        <span><i style="border-radius:50%;background:#EEF1FE;border-color:#3D5AF1;"></i> Método</span>
+        <span><i style="border-radius:50%;background:#F5F0FF;border-color:#8B5CF6;"></i> Mano de obra</span>
+        <span><i style="border-radius:50%;background:#FFF4E0;border-color:#FF6B1A;"></i> Maquinaria</span>
+        <span><i style="border-radius:50%;background:#FDECF3;border-color:#EC4899;"></i> Material</span>
+        <span><i style="border-radius:50%;background:#E6FAFD;border-color:#00B4D8;"></i> Medición</span>
+        <span><i style="border-radius:50%;background:#E8FBF3;border-color:#00A878;"></i> Medio ambiente</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 2.7 DISPERSIÓN ============================================================ -->
+<section class="topic" id="s27" style="--tc:#00B4D8;">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp">DD</div>
+      <div>
+        <h2>2.7 Diagrama de dispersión</h2>
+        <div class="sub">Gráfico de puntos que evidencia si existe relación entre dos variables cuantitativas y qué tan fuerte es.</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.7<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body">
+
+    <h3 class="h-sec">Definición</h3>
+    <p>El <strong>diagrama de dispersión</strong> (scatter plot) grafica pares de datos de dos variables, una en el eje X y otra en el eje Y, para observar visualmente si existe una relación (correlación) entre ellas. Es la herramienta indicada cuando, tras un diagrama causa-efecto, se sospecha que una causa (por ejemplo, la temperatura del horno) está relacionada con un efecto (por ejemplo, la resistencia de la pieza), y se necesita evidencia antes de intervenir el proceso.</p>
+
+    <h3 class="h-sec">Tipos de correlación</h3>
+    <div class="mini-grid">
+      <div class="mini-card"><div class="mc-tag">r ≈ +1</div><h4>Correlación positiva fuerte</h4><p>Al aumentar X, Y aumenta de forma consistente.</p></div>
+      <div class="mini-card"><div class="mc-tag">0 &lt; r &lt; 1</div><h4>Correlación positiva débil</h4><p>Existe tendencia creciente, pero con dispersión considerable.</p></div>
+      <div class="mini-card"><div class="mc-tag">r ≈ −1</div><h4>Correlación negativa fuerte</h4><p>Al aumentar X, Y disminuye de forma consistente.</p></div>
+      <div class="mini-card"><div class="mc-tag">r ≈ 0</div><h4>Sin correlación</h4><p>No hay relación lineal aparente entre las dos variables.</p></div>
+    </div>
+
+    <div class="callout warn"><b>Advertencia estadística</b> Correlación no implica causalidad. Un diagrama de dispersión sugiere una posible relación entre variables, pero se requiere análisis adicional (y conocimiento técnico del proceso) para confirmar una relación causa-efecto real.</div>
+
+    <div class="lab">
+      <div class="lab-head"><span class="lab-badge">Laboratorio interactivo</span><span class="lt">Explorador de correlación</span></div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Ejemplo: relación entre la <strong>temperatura de curado (°C)</strong> y la <strong>resistencia a la tracción (MPa)</strong> de una pieza. Elige un escenario y observa cómo cambia la nube de puntos y el coeficiente de correlación (r) de Pearson.</p>
+      <div class="controls-row">
+        <button class="qbtn alt" onclick="loadScatter('pos_fuerte')">Positiva fuerte</button>
+        <button class="qbtn alt" onclick="loadScatter('pos_debil')">Positiva débil</button>
+        <button class="qbtn alt" onclick="loadScatter('neg_fuerte')">Negativa fuerte</button>
+        <button class="qbtn alt" onclick="loadScatter('nula')">Sin correlación</button>
+      </div>
+      <div class="chartwrap" style="height:340px;"><canvas id="scatterChart" role="img" aria-label="Diagrama de dispersión entre temperatura de curado y resistencia a la tracción"></canvas></div>
+      <div class="callout ok" style="margin-top:14px;">Coeficiente de correlación de Pearson: <span id="pearsonVal" class="k" style="font-size:15px;">—</span> — <span id="pearsonInterp"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ QUIZ ============================================================ -->
+<section class="topic" id="quiz">
+  <div class="topic-head">
+    <div class="topic-head-left">
+      <div class="stamp" style="border-color:var(--accent-ok);color:var(--accent-ok);">✓</div>
+      <div>
+        <h2>Autoevaluación rápida</h2>
+        <div class="sub">Siete preguntas, una por herramienta. Selecciona tu respuesta para ver la retroalimentación.</div>
+      </div>
+    </div>
+    <div class="folio">DWG NO. UDEC-2.Q<br>ESCALA: S/E<br>HOJA 1 DE 1</div>
+  </div>
+  <div class="topic-body" id="quizBody"></div>
+</section>
+
+</main>
+</div>
+
+<div class="footer-bar">
+  UNIVERSIDAD DE CELAYA — FACULTAD DE INGENIERÍA — INGENIERÍA INDUSTRIAL ADMINISTRATIVA · UNIDAD 2, HERRAMIENTAS BÁSICAS DE CALIDAD · MATERIAL DE APOYO INTERACTIVO
+</div>
+
+<script>
+/* =============== estación activa / progreso =============== */
+const stationEls = document.querySelectorAll('.station');
+const sectionIds = ['s21','s22','s23','s24','s25','s26','s27'];
+stationEls.forEach(st=>{
+  st.addEventListener('click',()=>{
+    document.getElementById(st.dataset.target).scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    const st = document.querySelector('.station[data-target="'+e.target.id+'"]');
+    if(!st) return;
+    if(e.isIntersecting){
+      stationEls.forEach(s=>s.classList.remove('active'));
+      st.classList.add('active');
+      let idx = sectionIds.indexOf(e.target.id);
+      sectionIds.forEach((id,i)=>{
+        const s2 = document.querySelector('.station[data-target="'+id+'"]');
+        if(i<idx) s2.classList.add('done'); 
+      });
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sectionIds.forEach(id=>{ const el = document.getElementById(id); if(el) io.observe(el); });
+
+/* =============== 2.1 FLOWCHART SIMULATION =============== */
+const flowPaths = {
+  ok: ['fc-start','e-start-doc1','fc-doc1','e-doc1-p1','fc-p1','e-p1-p2','fc-p2','e-p2-doc2','fc-doc2','e-doc2-p3','fc-p3','e-p3-p4','fc-p4','e-p4-d1','fc-d1',
+       'e-d1-p5','fc-p5','e-p5-doc3','fc-doc3','e-doc3-end1','fc-end1'],
+  reproceso: ['fc-start','e-start-doc1','fc-doc1','e-doc1-p1','fc-p1','e-p1-p2','fc-p2','e-p2-doc2','fc-doc2','e-doc2-p3','fc-p3','e-p3-p4','fc-p4','e-p4-d1','fc-d1',
+       'e-d1-p6','fc-p6','e-p6-d2','fc-d2','e-d2-p7','fc-p7','e-p7-connA','fc-connA','fc-connA2','e-connA2-p2','fc-p2'],
+  scrap: ['fc-start','e-start-doc1','fc-doc1','e-doc1-p1','fc-p1','e-p1-p2','fc-p2','e-p2-doc2','fc-doc2','e-doc2-p3','fc-p3','e-p3-p4','fc-p4','e-p4-d1','fc-d1',
+       'e-d1-p6','fc-p6','e-p6-d2','fc-d2','e-d2-p8','fc-p8','e-p8-doc4','fc-doc4','e-doc4-end2','fc-end2']
+};
+let flowTimer=null;
+function resetFlow(){
+  if(flowTimer) flowTimer.forEach(t=>clearTimeout(t));
+  document.querySelectorAll('.fc-node,.fc-edge').forEach(el=>el.classList.remove('lit'));
+}
+function runFlow(kind){
+  resetFlow();
+  const seq = flowPaths[kind];
+  flowTimer = [];
+  seq.forEach((id,i)=>{
+    const t = setTimeout(()=>{
+      const el = document.getElementById(id);
+      if(el) el.classList.add('lit');
+    }, i*380);
+    flowTimer.push(t);
+  });
+}
+
+/* =============== 2.2 CHECK SHEET =============== */
+const defectTypes = ['Rayadura superficial','Golpe / abolladura','Dimensión incorrecta','Color no conforme','Ensamble incompleto'];
+const shifts = ['mat','vesp','noc'];
+let checkData = {};
+defectTypes.forEach(d=>{ checkData[d] = {mat:0,vesp:0,noc:0}; });
+function renderCheck(){
+  const tbody = document.getElementById('checktbody');
+  tbody.innerHTML='';
+  defectTypes.forEach(d=>{
+    const row = checkData[d];
+    const total = row.mat+row.vesp+row.noc;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${d}</td>
+      <td><button class="tally-btn" onclick="tally('${d}','mat')">+1</button> <span class="tally-mark">${tallyMark(row.mat)}</span></td>
+      <td><button class="tally-btn" onclick="tally('${d}','vesp')">+1</button> <span class="tally-mark">${tallyMark(row.vesp)}</span></td>
+      <td><button class="tally-btn" onclick="tally('${d}','noc')">+1</button> <span class="tally-mark">${tallyMark(row.noc)}</span></td>
+      <td class="tally-count">${total}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function tallyMark(n){
+  if(n===0) return '—';
+  return n.toString();
+}
+function tally(d,shift){ checkData[d][shift]++; renderCheck(); }
+function resetCheck(){ defectTypes.forEach(d=>{ checkData[d]={mat:0,vesp:0,noc:0}; }); renderCheck(); document.getElementById('pareto-source-note').textContent='Usa el conjunto de datos por defecto o los totales que enviaste desde la hoja de verificación (2.2).'; }
+renderCheck();
+
+function sendChecksToPareto(){
+  const labels=[]; const values=[];
+  defectTypes.forEach(d=>{
+    const row=checkData[d]; const total=row.mat+row.vesp+row.noc;
+    labels.push(d); values.push(total);
+  });
+  const sum = values.reduce((a,b)=>a+b,0);
+  if(sum===0){ alert('Registra al menos una observación en la hoja de verificación antes de enviarla al Pareto.'); return; }
+  buildPareto(labels, values);
+  document.getElementById('pareto-source-note').textContent = 'Mostrando los totales enviados desde tu hoja de verificación (2.2).';
+  document.getElementById('s24').scrollIntoView({behavior:'smooth'});
+}
+
+/* =============== 2.3 STRATIFICATION =============== */
+const machines=['M1','M2','M3'];
+const turnos=['Matutino','Vespertino','Nocturno'];
+const operarios=['Operario A','Operario B','Operario C','Operario D'];
+const defectos=['Rayadura','Golpe','Dimensión','Color'];
+let stratRecords = [];
+(function genStrat(){
+  const weightsM = {M1:0.18,M2:0.55,M3:0.27};
+  for(let i=0;i<60;i++){
+    const r = Math.random();
+    let m = r<weightsM.M1?'M1':(r<weightsM.M1+weightsM.M2?'M2':'M3');
+    stratRecords.push({
+      maquina:m,
+      turno: turnos[Math.floor(Math.random()*3)],
+      operario: operarios[Math.floor(Math.random()*4)],
+      defecto: defectos[Math.floor(Math.random()*4)]
+    });
+  }
+})();
+let stratChart;
+function renderStrat(){
+  const factor = document.getElementById('stratSelect').value;
+  const map = {maquina:machines,turno:turnos,operario:operarios,defecto:defectos};
+  const cats = map[factor];
+  const counts = cats.map(c=> stratRecords.filter(r=>r[factor]===c).length);
+  const ctx = document.getElementById('stratChart');
+  const colors = ['#3D5AF1','#00A878','#FF6B1A','#EC4899'];
+  if(stratChart) stratChart.destroy();
+  stratChart = new Chart(ctx,{
+    type:'bar',
+    data:{ labels:cats, datasets:[{ label:'Defectos', data:counts, backgroundColor: cats.map((c,i)=>colors[i%colors.length]), borderRadius:4 }]},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ y:{ beginAtZero:true, title:{display:true,text:'Número de defectos'} } } }
+  });
+  const maxIdx = counts.indexOf(Math.max(...counts));
+  const total = counts.reduce((a,b)=>a+b,0);
+  const pct = Math.round((counts[maxIdx]/total)*100);
+  const insight = document.getElementById('stratInsight');
+  insight.innerHTML = `<b>Hallazgo</b> Al estratificar por <strong>${factor}</strong>, el estrato «${cats[maxIdx]}» concentra ${counts[maxIdx]} de 60 defectos (${pct}%) — la misma base de datos revela un origen distinto según el factor elegido.`;
+}
+renderStrat();
+
+/* =============== 2.4 PARETO =============== */
+let paretoChart;
+function buildPareto(labels, values){
+  const pairs = labels.map((l,i)=>({l, v:values[i]})).sort((a,b)=>b.v-a.v);
+  const sLabels = pairs.map(p=>p.l);
+  const sValues = pairs.map(p=>p.v);
+  const total = sValues.reduce((a,b)=>a+b,0);
+  let cum=0; const cumPct = sValues.map(v=>{ cum+=v; return Math.round((cum/total)*1000)/10; });
+  const eighty = sLabels.map(()=>80);
+  let vitalCount=0;
+  for(let i=0;i<cumPct.length;i++){ vitalCount=i+1; if(cumPct[i]>=80) break; }
+  document.getElementById('paretoVitalCount').textContent = vitalCount + ' de ' + sLabels.length;
+
+  const ctx = document.getElementById('paretoChart');
+  if(paretoChart) paretoChart.destroy();
+  paretoChart = new Chart(ctx,{
+    data:{
+      labels: sLabels,
+      datasets:[
+        { type:'bar', label:'Frecuencia', data:sValues, backgroundColor:'#3D5AF1', order:2, yAxisID:'y' },
+        { type:'line', label:'% acumulado', data:cumPct, borderColor:'#FF6B1A', backgroundColor:'#FF6B1A', borderWidth:2.5, pointRadius:4, pointBackgroundColor:'#FF6B1A', order:1, yAxisID:'y1', tension:0 },
+        { type:'line', label:'Línea 80%', data:eighty, borderColor:'#EF233C', borderDash:[6,4], borderWidth:1.5, pointRadius:0, order:0, yAxisID:'y1' }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{
+        y:{ position:'left', beginAtZero:true, title:{display:true,text:'Frecuencia'} },
+        y1:{ position:'right', beginAtZero:true, max:100, grid:{drawOnChartArea:false}, title:{display:true,text:'% acumulado'} }
+      }
+    }
+  });
+}
+function loadDefaultPareto(){
+  buildPareto(
+    ['Dimensión incorrecta','Rayadura superficial','Golpe / abolladura','Color no conforme','Ensamble incompleto','Otros'],
+    [42,25,14,9,6,4]
+  );
+  document.getElementById('pareto-source-note').textContent='Mostrando datos de ejemplo (60 observaciones de un mes de producción).';
+}
+loadDefaultPareto();
+
+/* =============== 2.5 HISTOGRAM =============== */
+const histData = [24.98,25.02,25.10,24.95,25.05,24.90,25.15,25.00,24.88,25.08,
+                   25.01,24.93,25.12,24.99,25.06,24.85,25.20,25.03,24.96,25.07,
+                   24.91,25.04,25.09,24.97,25.11,24.89,25.14,25.00,24.94,25.02,
+                   25.16,24.92,25.05,24.99,25.08,24.87,25.13,25.01,24.96,25.03];
+function sturges(n){ return Math.round(1+3.322*Math.log10(n)); }
+let histChart;
+function renderHist(){
+  const k = parseInt(document.getElementById('binSlider').value);
+  document.getElementById('binVal').textContent = k;
+  document.getElementById('sturgesVal').textContent = sturges(histData.length);
+  const min = Math.min(...histData), max = Math.max(...histData);
+  const range = max-min;
+  const width = range/k;
+  const bins = new Array(k).fill(0);
+  const labels = [];
+  for(let i=0;i<k;i++){
+    const lo = min + i*width, hi = lo+width;
+    labels.push(lo.toFixed(2)+'–'+hi.toFixed(2));
+  }
+  histData.forEach(v=>{
+    let idx = Math.floor((v-min)/width);
+    if(idx>=k) idx=k-1;
+    if(idx<0) idx=0;
+    bins[idx]++;
+  });
+  const showSpec = document.getElementById('specToggle').checked;
+  const outOfSpec = histData.filter(v=>v<24.85||v>25.15).length;
+
+  const ctx = document.getElementById('histChart');
+  if(histChart) histChart.destroy();
+  const datasets = [{ label:'Frecuencia', data:bins, backgroundColor:'#EC4899', borderRadius:2, categoryPercentage:1.0, barPercentage:1.0 }];
+  histChart = new Chart(ctx,{
+    type:'bar',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        annotation:undefined
+      },
+      scales:{ x:{ title:{display:true,text:'Diámetro (mm)'}, ticks:{autoSkip:false, maxRotation:45} },
+                y:{ beginAtZero:true, title:{display:true,text:'Frecuencia'} } }
+    }
+  });
+  const insight = document.getElementById('histInsight');
+  insight.innerHTML = showSpec
+    ? `<b>Interpretación</b> Con ${k} clases (amplitud ≈ ${width.toFixed(3)} mm), la distribución luce aproximadamente simétrica. De 40 piezas medidas, <strong>${outOfSpec}</strong> quedan fuera del rango de especificación 24.85–25.15 mm.`
+    : `<b>Interpretación</b> Con ${k} clases, la amplitud de cada intervalo es de aproximadamente ${width.toFixed(3)} mm. La regla de Sturges sugiere ${sturges(histData.length)} clases para este tamaño de muestra (n=40).`;
+}
+renderHist();
+
+/* =============== 2.6 FISHBONE =============== */
+const fishColors = {
+  'Método':'#3D5AF1','Mano de obra':'#8B5CF6','Maquinaria':'#FF6B1A',
+  'Material':'#EC4899','Medición':'#00B4D8','Medio ambiente':'#00A878'
+};
+const defaultCauses = {
+  'Método':['Instrucción de trabajo desactualizada','Secuencia de inspección no estandarizada'],
+  'Mano de obra':['Falta de capacitación en el nuevo calibrador','Alta rotación de personal en turno nocturno'],
+  'Maquinaria':['Desgaste de la herramienta de corte','Falta de mantenimiento preventivo al molde'],
+  'Material':['Variabilidad del proveedor B','Lote de resina con humedad fuera de rango'],
+  'Medición':['Vernier sin calibración vigente','Falta de estudio de Gauge R&R documentado'],
+  'Medio ambiente':['Variación de temperatura en el taller','Vibración de equipos cercanos a la máquina']
+};
+let fishCauses = JSON.parse(JSON.stringify(defaultCauses));
+const catPos = {
+  'Método':{side:'top', order:0},
+  'Mano de obra':{side:'top', order:1},
+  'Maquinaria':{side:'top', order:2},
+  'Material':{side:'bottom', order:0},
+  'Medición':{side:'bottom', order:1},
+  'Medio ambiente':{side:'bottom', order:2}
+};
+function addCause(){
+  const cat = document.getElementById('fishCat').value;
+  const val = document.getElementById('fishCause').value.trim();
+  if(!val){ document.getElementById('fishCause').style.borderColor='#EF233C'; return; }
+  document.getElementById('fishCause').style.borderColor='';
+  fishCauses[cat].push(val);
+  document.getElementById('fishCause').value='';
+  renderFish();
+}
+function resetFish(){
+  fishCauses = JSON.parse(JSON.stringify(defaultCauses));
+  renderFish();
+}
+function wrapLines(text, max){
+  const words = text.split(' ');
+  const lines = [];
+  let cur = '';
+  words.forEach(w=>{
+    if((cur+' '+w).trim().length > max){ lines.push(cur.trim()); cur = w; }
+    else { cur = (cur+' '+w).trim(); }
+  });
+  if(cur) lines.push(cur);
+  return lines.slice(0,2);
+}
+function renderFish(){
+  const svg = document.getElementById('fishsvg');
+  const problem = document.getElementById('fishProblem').value || 'Problema';
+  const cx0=110, cx1=850, spineY=310;
+  let html = `<line x1="${cx0}" y1="${spineY}" x2="${cx1}" y2="${spineY}" stroke="#161B33" stroke-width="2.5"/>`;
+  html += `<polygon points="${cx0-45},${spineY} ${cx0},${spineY-24} ${cx0},${spineY+24}" fill="#161B33"/>`;
+  const boxW = 210, boxH = 62;
+  html += `<rect x="${cx1-6}" y="${spineY-boxH/2}" width="${boxW}" height="${boxH}" rx="8" fill="#EF233C" stroke="#A3122A" stroke-width="1.5"/>`;
+  html += `<foreignObject x="${cx1-6}" y="${spineY-boxH/2}" width="${boxW}" height="${boxH}">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:'IBM Plex Sans';font-size:13px;font-weight:600;color:#fff;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 10px;line-height:1.3;">${escapeHtml(problem)}</div>
+  </foreignObject>`;
+  html += `<text x="${cx1+99}" y="${spineY-boxH/2-10}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10.5" fill="#8A88A8">EFECTO</text>`;
+
+  const cats = Object.keys(catPos);
+  const bxFor = (order)=> cx0 + 165 + order*228;
+  cats.forEach(cat=>{
+    const pos = catPos[cat];
+    const bx = bxFor(pos.order);
+    const isTop = pos.side==='top';
+    const color = fishColors[cat];
+    const boneEndY = isTop ? spineY-155 : spineY+155;
+    const boneStartX = bx+95;
+    const boneJoinX = bx-30;
+    html += `<line x1="${boneStartX}" y1="${boneEndY}" x2="${boneJoinX}" y2="${spineY}" stroke="${color}" stroke-width="2.5"/>`;
+    const causes = fishCauses[cat] || [];
+    html += `<circle cx="${boneStartX+14}" cy="${boneEndY - (isTop?0:0)}" r="4" fill="${color}"/>`;
+    html += `<text x="${boneStartX+24}" y="${isTop?boneEndY-14:boneEndY+26}" text-anchor="start" font-family="Space Grotesk" font-weight="700" font-size="14" fill="${color}">${escapeHtml(cat)}</text>`;
+    html += `<text x="${boneStartX+24}" y="${isTop?boneEndY+2:boneEndY+42}" text-anchor="start" font-family="IBM Plex Mono" font-size="10" fill="#8A88A8">${causes.length} causa${causes.length===1?'':'s'} registrada${causes.length===1?'':'s'}</text>`;
+
+    causes.forEach((c,i)=>{
+      const t = (i+1)/(causes.length+1);
+      const px = boneStartX + (boneJoinX-boneStartX)*t;
+      const py = boneEndY + (spineY-boneEndY)*t;
+      const dashLen = 34;
+      const lx = px-dashLen;
+      const ly = isTop ? py-20 : py+20;
+      html += `<line x1="${px}" y1="${py}" x2="${lx}" y2="${ly}" stroke="${color}" stroke-width="1" stroke-dasharray="2,3" opacity="0.7"/>`;
+      html += `<circle cx="${px}" cy="${py}" r="2.5" fill="${color}"/>`;
+      const lines = wrapLines(c, 30);
+      const baseY = isTop ? ly-4 : ly+12;
+      lines.forEach((ln,li)=>{
+        html += `<text x="${lx}" y="${baseY + li*13}" text-anchor="end" font-family="IBM Plex Sans" font-size="11" fill="#3E4468">${escapeHtml(ln)}</text>`;
+      });
+    });
+  });
+  svg.innerHTML = html;
+}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+renderFish();
+
+/* =============== 2.7 SCATTER =============== */
+let scatterChart;
+function genScatterData(kind){
+  const pts=[];
+  for(let i=0;i<28;i++){
+    const x = 140 + Math.random()*60; /* temperatura */
+    let y;
+    if(kind==='pos_fuerte') y = 20 + (x-140)*0.55 + (Math.random()-0.5)*4;
+    else if(kind==='pos_debil') y = 30 + (x-140)*0.25 + (Math.random()-0.5)*16;
+    else if(kind==='neg_fuerte') y = 65 - (x-140)*0.55 + (Math.random()-0.5)*4;
+    else y = 35 + (Math.random()-0.5)*30;
+    pts.push({x: Math.round(x*10)/10, y: Math.round(y*10)/10});
+  }
+  return pts;
+}
+function pearson(pts){
+  const n = pts.length;
+  const mx = pts.reduce((a,p)=>a+p.x,0)/n;
+  const my = pts.reduce((a,p)=>a+p.y,0)/n;
+  let num=0, dx2=0, dy2=0;
+  pts.forEach(p=>{ const dx=p.x-mx, dy=p.y-my; num+=dx*dy; dx2+=dx*dx; dy2+=dy*dy; });
+  return num/Math.sqrt(dx2*dy2);
+}
+function loadScatter(kind){
+  const pts = genScatterData(kind);
+  const r = Math.round(pearson(pts)*100)/100;
+  document.getElementById('pearsonVal').textContent = r.toFixed(2);
+  let interp;
+  const ar = Math.abs(r);
+  if(ar>=0.7) interp = (r>0?'correlación positiva fuerte.':'correlación negativa fuerte.');
+  else if(ar>=0.3) interp = (r>0?'correlación positiva débil.':'correlación negativa débil.');
+  else interp = 'prácticamente sin correlación lineal.';
+  document.getElementById('pearsonInterp').textContent = interp;
+
+  const ctx = document.getElementById('scatterChart');
+  if(scatterChart) scatterChart.destroy();
+  scatterChart = new Chart(ctx,{
+    type:'scatter',
+    data:{ datasets:[{ label:'Piezas', data:pts, backgroundColor:'#00B4D8', pointRadius:5, pointStyle:'circle' }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{ title:{display:true,text:'Temperatura de curado (°C)'} },
+        y:{ title:{display:true,text:'Resistencia a la tracción (MPa)'} }
+      }
+    }
+  });
+}
+loadScatter('pos_fuerte');
+
+/* =============== QUIZ =============== */
+const quizData = [
+  {q:'¿Qué símbolo del diagrama de flujo se usa para representar una decisión?',
+   opts:['Rectángulo','Rombo','Óvalo','Círculo'], correct:1},
+  {q:'¿Cuál es el propósito principal de una hoja de verificación?',
+   opts:['Calcular correlaciones entre variables','Recolectar datos de forma sistemática en el punto donde ocurren','Dibujar la espina de un problema','Ordenar categorías de mayor a menor'], correct:1},
+  {q:'Al dividir un conjunto de defectos por máquina, turno u operario, estamos aplicando:',
+   opts:['Estratificación','Diagrama de Pareto','Histograma','Diagrama de dispersión'], correct:0},
+  {q:'El diagrama de Pareto se basa en el principio de que aproximadamente:',
+   opts:['El 50% de las causas genera el 50% de los efectos','El 20% de las causas genera el 80% de los efectos','El 80% de las causas genera el 20% de los efectos','Todas las causas tienen el mismo peso'], correct:1},
+  {q:'La regla de Sturges se utiliza para determinar:',
+   opts:['El número de categorías de un Pareto','El coeficiente de correlación','El número de clases de un histograma','Las espinas de un diagrama Ishikawa'], correct:2},
+  {q:'En un diagrama causa-efecto, las 6M NO incluyen:',
+   opts:['Método','Mano de obra','Mercado','Medición'], correct:2},
+  {q:'Un coeficiente de correlación de Pearson cercano a 0 indica:',
+   opts:['Correlación positiva fuerte','Correlación negativa fuerte','Ausencia de relación lineal','Relación de causalidad directa'], correct:2}
+];
+function buildQuiz(){
+  const body = document.getElementById('quizBody');
+  let html='';
+  quizData.forEach((item,qi)=>{
+    html += `<div class="quiz-q"><p class="qtext">${qi+1}. ${item.q}</p><div class="quiz-opts">`;
+    item.opts.forEach((o,oi)=>{
+      html += `<div class="quiz-opt" id="q${qi}o${oi}" onclick="answerQuiz(${qi},${oi})">${o}</div>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `<p style="margin-top:8px;">Resultado: <span id="quiz-score">0 / ${quizData.length}</span></p>`;
+  body.innerHTML = html;
+}
+let quizAnswered = new Array(quizData.length).fill(false);
+let quizScore=0;
+function answerQuiz(qi,oi){
+  if(quizAnswered[qi]) return;
+  quizAnswered[qi]=true;
+  const item = quizData[qi];
+  item.opts.forEach((o,i)=>{
+    const el = document.getElementById('q'+qi+'o'+i);
+    if(i===item.correct) el.classList.add('correct');
+    else if(i===oi) el.classList.add('wrong');
+  });
+  if(oi===item.correct) quizScore++;
+  document.getElementById('quiz-score').textContent = quizScore+' / '+quizData.length;
+}
+buildQuiz();
+</script>
+</body>
+</html>

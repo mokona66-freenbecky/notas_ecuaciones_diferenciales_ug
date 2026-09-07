@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundamentos de Ciencia Cárnica · Universidad de Guanajuato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F1EADC;
+    --paper:#F8F3E9;
+    --charcoal:#26211D;
+    --oxblood:#7C2530;
+    --oxblood-dark:#5A1B23;
+    --mustard:#C08A2E;
+    --sage:#5B6E4F;
+    --line:#D9CFB8;
+    --line-dark:#C4B89D;
+    --muted:#8A7F6C;
+    --display: 'Fraunces', serif;
+    --body: 'Source Sans 3', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--charcoal);
+    font-family:var(--body);
+    line-height:1.6;
+  }
+  ::selection{background:var(--mustard); color:var(--charcoal);}
+
+  /* ---------- Layout shell ---------- */
+  .shell{
+    display:grid;
+    grid-template-columns: 280px 1fr;
+    min-height:100vh;
+  }
+  @media (max-width: 860px){
+    .shell{ grid-template-columns: 1fr; }
+    .sidebar{ position:sticky; top:0; z-index:50; }
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    background:var(--charcoal);
+    color:var(--paper);
+    padding:28px 22px;
+    display:flex;
+    flex-direction:column;
+    gap:26px;
+    border-right:1px solid var(--oxblood-dark);
+  }
+  @media (max-width: 860px){
+    .sidebar{ flex-direction:row; align-items:center; justify-content:space-between; padding:14px 18px; gap:10px; overflow-x:auto; }
+    .sidebar .brand{ display:none; }
+    .sidebar .agenda-box{ display:none; }
+    .navlist{ flex-direction:row !important; gap:6px !important; }
+  }
+  .brand .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--mustard);
+  }
+  .brand h1{
+    font-family:var(--display);
+    font-size:22px;
+    font-weight:600;
+    margin:6px 0 2px;
+    line-height:1.15;
+  }
+  .brand p{
+    font-size:12.5px;
+    color:#C9BFAE;
+    margin:0;
+  }
+  .navlist{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    flex:1;
+  }
+  .navlist button{
+    all:unset;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    padding:10px 10px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:14.5px;
+    color:#D8CFBC;
+    border-left:2px solid transparent;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .navlist button:hover{ background:rgba(255,255,255,.06); color:var(--paper); }
+  .navlist button.active{
+    background:rgba(124,37,48,.35);
+    color:#fff;
+    border-left:2px solid var(--mustard);
+  }
+  .navlist .num{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--mustard);
+    min-width:20px;
+  }
+  .navlist .done-dot{
+    margin-left:auto;
+    width:7px; height:7px; border-radius:50%;
+    background:var(--sage);
+    opacity:0;
+    transition:opacity .2s;
+  }
+  .navlist button.completed .done-dot{ opacity:1; }
+
+  .agenda-box{
+    border-top:1px solid rgba(255,255,255,.12);
+    padding-top:16px;
+    font-size:12px;
+    color:#B7ACA0;
+  }
+  .agenda-box .eyebrow{
+    font-family:var(--mono);
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--mustard);
+    font-size:10.5px;
+  }
+  .agenda-box ul{ list-style:none; margin:8px 0 0; padding:0; }
+  .agenda-box li{ display:flex; justify-content:space-between; padding:3px 0; }
+
+  /* ---------- Main ---------- */
+  main{ padding:0; min-width:0; }
+  .view{ display:none; }
+  .view.active{ display:block; animation: fadein .35s ease; }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .section-wrap{ max-width:820px; margin:0 auto; padding:54px 32px 90px; }
+  @media (max-width:600px){ .section-wrap{ padding:36px 18px 70px; } }
+
+  .kicker{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--oxblood);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .kicker .line{ height:1px; flex:1; background:var(--line-dark); }
+
+  h2.module-title{
+    font-family:var(--display);
+    font-size:clamp(30px,4vw,42px);
+    font-weight:600;
+    margin:0 0 6px;
+    color:var(--charcoal);
+  }
+  .module-sub{ color:var(--muted); font-size:16px; margin:0 0 34px; max-width:60ch;}
+
+  h3{
+    font-family:var(--display);
+    font-size:22px;
+    font-weight:600;
+    margin:44px 0 12px;
+    color:var(--oxblood);
+  }
+  h3:first-of-type{ margin-top:0; }
+  h4{ font-family:var(--body); font-weight:700; font-size:15.5px; margin:22px 0 8px; }
+  p{ margin:0 0 14px; font-size:16px; }
+  ul,ol{ margin:0 0 16px; padding-left:22px; }
+  li{ margin-bottom:6px; font-size:16px; }
+  strong{ color:var(--charcoal); }
+  .lede{ font-size:18.5px; color:#3A342E; }
+
+  .callout{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-left:3px solid var(--oxblood);
+    border-radius:2px;
+    padding:16px 20px;
+    margin:22px 0;
+    font-size:15px;
+  }
+  .callout .label{
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--oxblood);
+    display:block;
+    margin-bottom:6px;
+  }
+  .callout.sage{ border-left-color:var(--sage); }
+  .callout.sage .label{ color:var(--sage); }
+  .callout.mustard{ border-left-color:var(--mustard); }
+  .callout.mustard .label{ color:#9C6B1F; }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+  @media (max-width:640px){ .grid2{ grid-template-columns:1fr; } }
+
+  table{ width:100%; border-collapse:collapse; margin:18px 0 26px; font-size:14.5px; }
+  th,td{ text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); }
+  th{ font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--oxblood); border-bottom:1px solid var(--oxblood); }
+  tr:last-child td{ border-bottom:none; }
+  td.mono, th.mono{ font-family:var(--mono); }
+
+  .nav-arrows{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:56px; padding-top:20px; border-top:1px solid var(--line);
+  }
+  .nav-arrows button{
+    all:unset; cursor:pointer; font-family:var(--mono); font-size:12.5px;
+    color:var(--oxblood); display:flex; align-items:center; gap:8px;
+    padding:8px 4px;
+  }
+  .nav-arrows button:hover{ text-decoration:underline; }
+  .nav-arrows .spacer{ flex:1; }
+
+  /* ---------- Flashcards / definiciones clic ---------- */
+  .flip-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:20px 0 28px; }
+  @media (max-width:640px){ .flip-grid{ grid-template-columns:1fr; } }
+  .flip-card{ perspective:1200px; height:120px; cursor:pointer; }
+  .flip-inner{
+    position:relative; width:100%; height:100%;
+    transition:transform .5s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-card.flipped .flip-inner{ transform:rotateY(180deg); }
+  .flip-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border:1px solid var(--line-dark); border-radius:3px;
+    padding:14px 16px; display:flex; flex-direction:column; justify-content:center;
+    background:var(--paper);
+  }
+  .flip-front{ }
+  .flip-front .term{ font-family:var(--display); font-weight:600; font-size:17px; color:var(--charcoal); }
+  .flip-front .tap{ font-family:var(--mono); font-size:10px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:.08em;}
+  .flip-back{
+    transform:rotateY(180deg);
+    background:var(--oxblood); color:#F6E9E1;
+  }
+  .flip-back p{ margin:0; font-size:13.5px; color:#F6E9E1; }
+
+  /* ---------- Composition donut ---------- */
+  .comp-wrap{ display:flex; gap:34px; align-items:center; flex-wrap:wrap; margin:26px 0; }
+  .donut{ width:190px; height:190px; border-radius:50%; flex-shrink:0;
+    background: conic-gradient(
+      var(--sage) 0% 70%,
+      var(--mustard) 70% 90%,
+      var(--oxblood) 90% 96%,
+      var(--muted) 96% 100%
+    );
+    position:relative;
+  }
+  .donut::after{
+    content:""; position:absolute; inset:26px; border-radius:50%; background:var(--cream);
+  }
+  .comp-legend{ display:flex; flex-direction:column; gap:10px; font-size:14px; flex:1; min-width:220px;}
+  .comp-legend .row{ display:flex; align-items:center; gap:10px; cursor:pointer; padding:6px 8px; border-radius:4px; transition:background .15s;}
+  .comp-legend .row:hover{ background:var(--paper); }
+  .comp-legend .swatch{ width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+  .comp-legend .pct{ font-family:var(--mono); margin-left:auto; color:var(--muted); font-size:13px; }
+  .comp-legend .detail{ display:none; font-size:12.5px; color:var(--muted); padding:0 8px 6px 30px; }
+  .comp-legend .row.open + .detail{ display:block; }
+
+  /* ---------- Species tabs ---------- */
+  .species-tabs{ display:flex; flex-wrap:wrap; gap:6px; margin:22px 0 0; }
+  .species-tabs button{
+    all:unset; cursor:pointer; font-size:13.5px; font-family:var(--body); font-weight:600;
+    padding:8px 14px; border:1px solid var(--line-dark); border-radius:20px; color:var(--charcoal);
+  }
+  .species-tabs button.active{ background:var(--oxblood); color:#fff; border-color:var(--oxblood); }
+  .species-panel{
+    border:1px solid var(--line); border-radius:4px; padding:22px; margin:14px 0 30px; background:var(--paper);
+    display:none;
+  }
+  .species-panel.active{ display:block; }
+  .species-panel h4{ margin-top:0; font-family:var(--display); font-size:20px; color:var(--oxblood); }
+  .species-stats{ display:flex; gap:22px; flex-wrap:wrap; margin-top:14px; }
+  .species-stats div{ font-family:var(--mono); font-size:12px; color:var(--muted); }
+  .species-stats strong{ display:block; font-family:var(--body); font-size:19px; color:var(--charcoal); }
+
+  /* ---------- Muscle diagram ---------- */
+  .muscle-wrap{ display:grid; grid-template-columns: 300px 1fr; gap:24px; align-items:start; margin:22px 0 30px; }
+  @media (max-width:700px){ .muscle-wrap{ grid-template-columns:1fr; } }
+  .muscle-svg-box{ border:1px solid var(--line); border-radius:4px; padding:18px; background:var(--paper); }
+  .muscle-info{ min-height:150px; }
+  .layer-btn{ cursor:pointer; transition:opacity .15s; }
+  .layer-btn:hover{ opacity:.75; }
+  .layer-list{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .layer-list button{
+    all:unset; cursor:pointer; font-family:var(--mono); font-size:11px; padding:5px 9px;
+    border:1px solid var(--line-dark); border-radius:3px; color:var(--muted);
+  }
+  .layer-list button.active{ background:var(--charcoal); color:var(--paper); border-color:var(--charcoal); }
+  .muscle-info h4{ margin-top:0; color:var(--oxblood); }
+  .muscle-info p{ font-size:14.5px; }
+
+  /* ---------- Quiz ---------- */
+  .quiz-item{ border:1px solid var(--line); border-radius:4px; padding:20px 22px; margin-bottom:16px; background:var(--paper); }
+  .quiz-item .q{ font-weight:700; margin-bottom:12px; font-size:15.5px; }
+  .quiz-options{ display:flex; flex-direction:column; gap:8px; }
+  .quiz-options label{
+    display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid var(--line-dark);
+    border-radius:3px; cursor:pointer; font-size:14.5px;
+  }
+  .quiz-options label:hover{ background:#EFE7D5; }
+  .quiz-options input{ accent-color:var(--oxblood); }
+  .quiz-feedback{ margin-top:10px; font-size:13.5px; font-family:var(--mono); display:none; padding:8px 10px; border-radius:3px;}
+  .quiz-feedback.correct{ background:rgba(91,110,79,.15); color:var(--sage); display:block;}
+  .quiz-feedback.incorrect{ background:rgba(124,37,48,.12); color:var(--oxblood); display:block;}
+  .quiz-summary{
+    text-align:center; padding:26px; border:1px dashed var(--oxblood); border-radius:6px; margin-top:20px; display:none;
+  }
+  .quiz-summary .score{ font-family:var(--display); font-size:38px; color:var(--oxblood); }
+  #checkQuizBtn{
+    all:unset; cursor:pointer; background:var(--oxblood); color:#fff; padding:12px 24px; border-radius:3px;
+    font-weight:600; font-size:14.5px; display:inline-block; margin-top:6px;
+  }
+  #checkQuizBtn:hover{ background:var(--oxblood-dark); }
+
+  /* Glossary */
+  .glossary-search{
+    width:100%; padding:12px 14px; font-size:15px; border:1px solid var(--line-dark); border-radius:4px;
+    font-family:var(--body); margin-bottom:18px; background:var(--paper);
+  }
+  .gloss-item{ border-bottom:1px solid var(--line); padding:14px 0; }
+  .gloss-item dt{ font-family:var(--display); font-weight:600; font-size:16.5px; color:var(--oxblood); }
+  .gloss-item dd{ margin:4px 0 0; font-size:14.5px; color:#4A433B; }
+
+  /* ---------- Fotografías reales ---------- */
+  figure.photo{ margin:24px 0; }
+  figure.photo .frame{
+    border:1px solid var(--line-dark); border-radius:4px; overflow:hidden; background:var(--paper);
+    line-height:0;
+  }
+  figure.photo img{ width:100%; height:280px; object-fit:cover; display:block; }
+  figure.photo figcaption{
+    font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5;
+  }
+  figure.photo figcaption a{ color:var(--muted); }
+  .photo-placeholder{
+    width:100%; height:280px; display:flex; align-items:center; justify-content:center; text-align:center;
+    background:var(--line); color:var(--muted); font-size:13px; padding:20px; font-family:var(--mono);
+  }
+  .photo-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
+  @media (max-width:640px){ .photo-grid2{ grid-template-columns:1fr; } }
+  .photo-grid2 figure.photo{ margin:0; }
+  .species-photo{ border-radius:4px; overflow:hidden; border:1px solid var(--line-dark); margin-bottom:14px; line-height:0; }
+  .species-photo img{ width:100%; height:200px; object-fit:cover; display:block; }
+
+  footer.credits{
+    max-width:820px; margin:0 auto; padding:0 32px 60px; font-size:12.5px; color:var(--muted);
+  }
+  .badge{
+    display:inline-block; font-family:var(--mono); font-size:10.5px; letter-spacing:.06em;
+    border:1px solid var(--line-dark); border-radius:20px; padding:3px 10px; margin-right:6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="brand">
+      <span class="eyebrow">Universidad de Guanajuato</span>
+      <h1>Fundamentos de<br>Ciencia Cárnica</h1>
+      <p>Introducción · Sesión de 4 horas</p>
+    </div>
+
+    <ul class="navlist" id="navlist">
+      <li><button data-view="portada" class="active"><span class="num">00</span> Portada</button></li>
+      <li><button data-view="m1"><span class="num">01</span> La industria cárnica<span class="done-dot"></span></button></li>
+      <li><button data-view="m2"><span class="num">02</span> Definición y norma<span class="done-dot"></span></button></li>
+      <li><button data-view="m3"><span class="num">03</span> Composición y músculo<span class="done-dot"></span></button></li>
+      <li><button data-view="m4"><span class="num">04</span> Especies de abasto<span class="done-dot"></span></button></li>
+      <li><button data-view="m5"><span class="num">05</span> Proteínas cárnicas (avanzado)<span class="done-dot"></span></button></li>
+      <li><button data-view="gloss"><span class="num">06</span> Glosario</button></li>
+      <li><button data-view="quiz"><span class="num">07</span> Autoevaluación<span class="done-dot"></span></button></li>
+    </ul>
+
+    <div class="agenda-box">
+      <span class="eyebrow">Agenda sugerida · 4 h + módulo avanzado</span>
+      <ul>
+        <li><span>01 · La industria</span><span>60 min</span></li>
+        <li><span>02 · Definición y norma</span><span>60 min</span></li>
+        <li><span>03 · Composición</span><span>60 min</span></li>
+        <li><span>04 · Especies</span><span>60 min</span></li>
+        <li><span>05 · Proteínas (avanzado)</span><span>sesión extra</span></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- PORTADA -->
+    <section class="view active" id="view-portada">
+      <div class="section-wrap">
+        <div class="kicker"><span>Ciencia y tecnología de los alimentos</span><span class="line"></span><span>Módulo introductorio</span></div>
+        <h2 class="module-title">Fundamentos para la producción de alimentos derivados cárnicos</h2>
+
+        <div class="callout">
+          <span class="label">Cómo usar este material</span>
+          Navega los módulos desde el menú lateral (o superior, en móvil). Cada módulo está diseñado para aproximadamente <strong>60 minutos</strong> de clase e incluye definiciones interactivas, diagramas para explorar y actividades breves de discusión. Al terminar, la sección de <strong>Autoevaluación</strong> permite repasar los cuatro módulos con retroalimentación inmediata.
+        </div>
+
+        <h3>Temas del curso</h3>
+        <ul>
+          <li><strong>01 · La industria cárnica</strong> — cadena de valor, actores regulatorios y marco institucional en México.</li>
+          <li><strong>02 · Definición y norma</strong> — definición formal de carne, vocabulario técnico y clasificación de productos cárnicos.</li>
+          <li><strong>03 · Composición y músculo</strong> — composición química de la carne y estructura del músculo esquelético.</li>
+          <li><strong>04 · Especies de abasto</strong> — principales especies animales de consumo y su rendimiento en canal.</li>
+          <li><strong>05 · Proteínas cárnicas (avanzado)</strong> — estudio técnico de cada fracción proteica del músculo y sus diferencias entre especies, para ingeniería agroindustrial.</li>
+        </ul>
+
+        <button onclick="goTo('m1')" style="all:unset; cursor:pointer; background:var(--oxblood); color:#fff; padding:14px 26px; border-radius:3px; font-weight:600; margin-top:10px; display:inline-block;">Comenzar Módulo 01 →</button>
+      </div>
+    </section>
+
+    <!-- MODULO 1 -->
+    <section class="view" id="view-m1">
+      <div class="section-wrap">
+        <div class="kicker"><span class="num" style="color:var(--oxblood); font-family:var(--mono);">01 / 04</span><span class="line"></span><span>60 minutos</span></div>
+        <h2 class="module-title">La industria cárnica y su cadena de valor</h2>
+        <p class="module-sub">Panorama general, importancia nutricional y actores que intervienen desde la producción primaria hasta el consumidor.</p>
+
+        <h3>¿Por qué estudiar la carne como alimento?</h3>
+        <p>La carne es, históricamente, uno de los alimentos de mayor densidad nutricional disponibles para el ser humano. Aporta <strong>proteína de alto valor biológico</strong> —contiene los nueve aminoácidos esenciales en proporciones adecuadas—, además de <strong>hierro hemo</strong> (de mayor biodisponibilidad que el hierro no hemo de origen vegetal), zinc, selenio y vitaminas del complejo B, en particular B12, que en la práctica solo se obtiene de forma natural a partir de productos de origen animal.</p>
+        <p>Comprender su producción implica integrar conocimientos de fisiología animal, bioquímica, microbiología, tecnología de alimentos e ingeniería de procesos: la ciencia cárnica es, por naturaleza, una disciplina de convergencia.</p>
+
+        <figure class="photo">
+          <div class="frame"><img class="real-photo" alt="Ganado bovino en pastoreo, producción primaria" onerror="handleImgError(this)" src="https://commons.wikimedia.org/wiki/Special:FilePath/HighlandCow.01.jpg"></div>
+          <figcaption>Producción primaria: ganado en pastoreo, primer eslabón de la cadena cárnica. Fotografía: Wikimedia Commons (CC BY-SA).</figcaption>
+        </figure>
+
+        <h3>La cadena de producción cárnica</h3>
+        <p>De manera simplificada, la cadena que transforma un animal vivo en alimentos cárnicos disponibles para el consumidor sigue estas etapas:</p>
+        <ol>
+          <li><strong>Producción primaria (cría y engorda):</strong> selección genética, alimentación, sanidad y bienestar animal en la unidad de producción.</li>
+          <li><strong>Transporte y manejo pre-sacrificio:</strong> traslado al rastro, reposo y ayuno controlado; etapa crítica porque el estrés del animal afecta directamente la calidad final de la carne.</li>
+          <li><strong>Sacrificio y faenado:</strong> insensibilización, sangrado, desuello o escaldado-depilado, evisceración e inspección sanitaria ante-mortem y post-mortem.</li>
+          <li><strong>Corte y deshuese:</strong> obtención de la canal y su fraccionamiento en cortes primarios y secundarios.</li>
+          <li><strong>Procesamiento:</strong> elaboración de productos cárnicos derivados (embutidos, curados, cocidos, etc.).</li>
+          <li><strong>Conservación, distribución y comercialización:</strong> frío, empaque, transporte y punto de venta.</li>
+          <li><strong>Consumo:</strong> preparación final por el consumidor o el sector de servicios de alimentos.</li>
+        </ol>
+
+        <div class="callout mustard">
+          <span class="label">Idea clave</span>
+          Cada eslabón de la cadena introduce riesgos (microbiológicos, de calidad, de inocuidad) y oportunidades de agregar valor. La ciencia cárnica busca controlar los primeros y maximizar las segundas.
+        </div>
+
+        <h3>Marco institucional en México</h3>
+        <p>La producción e industrialización de cárnicos en México está vigilada por distintas autoridades, cuyas competencias conviene distinguir desde el inicio del curso:</p>
+        <table>
+          <tr><th>Institución</th><th>Ámbito principal</th></tr>
+          <tr><td><strong>SENASICA</strong> (SADER)</td><td>Sanidad animal, inspección federal en rastros TIF (Tipo Inspección Federal), movilización de animales.</td></tr>
+          <tr><td><strong>COFEPRIS</strong> (Salud)</td><td>Regulación sanitaria de alimentos procesados, etiquetado y verificación de establecimientos.</td></tr>
+          <tr><td><strong>Gobiernos municipales</strong></td><td>Rastros municipales (Tipo Inspección Municipal, TIM) y mercados locales.</td></tr>
+          <tr><td><strong>Secretaría de Economía / DOF</strong></td><td>Publicación y actualización de Normas Oficiales Mexicanas (NOM) aplicables.</td></tr>
+        </table>
+
+        <h4>Términos para distinguir desde ahora</h4>
+        <div class="flip-grid" id="flipgrid1"></div>
+
+        <div class="callout">
+          <span class="label">Actividad de discusión (10–15 min)</span>
+          En parejas: elijan un producto cárnico que consuman regularmente (por ejemplo, chorizo, jamón o milanesa empacada) y reconstruyan, paso por paso, la cadena de valor que probablemente siguió desde la unidad de producción hasta su mesa. ¿En qué punto de la cadena identifican el mayor riesgo de pérdida de calidad o inocuidad?
+        </div>
+
+        <div class="nav-arrows">
+          <button onclick="goTo('portada')">← Portada</button>
+          <span class="spacer"></span>
+          <button onclick="goTo('m2')">Módulo 02: Definición y norma →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULO 2 -->
+    <section class="view" id="view-m2">
+      <div class="section-wrap">
+        <div class="kicker"><span style="color:var(--oxblood); font-family:var(--mono);">02 / 04</span><span class="line"></span><span>60 minutos</span></div>
+        <h2 class="module-title">Definición formal y marco normativo</h2>
+        <p class="module-sub">Qué es "carne" en sentido técnico-legal, y cómo se clasifican los productos cárnicos derivados.</p>
+
+        <h3>Definición formal de carne</h3>
+        <p>En el lenguaje cotidiano, "carne" se usa de forma amplia. En ciencia y tecnología de alimentos, el término tiene una definición precisa que conviene fijar desde el inicio:</p>
+        <div class="callout">
+          <span class="label">Definición técnica</span>
+          <strong>Carne:</strong> estructura compuesta por fibra muscular estriada (esquelética), acompañada o no de tejido conjuntivo, grasa, fibras nerviosas y vasos sanguíneos y linfáticos, proveniente de animales de las especies autorizadas para el consumo humano, obtenida mediante un proceso higiénico de faenado. Esta definición —con variantes menores en su redacción— es la base de la normatividad sanitaria mexicana (NOM-194-SSA1-2004) y es consistente con los principios del <em>Codex Alimentarius</em> de la FAO/OMS.
+        </div>
+        <p>Nótese que la definición exige tejido <strong>muscular estriado</strong>: esto excluye, en sentido estricto, al músculo liso (vísceras huecas) y da pie a distinguir la carne de los <strong>despojos o subproductos comestibles</strong> (hígado, riñón, tripa, etc.), que se rigen por criterios distintos aunque provengan del mismo animal.</p>
+
+        <h3>Vocabulario técnico esencial</h3>
+        <p>Un error frecuente entre estudiantes es usar como sinónimos términos que, normativamente, no lo son. Explora las siguientes tarjetas:</p>
+        <div class="flip-grid" id="flipgrid2"></div>
+
+        <h3>Clasificación de productos cárnicos procesados</h3>
+        <p>La NOM-213-SSA1-2018 (Productos y servicios. Productos cárnicos procesados) ofrece un marco de clasificación ampliamente usado en la industria mexicana. De forma simplificada, los productos cárnicos se agrupan según el tratamiento tecnológico principal que reciben:</p>
+        <table>
+          <tr><th>Categoría</th><th>Tratamiento característico</th><th>Ejemplos</th></tr>
+          <tr><td>Frescos</td><td>Molienda o corte, sin curado ni cocción</td><td>Chorizo fresco, carne molida sazonada</td></tr>
+          <tr><td>Curados</td><td>Adición de sal de cura (nitritos/nitratos)</td><td>Jamón curado, tocino</td></tr>
+          <tr><td>Cocidos</td><td>Tratamiento térmico posterior al curado o adición</td><td>Jamón cocido, salchicha tipo Viena</td></tr>
+          <tr><td>Embutidos crudos madurados</td><td>Fermentación y deshidratación controlada, sin cocción</td><td>Salami, chorizo español</td></tr>
+          <tr><td>Secos / deshidratados</td><td>Reducción de actividad de agua por secado</td><td>Cecina, carne seca (machaca)</td></tr>
+          <tr><td>Enlatados / esterilizados</td><td>Tratamiento térmico en envase sellado</td><td>Carne en su jugo enlatada</td></tr>
+        </table>
+
+        <h3>Rendimiento en canal</h3>
+        <p>Otro concepto que se confunde con frecuencia es el de <strong>rendimiento en canal</strong> (dressing percentage): el porcentaje del peso vivo del animal que se conserva como canal después del sacrificio y eliminación de cabeza, piel/cuero, vísceras y extremidades distales. Es un indicador económico y productivo clave, y varía sustancialmente entre especies —lo revisaremos con detalle en el Módulo 04.</p>
+
+        <div class="callout mustard">
+          <span class="label">Pregunta para el pizarrón</span>
+          Si un producto se anuncia como "100% carne", ¿qué debería —y qué no debería— contener según la definición técnica revisada? Discutan qué información del etiquetado permite verificarlo.
+        </div>
+
+        <div class="nav-arrows">
+          <button onclick="goTo('m1')">← Módulo 01</button>
+          <span class="spacer"></span>
+          <button onclick="goTo('m3')">Módulo 03: Composición y músculo →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULO 3 -->
+    <section class="view" id="view-m3">
+      <div class="section-wrap">
+        <div class="kicker"><span style="color:var(--oxblood); font-family:var(--mono);">03 / 04</span><span class="line"></span><span>60 minutos</span></div>
+        <h2 class="module-title">Composición química y estructura del músculo</h2>
+        <p class="module-sub">De qué está hecha la carne a nivel químico, y cómo se organiza el tejido muscular que le da origen.</p>
+
+        <h3>Composición química proximal</h3>
+        <p>La composición de la carne varía según especie, edad, sexo, alimentación y corte anatómico, pero en términos generales (carne magra, cruda) puede describirse mediante cuatro grandes componentes. Explora el diagrama:</p>
+
+        <div class="comp-wrap">
+          <div class="donut" id="donut"></div>
+          <div class="comp-legend" id="compLegend"></div>
+        </div>
+
+        <figure class="photo">
+          <div class="frame"><img class="real-photo" alt="Corte de carne de res crudo mostrando vetas de grasa intramuscular (marmoleo)" onerror="handleImgError(this)" src="https://commons.wikimedia.org/wiki/Special:FilePath/Ribeye_steak.jpg"></div>
+          <figcaption>Corte crudo de carne de res: obsérvense las vetas blancas de grasa intramuscular ("marmoleo") sobre el tejido muscular magro. Fotografía: Wikimedia Commons.</figcaption>
+        </figure>
+
+        <h3>Estructura jerárquica del músculo esquelético</h3>
+        <p>La carne, antes de serlo, es tejido muscular vivo. Comprender su arquitectura es indispensable para explicar propiedades tecnológicas como la terneza, la capacidad de retención de agua y el color. El músculo se organiza en capas anidadas, de lo más grueso a lo más fino. Haz clic en cada capa del diagrama para conocerla:</p>
+
+        <div class="muscle-wrap">
+          <div class="muscle-svg-box">
+            <svg viewBox="0 0 220 220" width="100%" height="auto">
+              <circle class="layer-btn" data-layer="epimisio" cx="110" cy="110" r="95" fill="#E8DCC5" stroke="#7C2530" stroke-width="2"/>
+              <circle class="layer-btn" data-layer="perimisio" cx="110" cy="110" r="70" fill="#DCC9A3" stroke="#C08A2E" stroke-width="2"/>
+              <circle class="layer-btn" data-layer="fasciculo" cx="110" cy="110" r="46" fill="#CBA96F" stroke="#5B6E4F" stroke-width="2"/>
+              <circle class="layer-btn" data-layer="endomisio" cx="110" cy="110" r="26" fill="#B98A55" stroke="#26211D" stroke-width="1.5"/>
+              <circle class="layer-btn" data-layer="fibra" cx="110" cy="110" r="10" fill="#7C2530" stroke="#26211D" stroke-width="1"/>
+            </svg>
+            <div class="layer-list" id="layerList"></div>
+          </div>
+          <div class="muscle-info" id="muscleInfo">
+            <h4>Explora el diagrama</h4>
+            <p>Haz clic en un anillo o en un botón para ver la descripción de cada nivel de organización, desde el músculo completo hasta la fibra muscular individual.</p>
+          </div>
+        </div>
+
+        <h4>De miofibrilla a sarcómero</h4>
+        <p>Dentro de cada fibra muscular hay cientos de <strong>miofibrillas</strong>, formadas por la repetición del <strong>sarcómero</strong>: la unidad contráctil básica del músculo, delimitada por líneas Z y compuesta principalmente por dos proteínas —<strong>actina</strong> (filamento delgado) y <strong>miosina</strong> (filamento grueso)—. El deslizamiento de estos filamentos entre sí explica tanto la contracción muscular en vida como fenómenos post-mortem clave, como el rigor mortis.</p>
+
+        <h3>Del músculo a la carne: cambios post-mortem</h3>
+        <p>Al sacrificio, el suministro de oxígeno se interrumpe y el metabolismo muscular cambia de aerobio a anaerobio. Este proceso es central en la ciencia cárnica:</p>
+        <ol>
+          <li><strong>Glucólisis anaerobia:</strong> el glucógeno muscular se convierte en ácido láctico, en ausencia de oxígeno para recircularlo.</li>
+          <li><strong>Descenso del pH:</strong> de un valor cercano a 7.0 en el músculo vivo hasta un pH final típico de 5.4–5.8, alcanzado generalmente entre 6 y 24 horas post-mortem según la especie.</li>
+          <li><strong>Rigor mortis:</strong> al agotarse el ATP, los filamentos de actina y miosina quedan unidos de forma permanente (puentes cruzados), y el músculo pierde extensibilidad.</li>
+          <li><strong>Resolución del rigor y maduración (aging):</strong> enzimas endógenas (calpaínas, catepsinas) degradan gradualmente proteínas estructurales, lo que incrementa la terneza con el tiempo de almacenamiento en refrigeración.</li>
+        </ol>
+        <p>El pH final influye directamente en la <strong>capacidad de retención de agua (CRA)</strong> y en el color de la carne, dos atributos de calidad que se estudiarán con mayor profundidad en módulos posteriores del curso.</p>
+
+        <div class="callout sage">
+          <span class="label">Para recordar</span>
+          Un descenso demasiado rápido del pH (carne PSE: pálida, suave, exudativa) o insuficiente (carne DFD: oscura, firme, seca) son desviaciones del proceso normal con fuerte impacto económico y de calidad —temas centrales en cursos posteriores de tecnología cárnica.
+        </div>
+
+        <div class="nav-arrows">
+          <button onclick="goTo('m2')">← Módulo 02</button>
+          <span class="spacer"></span>
+          <button onclick="goTo('m4')">Módulo 04: Especies de abasto →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULO 4 -->
+    <section class="view" id="view-m4">
+      <div class="section-wrap">
+        <div class="kicker"><span style="color:var(--oxblood); font-family:var(--mono);">04 / 04</span><span class="line"></span><span>60 minutos</span></div>
+        <h2 class="module-title">Especies animales de abasto</h2>
+        <p class="module-sub">Panorama comparativo de las principales especies destinadas a la producción de carne.</p>
+
+        <h3>¿Qué se considera "especie de abasto"?</h3>
+        <p>Se denomina así a las especies animales formalmente autorizadas y reguladas para el sacrificio y consumo humano de su carne. En México, la normatividad sanitaria distingue explícitamente entre la <strong>carne</strong> (proveniente de mamíferos y aves de abasto) y los <strong>productos de la pesca y acuacultura</strong> (peces, moluscos, crustáceos), que se rigen por normas específicas distintas y no se clasifican formalmente como "cárnicos" pese al uso coloquial del lenguaje.</p>
+
+        <div class="species-tabs" id="speciesTabs"></div>
+        <div id="speciesPanels"></div>
+
+        <h3>Comparación de rendimiento en canal</h3>
+        <table>
+          <tr><th>Especie</th><th class="mono">Rendimiento en canal aprox.</th><th>Notas</th></tr>
+          <tr><td>Bovino</td><td class="mono">55–62%</td><td>Varía según raza, grado de engorda y sistema de producción.</td></tr>
+          <tr><td>Porcino</td><td class="mono">70–76%</td><td>Rendimiento alto por menor proporción de vísceras y hueso relativo.</td></tr>
+          <tr><td>Ovino</td><td class="mono">45–55%</td><td>Influido fuertemente por el estado de engorda (cobertura de grasa).</td></tr>
+          <tr><td>Caprino</td><td class="mono">40–50%</td><td>Generalmente menor que el ovino; razas de doble propósito varían más.</td></tr>
+          <tr><td>Pollo (ave)</td><td class="mono">68–75%</td><td>Se expresa como canal eviscerada respecto al peso vivo.</td></tr>
+          <tr><td>Conejo</td><td class="mono">50–58%</td><td>Especie menor de creciente interés por su carne magra.</td></tr>
+        </table>
+
+        <h3>Factores que diferencian la carne entre especies</h3>
+        <ul>
+          <li><strong>Color:</strong> determinado principalmente por la concentración de mioglobina en el músculo (mayor en bovino y equino; menor en pollo y conejo, salvo carne obscura de muslo en aves).</li>
+          <li><strong>Perfil de grasa:</strong> composición y punto de fusión de la grasa varían por especie y afectan textura y palatabilidad.</li>
+          <li><strong>Tamaño y disposición de fibras musculares:</strong> influye en la terneza percibida.</li>
+          <li><strong>Velocidad del metabolismo post-mortem:</strong> especies con metabolismo más rápido (aves, cerdo) alcanzan el rigor mortis en menos tiempo que especies de mayor tamaño (bovino).</li>
+        </ul>
+
+        <div class="callout">
+          <span class="label">Actividad de cierre (15 min)</span>
+          En equipos de 3–4: elaboren una tabla comparativa (no vista en clase) entre bovino y porcino que incluya al menos tres diferencias adicionales —pueden considerar tiempo típico de engorda, principales cortes comerciales o usos industriales predominantes de cada especie en su región. Compartan brevemente con el grupo.
+        </div>
+
+        <div class="nav-arrows">
+          <button onclick="goTo('m3')">← Módulo 03</button>
+          <span class="spacer"></span>
+          <button onclick="goTo('m5')">Módulo 05: Proteínas cárnicas (avanzado) →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULO 5 : AVANZADO -->
+    <section class="view" id="view-m5">
+      <div class="section-wrap">
+        <div class="kicker"><span style="color:var(--oxblood); font-family:var(--mono);">05 · AVANZADO</span><span class="line"></span><span>Ingeniería agroindustrial</span></div>
+        <h2 class="module-title">Composición proteica de la carne: estudio técnico</h2>
+        <p class="module-sub">Análisis detallado de las fracciones proteicas del tejido muscular, su estructura molecular, su función tecnológica y las diferencias cuantitativas y cualitativas entre especies de abasto.</p>
+
+        <div class="callout">
+          <span class="label">Nivel de profundidad</span>
+          Este módulo asume que el Módulo 03 (composición general y estructura del músculo) ya fue cubierto. Aquí se profundiza a nivel molecular en cada fracción proteica, con énfasis en las propiedades que determinan el comportamiento tecnológico de la carne durante el procesamiento industrial (gelificación, emulsificación, capacidad de retención de agua, terneza).
+        </div>
+
+        <h3>1. Clasificación funcional de las proteínas musculares (criterio de solubilidad)</h3>
+        <p>La clasificación de referencia en ciencia de la carne —originada en los trabajos de Helander (1957) y adoptada como estándar metodológico— agrupa las proteínas musculares en tres fracciones según su solubilidad diferencial, criterio que además define el protocolo analítico de extracción secuencial usado en laboratorio:</p>
+        <table>
+          <tr><th>Fracción</th><th class="mono">% del total</th><th>Solubilidad</th><th>Función principal</th></tr>
+          <tr><td><strong>Sarcoplásmica</strong></td><td class="mono">30–35%</td><td>Soluble en agua o soluciones de baja fuerza iónica (&lt;0.1 M)</td><td>Metabólica y de transporte de O₂ (mioglobina)</td></tr>
+          <tr><td><strong>Miofibrilar</strong></td><td class="mono">50–55%</td><td>Soluble en soluciones salinas de alta fuerza iónica (&gt;0.3 M KCl/NaCl)</td><td>Contráctil / estructural; responsable de la funcionalidad tecnológica</td></tr>
+          <tr><td><strong>Estromal (tejido conectivo)</strong></td><td class="mono">10–15%</td><td>Insoluble en agua y en soluciones salinas concentradas</td><td>Estructural / soporte mecánico</td></tr>
+        </table>
+        <div class="callout mustard">
+          <span class="label">Relevancia industrial</span>
+          Esta clasificación no es solo académica: la extracción secuencial de proteínas salino-solubles (miofibrilares) mediante salazón y mezclado mecánico es el fundamento tecnológico de la formación de gel proteico en embutidos emulsionados (p. ej. salchichas tipo Viena, mortadela), donde dicha matriz proteica atrapa agua y grasa y estabiliza la emulsión cárnica.
+        </div>
+
+        <h3>2. Proteínas miofibrilares</h3>
+        <p>Constituyen el aparato contráctil del sarcómero y son, cuantitativa y tecnológicamente, la fracción más relevante para el procesamiento cárnico.</p>
+
+        <h4>2.1 Miosina</h4>
+        <p>Representa aproximadamente el 43% de la proteína miofibrilar total y forma el filamento grueso del sarcómero. Es una proteína hexamérica (~520 kDa) compuesta por:</p>
+        <ul>
+          <li><strong>Dos cadenas pesadas (MHC, myosin heavy chain, ~200 kDa c/u):</strong> cada una se pliega en una cabeza globular (S1) y una cola helicoidal (α-hélice enrollada, "coiled-coil").</li>
+          <li><strong>Cuatro cadenas ligeras (MLC, myosin light chain, ~16–22 kDa):</strong> dos esenciales y dos regulatorias, asociadas a la región del cuello de cada cabeza.</li>
+        </ul>
+        <p>La cabeza globular (subfragmento S1, obtenido experimentalmente por digestión con tripsina) contiene el sitio de unión a actina y posee actividad <strong>ATPasa Mg²⁺-dependiente</strong>, motor molecular de la contracción. La cola (fracción LMM, meromiosina ligera) es responsable de la autoensamblaje del filamento grueso mediante interacciones cola-cola.</p>
+        <p>Existen <strong>isoformas de MHC</strong> asociadas a los distintos tipos de fibra muscular (I, IIa, IIx, IIb), cuya proporción relativa varía entre especies, entre músculos de un mismo animal y con la edad —factor determinante de diferencias en terneza y velocidad de instauración del rigor mortis entre especies.</p>
+
+        <h4>2.2 Actina</h4>
+        <p>Segunda proteína miofibrilar en abundancia (~22%). Se presenta como monómero globular (G-actina, ~42 kDa, con sitio de unión a ATP/ADP) que polimeriza de forma no covalente para formar el filamento delgado (F-actina), una doble hélice sobre la que se ensamblan tropomiosina y el complejo de troponinas.</p>
+
+        <h4>2.3 Tropomiosina y complejo de troponinas</h4>
+        <p>La <strong>tropomiosina</strong> es una proteína fibrosa dimérica (coiled-coil) que se sitúa longitudinalmente en el surco de la hélice de F-actina, bloqueando estéricamente el sitio de unión de la miosina en condiciones de reposo. El <strong>complejo de troponinas</strong>, unido a la tropomiosina a intervalos regulares, está formado por tres subunidades con funciones diferenciadas:</p>
+        <ul>
+          <li><strong>Troponina C (TnC):</strong> subunidad sensora, con motivos "EF-hand" que unen Ca²⁺.</li>
+          <li><strong>Troponina I (TnI):</strong> subunidad inhibitoria, bloquea la interacción actina-miosina en ausencia de calcio.</li>
+          <li><strong>Troponina T (TnT):</strong> ancla el complejo a la tropomiosina.</li>
+        </ul>
+        <p>La liberación de Ca²⁺ del retículo sarcoplásmico (en vida) desplaza la tropomiosina y permite la unión actina-miosina. Post-mortem, este mismo sistema de calcio libre —ya sin recaptura activa por agotamiento de ATP— participa en la instauración del rigor mortis y es sustrato de proteólisis por calpaínas.</p>
+
+        <h4>2.4 Proteínas citoesqueléticas y de gran tamaño</h4>
+        <div class="flip-grid" id="flipgridProt"></div>
+
+        <h3>3. Proteínas sarcoplásmicas</h3>
+        <p>Fracción soluble compuesta por más de un centenar de proteínas globulares, principalmente enzimas de las vías glucolítica y del metabolismo energético, junto con la proteína de mayor relevancia analítica en esta fracción:</p>
+
+        <h4>3.1 Mioglobina: estructura y química del color</h4>
+        <p>Hemoproteína monomérica (~17.8 kDa, 153 residuos) responsable del color de la carne fresca. Contiene un grupo hemo (protoporfirina IX con un átomo de hierro central) capaz de unir reversiblemente oxígeno molecular. El color de la carne depende del <strong>estado químico del hierro del hemo y del ligando unido</strong>:</p>
+        <table>
+          <tr><th>Estado</th><th>Estado del Fe</th><th>Ligando</th><th>Color observado</th></tr>
+          <tr><td>Desoximioglobina</td><td class="mono">Fe²⁺</td><td>Ninguno</td><td>Rojo púrpura (carne recién cortada, interior)</td></tr>
+          <tr><td>Oximioglobina</td><td class="mono">Fe²⁺</td><td>O₂</td><td>Rojo cereza brillante (superficie expuesta al aire — "bloom")</td></tr>
+          <tr><td>Metamioglobina</td><td class="mono">Fe³⁺</td><td>H₂O</td><td>Café / pardo (oxidación, pérdida de frescura)</td></tr>
+        </table>
+        <p>Estas tres formas coexisten en equilibrio dinámico dependiente de la presión parcial de oxígeno, el consumo de O₂ mitocondrial residual y la actividad de sistemas reductores endógenos (metamioglobina reductasa) que regeneran la forma reducida.</p>
+
+        <div class="callout sage">
+          <span class="label">Diferencias cuantitativas entre especies (contenido de mioglobina)</span>
+          <ul style="margin-bottom:0;">
+            <li><strong>Bovino adulto:</strong> 4–10 mg/g de músculo — el más alto entre especies de abasto comunes.</li>
+            <li><strong>Ovino/caprino:</strong> 2.5–6 mg/g — intermedio.</li>
+            <li><strong>Porcino:</strong> 1–3 mg/g — sensiblemente menor.</li>
+            <li><strong>Aves (pechuga):</strong> &lt;0.5 mg/g — fibras predominantemente glucolíticas de contracción rápida (tipo IIb); el muslo, con mayor proporción de fibras oxidativas, presenta valores varias veces más altos.</li>
+            <li><strong>Equino:</strong> puede superar al bovino, asociado a su capacidad aeróbica de resistencia.</li>
+          </ul>
+        </div>
+        <p>La concentración de mioglobina también aumenta con la <strong>edad del animal</strong> (la carne de ternera es más pálida que la de un bovino adulto) y varía entre músculos de un mismo animal según su proporción de fibras oxidativas (tipo I) frente a glucolíticas (tipo II).</p>
+
+        <h3>4. Proteínas del tejido conectivo (fracción estromal)</h3>
+
+        <h4>4.1 Colágeno</h4>
+        <p>Proteína fibrosa más abundante del tejido conectivo, organizada en una estructura de <strong>triple hélice</strong>: tres cadenas polipeptídicas (cadenas α) enrolladas entre sí, con una secuencia repetitiva Gly-X-Y en la que X e Y son frecuentemente <strong>prolina e hidroxiprolina</strong>. La hidroxiprolina, aminoácido casi exclusivo del colágeno, se utiliza como <strong>índice analítico cuantitativo</strong> estándar del contenido de tejido conectivo en carne y productos cárnicos (método oficial AOAC).</p>
+        <p>De las más de 28 familias de colágeno descritas, en el músculo esquelético son relevantes:</p>
+        <ul>
+          <li><strong>Tipo I:</strong> fibras gruesas de alta resistencia tensil; predomina en epimisio, perimisio y tendones.</li>
+          <li><strong>Tipo III:</strong> fibras reticulares finas, asociadas al tipo I en el endomisio.</li>
+          <li><strong>Tipo IV:</strong> componente no fibrilar de la lámina basal.</li>
+        </ul>
+        <p>La <strong>termoestabilidad y solubilidad del colágeno</strong> dependen del grado de entrecruzamiento (crosslinking) covalente entre cadenas, mediado por residuos de lisina e hidroxilisina:</p>
+        <ul>
+          <li>En animales <strong>jóvenes</strong>, predominan enlaces cruzados <strong>reducibles (lábiles)</strong>, térmicamente inestables: se hidrolizan durante la cocción, liberando gelatina y aportando terneza y jugosidad tras cocción prolongada.</li>
+          <li>En animales <strong>adultos o viejos</strong>, estos enlaces maduran a formas <strong>no reducibles</strong> (p. ej. piridinolina), estables al calor: el colágeno permanece prácticamente insoluble incluso con cocción prolongada, lo que explica la mayor dureza de cortes de animales de mayor edad independientemente del método de cocción.</li>
+        </ul>
+
+        <h4>4.2 Elastina</h4>
+        <p>Proteína fibrosa altamente entrecruzada mediante enlaces de <strong>desmosina e isodesmosina</strong>, prácticamente insoluble e indigestible por cocción convencional. Se concentra en estructuras de alta elasticidad (ligamento nucal, paredes arteriales) y debe eliminarse manualmente durante el deshuese, ya que ningún tratamiento térmico industrial la solubiliza.</p>
+
+        <h4>4.3 Diferencias entre especies en contenido y calidad del colágeno</h4>
+        <p>El contenido relativo de colágeno varía según la <strong>función mecánica del músculo</strong> más que según la especie en sí: músculos de sostén postural y locomoción intensa (p. ej. músculos de la pierna en bovino, o de la pechuga en aves que vuelan) presentan mayor densidad de tejido conectivo que músculos de menor actividad. No obstante, existen patrones comparativos relevantes:</p>
+        <ul>
+          <li><strong>Aves:</strong> menor contenido relativo de colágeno en pechuga (músculo de vuelo poco usado en aves de engorda) que en músculos de la pierna.</li>
+          <li><strong>Pescado (referencia comparativa):</strong> el colágeno tiene menor temperatura de desnaturalización que en mamíferos, lo que explica la rápida desintegración de la textura durante la cocción.</li>
+          <li><strong>Bovino vs. porcino:</strong> a edad de sacrificio comparable, el patrón de entrecruzamiento y la distribución anatómica del colágeno determinan diferencias de terneza entre cortes homólogos de ambas especies, más allá del contenido total.</li>
+        </ul>
+
+        <h3>5. Tabla comparativa entre especies</h3>
+        <table>
+          <tr><th>Parámetro</th><th>Bovino</th><th>Porcino</th><th>Ovino</th><th>Aves (pechuga)</th></tr>
+          <tr><td>Mioglobina (mg/g)</td><td class="mono">4–10</td><td class="mono">1–3</td><td class="mono">2.5–6</td><td class="mono">&lt;0.5</td></tr>
+          <tr><td>Fibra predominante</td><td>Mixta, tendencia oxidativa</td><td>Mixta, tendencia glucolítica</td><td>Mixta, tendencia oxidativa</td><td>Glucolítica (tipo IIb)</td></tr>
+          <tr><td>pH final típico</td><td class="mono">5.4–5.8</td><td class="mono">5.5–5.9</td><td class="mono">5.5–5.8</td><td class="mono">5.7–6.1</td></tr>
+          <tr><td>Susceptibilidad a PSE/DFD</td><td>DFD (estrés crónico)</td><td>PSE (alta susceptibilidad)</td><td>Baja</td><td>PSE ocasional</td></tr>
+        </table>
+
+        <h3>6. Aplicación: proteólisis post-mortem y sistema calpaína-calpastatina</h3>
+        <p>El ablandamiento de la carne durante la maduración (aging) es mediado principalmente por el <strong>sistema de calpaínas</strong>, proteasas dependientes de calcio:</p>
+        <ul>
+          <li><strong>μ-calpaína:</strong> activa a concentraciones micromolares de Ca²⁺, principal responsable de la proteólisis post-mortem temprana.</li>
+          <li><strong>m-calpaína:</strong> requiere concentraciones milimolares, de activación más lenta en condiciones post-mortem.</li>
+          <li><strong>Calpastatina:</strong> inhibidor endógeno específico; su actividad relativa frente a la de las calpaínas es un determinante genético de la terneza final, con variación documentada entre razas y especies.</li>
+        </ul>
+        <p>Los sustratos primarios de degradación por calpaínas <strong>no son la actina ni la miosina</strong> (ambas permanecen relativamente intactas), sino las proteínas que mantienen la integridad estructural del sarcómero: <strong>troponina T, desmina, titina y nebulina</strong>. Su fragmentación debilita la matriz miofibrilar sin degradar las proteínas contráctiles mayoritarias, lo que explica el incremento de terneza sin pérdida proporcional del valor nutritivo proteico durante la maduración.</p>
+
+        <div class="callout mustard">
+          <span class="label">Para el laboratorio / proyecto de curso</span>
+          Un ejercicio analítico típico de ingeniería agroindustrial consiste en cuantificar la fracción salino-soluble (miofibrilar) mediante extracción secuencial y electroforesis SDS-PAGE, e interpretar el patrón de bandas (miosina ~200 kDa, actina ~42 kDa, tropomiosina ~35–37 kDa) como control de calidad de materia prima destinada a productos emulsionados.
+        </div>
+
+        <div class="nav-arrows">
+          <button onclick="goTo('m4')">← Módulo 04</button>
+          <span class="spacer"></span>
+          <button onclick="goTo('gloss')">Glosario →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GLOSARIO -->
+    <section class="view" id="view-gloss">
+      <div class="section-wrap">
+        <div class="kicker"><span style="color:var(--oxblood); font-family:var(--mono);">05</span><span class="line"></span><span>Referencia rápida</span></div>
+        <h2 class="module-title">Glosario técnico</h2>
+        <p class="module-sub">Términos base del curso. Usa el buscador para filtrar.</p>
+        <input class="glossary-search" id="glossSearch" type="text" placeholder="Buscar un término (p. ej. 'rigor', 'canal', 'mioglobina')...">
+        <dl id="glossList"></dl>
+
+        <div class="nav-arrows">
+          <button onclick="goTo('m5')">← Módulo 05</button>
+          <span class="spacer"></span>
+          <button onclick="goTo('quiz')">Autoevaluación →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="view" id="view-quiz">
+      <div class="section-wrap">
+        <div class="kicker"><span style="color:var(--oxblood); font-family:var(--mono);">06</span><span class="line"></span><span>Cierre de sesión</span></div>
+        <h2 class="module-title">Autoevaluación</h2>
+        <p class="module-sub">Trece preguntas de repaso, incluyendo los cinco módulos. Selecciona una respuesta por pregunta y presiona "Calificar" al final.</p>
+
+        <div id="quizContainer"></div>
+        <button id="checkQuizBtn">Calificar autoevaluación</button>
+        <div class="quiz-summary" id="quizSummary">
+          <div class="score" id="quizScore">0/8</div>
+          <p id="quizScoreMsg" style="margin-top:6px; color:var(--muted);"></p>
+        </div>
+
+        <div class="nav-arrows">
+          <button onclick="goTo('gloss')">← Glosario</button>
+          <span class="spacer"></span>
+          <button onclick="goTo('portada')">Volver a la portada</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="credits">
+  <span class="badge">4 módulos</span><span class="badge">≈ 4 horas</span><span class="badge">Introducción</span>
+  Referencias sugeridas para profundizar: Price, J.F. &amp; Schweigert, B.S., <em>Ciencia de la carne y de los productos cárnicos</em>; Lawrie, R.A., <em>Lawrie's Meat Science</em>; NOM-194-SSA1-2004; NOM-213-SSA1-2018; Codex Alimentarius (FAO/OMS), Código de prácticas de higiene para la carne.
+</footer>
+
+<script>
+function handleImgError(img){
+  const ph = document.createElement('div');
+  ph.className = 'photo-placeholder';
+  ph.textContent = (img.alt || 'Fotografía') + ' — imagen no disponible temporalmente';
+  img.replaceWith(ph);
+}
+
+(function(){
+
+  /* ---------- Navegación entre vistas ---------- */
+  const views = ['portada','m1','m2','m3','m4','m5','gloss','quiz'];
+  const completed = {};
+
+  function goTo(id){
+    views.forEach(v=>{
+      document.getElementById('view-'+v).classList.toggle('active', v===id);
+    });
+    document.querySelectorAll('#navlist button').forEach(b=>{
+      b.classList.toggle('active', b.dataset.view===id);
+    });
+    if(id!=='portada' && id!=='gloss' && id!=='quiz'){ markComplete(id); }
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant':'auto'});
+  }
+  window.goTo = goTo;
+
+  function markComplete(id){
+    completed[id]=true;
+    const btn = document.querySelector('#navlist button[data-view="'+id+'"]');
+    if(btn) btn.classList.add('completed');
+  }
+
+  document.querySelectorAll('#navlist button').forEach(b=>{
+    b.addEventListener('click', ()=> goTo(b.dataset.view));
+  });
+
+  /* ---------- Flashcards Módulo 1 ---------- */
+  const cards1 = [
+    {term:'Canal', def:'Cuerpo del animal de abasto después del sacrificio, sangrado, desuello o depilado, evisceración y remoción de cabeza y extremidades, antes de su fraccionamiento en cortes.'},
+    {term:'Rastro TIF', def:'Establecimiento con Tipo Inspección Federal: cumple normatividad de SENASICA y puede comercializar en todo el país e incluso exportar.'},
+    {term:'Trazabilidad', def:'Capacidad de rastrear un producto cárnico a lo largo de toda la cadena, desde la unidad de producción hasta el punto de venta.'},
+    {term:'Bienestar animal', def:'Conjunto de condiciones de manejo, transporte y sacrificio que minimizan el estrés y sufrimiento del animal, con impacto directo en la calidad final de la carne.'}
+  ];
+  const grid1 = document.getElementById('flipgrid1');
+  cards1.forEach(c=>grid1.appendChild(makeFlipCard(c)));
+
+  /* ---------- Flashcards Módulo 2 ---------- */
+  const cards2 = [
+    {term:'Carne', def:'Tejido muscular estriado de especies autorizadas, apto para consumo humano tras faenado higiénico. Incluye tejido conjuntivo, graso y vascular asociado.'},
+    {term:'Corte', def:'Fracción específica de la canal, obtenida por despiece según patrones anatómicos y comerciales establecidos (p. ej. lomo, falda, pierna).'},
+    {term:'Producto cárnico', def:'Alimento elaborado a partir de carne mediante procesos como molienda, curado, cocción o fermentación, con o sin ingredientes adicionales.'},
+    {term:'Subproducto / despojo', def:'Parte comestible del animal distinta al músculo esquelético: vísceras, sangre, piel comestible, entre otros; se regula con criterios propios.'}
+  ];
+  const grid2 = document.getElementById('flipgrid2');
+  cards2.forEach(c=>grid2.appendChild(makeFlipCard(c)));
+
+  /* ---------- Flashcards Módulo 5 (proteínas citoesqueléticas) ---------- */
+  const cardsProt = [
+    {term:'Titina (conectina)', def:'Proteína más grande conocida (~3–3.7 MDa). Se extiende desde la línea Z hasta la línea M del sarcómero, actuando como resorte molecular que confiere elasticidad pasiva. Su degradación por calpaínas contribuye al ablandamiento post-mortem.'},
+    {term:'Nebulina', def:'Proteína gigante (~600–900 kDa) asociada al filamento delgado; actúa como "regla molecular" que determina y regula la longitud del filamento de actina durante el ensamblaje del sarcómero.'},
+    {term:'Desmina', def:'Filamento intermedio del citoesqueleto que conecta miofibrillas adyacentes a nivel de la línea Z, manteniendo el registro lateral entre sarcómeros. Sustrato temprano de degradación por calpaínas.'},
+    {term:'α-actinina', def:'Proteína de anclaje que forma el núcleo estructural de la línea Z, uniendo los filamentos de actina de sarcómeros adyacentes.'}
+  ];
+  const gridProt = document.getElementById('flipgridProt');
+  cardsProt.forEach(c=>gridProt.appendChild(makeFlipCard(c)));
+
+  function makeFlipCard(c){
+    const div = document.createElement('div');
+    div.className='flip-card';
+    div.innerHTML = `<div class="flip-inner">
+      <div class="flip-face flip-front"><span class="term">${c.term}</span><span class="tap">Toca para ver la definición</span></div>
+      <div class="flip-face flip-back"><p>${c.def}</p></div>
+    </div>`;
+    div.addEventListener('click', ()=> div.classList.toggle('flipped'));
+    return div;
+  }
+
+  /* ---------- Donut de composición ---------- */
+  const comp = [
+    {name:'Agua', pct:'65–75%', color:'var(--sage)', detail:'Componente mayoritario; determina jugosidad, funcionalidad tecnológica y susceptibilidad al deterioro microbiano.'},
+    {name:'Proteína', pct:'16–22%', color:'var(--mustard)', detail:'Miofibrilares (actina, miosina), sarcoplásmicas (mioglobina, enzimas) y del tejido conectivo (colágeno, elastina).'},
+    {name:'Grasa (lípidos)', pct:'1.5–13%+', color:'var(--oxblood)', detail:'Muy variable según especie, corte y estado de engorda; incluye grasa intramuscular ("marmoleo") y de cobertura.'},
+    {name:'Minerales y otros', pct:'~1%', color:'var(--muted)', detail:'Hierro, zinc, fósforo, potasio; además trazas de carbohidratos (glucógeno) y vitaminas del complejo B.'}
+  ];
+  const legend = document.getElementById('compLegend');
+  comp.forEach(item=>{
+    const row = document.createElement('div');
+    row.className='row';
+    row.innerHTML = `<span class="swatch" style="background:${item.color}"></span><span>${item.name}</span><span class="pct">${item.pct}</span>`;
+    const detail = document.createElement('div');
+    detail.className='detail';
+    detail.textContent = item.detail;
+    row.addEventListener('click', ()=> row.classList.toggle('open'));
+    legend.appendChild(row);
+    legend.appendChild(detail);
+  });
+
+  /* ---------- Diagrama de músculo ---------- */
+  const layers = {
+    epimisio:{ title:'Epimisio', text:'Capa de tejido conjuntivo que envuelve al músculo completo. Se continúa con el tendón que une el músculo al hueso.'},
+    perimisio:{ title:'Perimisio', text:'Envuelve grupos de fibras musculares agrupándolas en fascículos. Su grosor influye en la percepción de terneza al corte.'},
+    fasciculo:{ title:'Fascículo', text:'Haz de fibras musculares individuales agrupadas por el perimisio; visible a simple vista como la "veta" de la carne.'},
+    endomisio:{ title:'Endomisio', text:'Delicada capa de tejido conjuntivo que rodea cada fibra muscular individual dentro del fascículo.'},
+    fibra:{ title:'Fibra muscular', text:'Célula muscular alargada y multinucleada. Contiene cientos de miofibrillas formadas por sarcómeros repetidos, la unidad contráctil basada en actina y miosina.'}
+  };
+  const order = ['epimisio','perimisio','fasciculo','endomisio','fibra'];
+  const layerList = document.getElementById('layerList');
+  order.forEach(key=>{
+    const b = document.createElement('button');
+    b.textContent = layers[key].title;
+    b.dataset.layer = key;
+    b.addEventListener('click', ()=>showLayer(key));
+    layerList.appendChild(b);
+  });
+  document.querySelectorAll('.layer-btn').forEach(el=>{
+    el.addEventListener('click', ()=> showLayer(el.dataset.layer));
+  });
+  function showLayer(key){
+    const info = layers[key];
+    document.getElementById('muscleInfo').innerHTML = `<h4>${info.title}</h4><p>${info.text}</p>`;
+    document.querySelectorAll('.layer-list button').forEach(b=>{
+      b.classList.toggle('active', b.dataset.layer===key);
+    });
+  }
+
+  /* ---------- Especies (tabs) ---------- */
+  const species = [
+    {id:'bovino', name:'Bovino', latin:'Bos taurus / Bos indicus', desc:'Principal especie productora de carne roja en México en volumen de valor. Ciclos de producción largos (2–3 años a sacrificio en sistemas extensivos). Carne de color rojo intenso por su alta concentración de mioglobina.', yield:'55–62%', color:'var(--oxblood)', ph:'5.4–5.8', extra:'Cortes: lomo, arrachera, aguayón, falda.', img:'HighlandCow.01.jpg'},
+    {id:'porcino', name:'Porcino', latin:'Sus scrofa domesticus', desc:'Ciclo productivo corto (5–6 meses), alta eficiencia alimenticia y elevado rendimiento en canal. Carne de tono rosado más pálido que la res; importante en la industria de embutidos y curados.', yield:'70–76%', color:'#B98A55', ph:'5.5–5.9 (susceptible a carne PSE)', extra:'Base de jamón, tocino y chorizo.', img:'Sow_with_piglet.jpg'},
+    {id:'ovino', name:'Ovino', latin:'Ovis aries', desc:'Carne (cordero/borrego) con sabor característico asociado a su perfil de ácidos grasos. Relevante en gastronomía regional (barbacoa) en el centro de México, incluido el Bajío.', yield:'45–55%', color:'#8A7F6C', ph:'5.5–5.8', extra:'Alta variación según edad de sacrificio (lechal, cordero, adulto).', img:'USDA_sheep.jpg'},
+    {id:'caprino', name:'Caprino', latin:'Capra aegagrus hircus', desc:'Carne (cabrito/chivo) de menor infiltración grasa que la ovina en general; producción relevante en zonas semiáridas del país.', yield:'40–50%', color:'#5B6E4F', ph:'5.5–5.8', extra:'El cabrito es un producto muy valorado en el norte y centro de México.', img:'Rove_goat_800.jpg'},
+    {id:'aves', name:'Aves (pollo/pavo)', latin:'Gallus gallus domesticus', desc:'Ciclo productivo muy corto (~6 semanas en pollo de engorda). Carne más pálida (pechuga) por menor contenido de mioglobina que las carnes rojas; el muslo conserva tono más oscuro por su mayor actividad oxidativa.', yield:'68–75% (canal eviscerada)', color:'#C08A2E', ph:'5.7–6.1', extra:'Mayor especie de abasto en volumen a nivel mundial.', img:'Chicken.jpg'},
+    {id:'otras', name:'Otras especies', latin:'Conejo, equino, especies no convencionales', desc:'El conejo (Oryctolagus cuniculus) produce carne magra de interés creciente. El equino tiene consumo regulado y culturalmente limitado en México. Especies no convencionales (avestruz, jabalí) atienden nichos de mercado específicos, siempre bajo inspección sanitaria.', yield:'50–58% (conejo)', color:'#7C2530', ph:'variable según especie', extra:'Los productos de la pesca (peces, moluscos, crustáceos) NO se clasifican como "cárnicos" en la norma.', img:'White_rabbit.jpg'}
+  ];
+  const tabsWrap = document.getElementById('speciesTabs');
+  const panelsWrap = document.getElementById('speciesPanels');
+  species.forEach((s,i)=>{
+    const btn = document.createElement('button');
+    btn.textContent = s.name;
+    btn.dataset.id = s.id;
+    if(i===0) btn.classList.add('active');
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.species-tabs button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.species-panel').forEach(p=>p.classList.remove('active'));
+      document.getElementById('panel-'+s.id).classList.add('active');
+    });
+    tabsWrap.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.className='species-panel'+(i===0?' active':'');
+    panel.id='panel-'+s.id;
+    panel.innerHTML = `
+      <div class="species-photo"><img class="real-photo" alt="Fotografía de ${s.name}" onerror="handleImgError(this)" src="https://commons.wikimedia.org/wiki/Special:FilePath/${s.img}"></div>
+      <h4>${s.name} <span style="font-family:var(--body); font-weight:400; font-size:13px; color:var(--muted);">· ${s.latin}</span></h4>
+      <p>${s.desc}</p>
+      <div class="species-stats">
+        <div>Rendimiento en canal<strong>${s.yield}</strong></div>
+        <div>pH final típico<strong>${s.ph}</strong></div>
+      </div>
+      <p style="margin-top:12px; font-size:13.5px; color:var(--muted);">${s.extra}</p>
+    `;
+    panelsWrap.appendChild(panel);
+  });
+
+  /* ---------- Glosario ---------- */
+  const glossary = [
+    {term:'Canal', def:'Cuerpo del animal tras sacrificio, sangrado, desuello/depilado, evisceración y remoción de cabeza y extremidades distales.'},
+    {term:'Carne', def:'Tejido muscular estriado, con o sin tejido conjuntivo, graso, nervioso y vascular asociado, de especies autorizadas para consumo humano.'},
+    {term:'Rendimiento en canal', def:'Porcentaje del peso vivo del animal que se conserva como canal después del faenado.'},
+    {term:'Rigor mortis', def:'Endurecimiento del músculo post-mortem por la unión permanente de actina y miosina al agotarse el ATP disponible.'},
+    {term:'Maduración (aging)', def:'Almacenamiento en refrigeración tras el rigor mortis, durante el cual enzimas endógenas incrementan gradualmente la terneza de la carne.'},
+    {term:'pH final', def:'Valor de pH que alcanza el músculo tras completarse la glucólisis post-mortem; normalmente entre 5.4 y 5.8.'},
+    {term:'Capacidad de retención de agua (CRA)', def:'Habilidad del tejido muscular para retener el agua que contiene durante su manipulación, corte, cocción o procesamiento.'},
+    {term:'Mioglobina', def:'Proteína sarcoplásmica responsable del color rojo de la carne; su concentración varía según especie, edad y tipo de fibra muscular.'},
+    {term:'Sarcómero', def:'Unidad contráctil básica del músculo estriado, delimitada por líneas Z, compuesta principalmente por filamentos de actina y miosina.'},
+    {term:'Carne PSE', def:'Pálida, suave y exudativa: resultado de un descenso demasiado rápido del pH post-mortem, frecuente en cerdo.'},
+    {term:'Carne DFD', def:'Oscura, firme y seca: resultado de un descenso insuficiente del pH post-mortem, asociado a estrés crónico pre-sacrificio.'},
+    {term:'Producto cárnico procesado', def:'Alimento elaborado a partir de carne mediante molienda, curado, cocción, fermentación u otro tratamiento tecnológico, conforme a la NOM-213-SSA1-2018.'},
+    {term:'Proteínas sarcoplásmicas', def:'Fracción proteica soluble en agua o soluciones de baja fuerza iónica (30–35% del total); incluye mioglobina y enzimas del metabolismo energético.'},
+    {term:'Proteínas miofibrilares', def:'Fracción proteica soluble en soluciones salinas de alta fuerza iónica (50–55% del total); incluye actina y miosina, responsables de la funcionalidad tecnológica (gelificación, emulsificación, CRA).'},
+    {term:'Proteínas del estroma', def:'Fracción insoluble tanto en agua como en soluciones salinas concentradas (10–15% del total); comprende colágeno y elastina del tejido conectivo.'},
+    {term:'Hidroxiprolina', def:'Aminoácido casi exclusivo del colágeno, usado como índice analítico cuantitativo del contenido de tejido conectivo en carne y productos cárnicos (método AOAC).'},
+    {term:'Calpaína / calpastatina', def:'Sistema enzimático dependiente de calcio (calpaínas, proteasas; calpastatina, su inhibidor endógeno) responsable de la proteólisis post-mortem que ablanda la carne durante la maduración.'}
+  ];
+  const glossList = document.getElementById('glossList');
+  function renderGlossary(filter){
+    glossList.innerHTML='';
+    glossary
+      .filter(g => !filter || g.term.toLowerCase().includes(filter) || g.def.toLowerCase().includes(filter))
+      .forEach(g=>{
+        const item = document.createElement('div');
+        item.className='gloss-item';
+        item.innerHTML = `<dt>${g.term}</dt><dd>${g.def}</dd>`;
+        glossList.appendChild(item);
+      });
+  }
+  renderGlossary('');
+  document.getElementById('glossSearch').addEventListener('input', e=>{
+    renderGlossary(e.target.value.toLowerCase());
+  });
+
+  /* ---------- Quiz ---------- */
+  const quizData = [
+    {q:'¿Cuál es el orden correcto de la cadena de producción cárnica?', opts:['Sacrificio → producción primaria → procesamiento → transporte','Producción primaria → transporte → sacrificio → procesamiento','Procesamiento → sacrificio → producción primaria → distribución'], correct:1},
+    {q:'¿Qué institución realiza la inspección sanitaria federal en rastros TIF en México?', opts:['COFEPRIS','SENASICA','Secretaría de Economía'], correct:1},
+    {q:'Según la definición técnica, la carne se compone principalmente de:', opts:['Tejido muscular liso de cualquier especie','Tejido muscular estriado de especies autorizadas para consumo humano','Cualquier tejido comestible del animal, incluidas vísceras'], correct:1},
+    {q:'Un jamón cocido se clasifica, según su tratamiento tecnológico principal, como producto:', opts:['Fresco','Curado y cocido','Enlatado'], correct:1},
+    {q:'El componente mayoritario de la carne magra cruda es:', opts:['La grasa','El agua','El colágeno'], correct:1},
+    {q:'La unidad contráctil básica del músculo, compuesta por actina y miosina, se llama:', opts:['Fascículo','Endomisio','Sarcómero'], correct:2},
+    {q:'¿Qué especie de abasto presenta, en general, el mayor rendimiento en canal?', opts:['Bovino','Porcino','Caprino'], correct:1},
+    {q:'Los productos de la pesca (peces, moluscos, crustáceos) se clasifican normativamente como:', opts:['Productos cárnicos','Un grupo distinto, no clasificado como "cárnico"','Subproductos cárnicos'], correct:1},
+    {q:'Según el criterio de solubilidad, las proteínas miofibrilares se extraen con:', opts:['Agua destilada','Soluciones salinas de alta fuerza iónica (>0.3 M)','Solventes orgánicos'], correct:1},
+    {q:'La subunidad de la troponina que se une al Ca²⁺ es:', opts:['Troponina T (TnT)','Troponina I (TnI)','Troponina C (TnC)'], correct:2},
+    {q:'El color café/pardo de la carne oxidada corresponde a:', opts:['Oximioglobina (Fe²⁺-O₂)','Metamioglobina (Fe³⁺)','Desoximioglobina (Fe²⁺)'], correct:1},
+    {q:'Los principales sustratos de degradación por calpaínas durante la maduración son:', opts:['Actina y miosina', 'Troponina T, desmina, titina y nebulina','Colágeno y elastina'], correct:1}
+  ];
+  const quizContainer = document.getElementById('quizContainer');
+  quizData.forEach((item, idx)=>{
+    const div = document.createElement('div');
+    div.className='quiz-item';
+    div.innerHTML = `<div class="q">${idx+1}. ${item.q}</div>
+      <div class="quiz-options">
+        ${item.opts.map((o,i)=>`<label><input type="radio" name="q${idx}" value="${i}"> ${o}</label>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb${idx}"></div>`;
+    quizContainer.appendChild(div);
+  });
+
+  document.getElementById('checkQuizBtn').addEventListener('click', ()=>{
+    let score = 0;
+    quizData.forEach((item, idx)=>{
+      const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+      const fb = document.getElementById('fb'+idx);
+      if(!selected){
+        fb.className='quiz-feedback incorrect';
+        fb.textContent = 'No se seleccionó respuesta.';
+        return;
+      }
+      if(parseInt(selected.value)===item.correct){
+        score++;
+        fb.className='quiz-feedback correct';
+        fb.textContent = 'Correcto.';
+      } else {
+        fb.className='quiz-feedback incorrect';
+        fb.textContent = 'Incorrecto. Respuesta correcta: ' + item.opts[item.correct];
+      }
+    });
+    document.getElementById('quizSummary').style.display='block';
+    document.getElementById('quizScore').textContent = score + '/' + quizData.length;
+    let msg = '';
+    if(score===quizData.length) msg='Excelente — dominas los conceptos de esta introducción, incluido el módulo avanzado de proteínas.';
+    else if(score>=Math.ceil(quizData.length*0.7)) msg='Buen desempeño. Repasa los reactivos marcados en rojo.';
+    else msg='Conviene repasar los módulos correspondientes antes de avanzar.';
+    document.getElementById('quizScoreMsg').textContent = msg;
+    markComplete('quiz');
+    document.getElementById('quizSummary').scrollIntoView({behavior:'smooth', block:'center'});
+  });
+
+})();
+</script>
+
+</body>
+</html>

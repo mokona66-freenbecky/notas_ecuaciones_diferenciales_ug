@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Pensamiento lógico: Conversor de unidades culinarias en Excel VBA</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; line-height: 1.6; }
+  h1 { font-size: 1.7em; border-bottom: 3px solid #7a2e2e; padding-bottom: 8px; }
+  h2 { font-size: 1.3em; color: #7a2e2e; margin-top: 2em; border-left: 4px solid #7a2e2e; padding-left: 10px; }
+  h3 { font-size: 1.05em; color: #333; margin-top: 1.4em; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+  th { background: #f0e6e6; }
+  pre { background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: 0.85em; line-height: 1.45; }
+  code { font-family: Consolas, 'Courier New', monospace; }
+  .paso { background: #faf5f0; border: 1px solid #e0d5c5; border-radius: 6px; padding: 12px 16px; margin: 14px 0; }
+  .nota { font-size: 0.9em; color: #555; font-style: italic; }
+  .pantalla { background: #fff; border: 1px solid #ccb9a3; border-radius: 6px; padding: 10px; margin: 14px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+  .pantalla-titulo { font-size: 0.85em; font-weight: bold; color: #7a2e2e; margin-bottom: 6px; }
+  .pantalla svg { width: 100%; height: auto; display: block; }
+  .subpaso { border-left: 3px solid #c0392b; padding-left: 12px; margin: 18px 0; }
+  .callout-box { background: #fdf2f2; border: 1px solid #f0c9c9; border-radius: 6px; padding: 10px 14px; margin-top: 10px; font-size: 0.88em; }
+  .callout-item { margin: 5px 0; }
+  .callout-num { display: inline-block; min-width: 18px; height: 18px; line-height: 18px; text-align: center; background: #c0392b; color: #fff; border-radius: 50%; font-size: 11px; font-weight: bold; margin-right: 8px; }
+</style>
+</head>
+<body>
+
+<h1>Conversor de unidades para arte culinario en Excel (VBA + UserForm)</h1>
+<p>Pensamiento lógico paso a paso para construir una herramienta que convierta: <strong>Temperatura</strong>, <strong>Masa (Peso)</strong> y <strong>Volumen</strong>. Todo el código vive dentro del propio UserForm — no se necesita un módulo aparte con funciones.</p>
+
+<h2>Paso 1. Definir el problema y el alcance</h2>
+<div class="paso">
+<p>Antes de programar nada, se define qué debe hacer la herramienta:</p>
+<ul>
+<li>El usuario elige una <strong>categoría de conversión</strong> (Temperatura, Masa o Volumen).</li>
+<li>Según la categoría, se llenan las listas de unidades de origen y destino.</li>
+<li>El usuario captura la cantidad y presiona "Convertir".</li>
+<li>El resultado se muestra en un cuadro que no se puede editar a mano.</li>
+<li>Se valida que lo escrito sea un número, y se acepta tanto punto como coma decimal (ej. "36,6" o "36.6").</li>
+</ul>
+</div>
+
+<h2>Paso 2. Elegir una unidad base por magnitud</h2>
+<div class="paso">
+<p>Para no escribir una fórmula por cada par posible de unidades, el truco es convertir siempre <strong>hacia una unidad base</strong> y de ahí <strong>hacia la unidad destino</strong>.</p>
+<table>
+<tr><th>Magnitud</th><th>Unidad base</th></tr>
+<tr><td>Masa</td><td>gramo</td></tr>
+<tr><td>Volumen</td><td>mililitro</td></tr>
+<tr><td>Temperatura</td><td>no usa base numérica: se resuelve con fórmula directa Celsius↔Fahrenheit</td></tr>
+</table>
+<pre><code>baseConvertida = valorIn × factor_origen
+valorOut        = baseConvertida ÷ factor_destino</code></pre>
+</div>
+
+<h2>Paso 3. Tabla de factores de conversión</h2>
+<div class="paso">
+<h3>Masa (base = gramos)</h3>
+<table>
+<tr><th>Unidad</th><th>Factor a gramos</th></tr>
+<tr><td>Gramos</td><td>1</td></tr>
+<tr><td>Kilogramos</td><td>1000</td></tr>
+<tr><td>Onzas</td><td>28.3495</td></tr>
+<tr><td>Libras</td><td>453.592</td></tr>
+</table>
+
+<h3>Volumen (base = mililitros)</h3>
+<table>
+<tr><th>Unidad</th><th>Factor a mL</th></tr>
+<tr><td>Mililitros</td><td>1</td></tr>
+<tr><td>Litros</td><td>1000</td></tr>
+<tr><td>Tazas</td><td>240 (taza métrica estándar)</td></tr>
+<tr><td>Cucharadas</td><td>15</td></tr>
+<tr><td>Cucharaditas</td><td>5</td></tr>
+</table>
+
+<h3>Temperatura (fórmulas, no factores)</h3>
+<pre><code>Celsius → Fahrenheit : F = (C × 9/5) + 32
+Fahrenheit → Celsius : C = (F − 32) × 5/9</code></pre>
+</div>
+
+<h2>Paso 4. Diseño del UserForm</h2>
+<div class="paso">
+<p>Controles necesarios (cámbiales el nombre en la ventana Propiedades, propiedad <strong>Name</strong>, o el código no los va a reconocer):</p>
+<table>
+<tr><th>Control</th><th>Tipo</th><th>Propósito</th></tr>
+<tr><td>cmbCategoria</td><td>ComboBox</td><td>Elegir Temperatura, Masa (Peso) o Volumen</td></tr>
+<tr><td>txtValorIn</td><td>TextBox</td><td>Cantidad a convertir (ej. 350)</td></tr>
+<tr><td>cmbDe</td><td>ComboBox</td><td>Unidad de origen (ej. Fahrenheit)</td></tr>
+<tr><td>cmbA</td><td>ComboBox</td><td>Unidad de destino (ej. Celsius)</td></tr>
+<tr><td>btnConvertir</td><td>CommandButton</td><td>Ejecuta el cálculo (Caption: "Convertir")</td></tr>
+<tr><td>txtResultado</td><td>TextBox</td><td>Muestra el resultado. Pon la propiedad <strong>Locked = True</strong> para que no se pueda editar a mano</td></tr>
+</table>
+<p class="nota">Opcional: agrega Labels (etiquetas) arriba de cada control para que se entienda qué es cada cosa: "Categoría", "Cantidad", "Convertir de:", "A:".</p>
+</div>
+
+<div class="subpaso">
+<h3>Paso 4B. Ventana de ejemplo: cómo se ve el UserForm con los controles colocados</h3>
+<div class="pantalla">
+<div class="pantalla-titulo">UserForm1 en modo diseño</div>
+<svg viewBox="0 0 780 380" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="780" height="380" fill="#ECE9D8"/>
+  <rect x="10" y="10" width="560" height="360" fill="#D4D0C8" stroke="#716F64"/>
+  <rect x="10" y="10" width="560" height="22" fill="#0A5C2A"/>
+  <text x="18" y="26" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#fff">UserForm1</text>
+  <circle cx="540" cy="21" r="6" fill="#E33"/>
+  <rect x="30" y="42" width="520" height="300" fill="#F3F2ED" stroke="#8B8878"/>
+  <!-- Categoria -->
+  <text x="45" y="56" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#555">Categoría</text>
+  <rect x="45" y="60" width="230" height="22" fill="#fff" stroke="#5A5A5A"/>
+  <text x="52" y="75" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222">Temperatura</text>
+  <path d="M258 63 l10 0 l-5 8 z" fill="#333"/>
+  <circle cx="290" cy="71" r="10" fill="#c0392b"/><text x="290" y="75" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+  <!-- valor -->
+  <text x="45" y="96" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#555">Cantidad</text>
+  <rect x="45" y="100" width="150" height="22" fill="#fff" stroke="#5A5A5A"/>
+  <text x="52" y="115" font-family="Consolas, monospace" font-size="12" fill="#222">350</text>
+  <circle cx="212" cy="111" r="10" fill="#c0392b"/><text x="212" y="115" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
+  <!-- cmbDe / cmbA -->
+  <text x="45" y="136" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#555">Convertir de:</text>
+  <rect x="45" y="140" width="200" height="22" fill="#fff" stroke="#5A5A5A"/>
+  <text x="52" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222">Fahrenheit</text>
+  <path d="M228 143 l10 0 l-5 8 z" fill="#333"/>
+  <circle cx="262" cy="151" r="10" fill="#c0392b"/><text x="262" y="155" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">3</text>
+  <text x="270" y="136" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#555">A:</text>
+  <rect x="270" y="140" width="200" height="22" fill="#fff" stroke="#5A5A5A"/>
+  <text x="277" y="155" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#222">Celsius</text>
+  <path d="M453 143 l10 0 l-5 8 z" fill="#333"/>
+  <circle cx="487" cy="151" r="10" fill="#c0392b"/><text x="487" y="155" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">4</text>
+  <!-- boton -->
+  <rect x="45" y="180" width="120" height="30" rx="3" fill="#ECE9D8" stroke="#5A5A5A"/>
+  <text x="65" y="200" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#000">Convertir</text>
+  <circle cx="182" cy="195" r="10" fill="#c0392b"/><text x="182" y="199" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">5</text>
+  <!-- resultado -->
+  <text x="45" y="256" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#555">Resultado</text>
+  <rect x="45" y="260" width="230" height="24" fill="#EFEFEF" stroke="#5A5A5A"/>
+  <text x="52" y="277" font-family="Consolas, monospace" font-size="12" fill="#333">176.9</text>
+  <circle cx="292" cy="272" r="10" fill="#c0392b"/><text x="292" y="276" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">6</text>
+  <!-- toolbox -->
+  <rect x="600" y="42" width="160" height="300" fill="#F3F2ED" stroke="#8B8878"/>
+  <rect x="600" y="42" width="160" height="18" fill="#D4D0C8"/>
+  <text x="606" y="55" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#333">Cuadro de controles</text>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#333">
+    <rect x="610" y="66" width="20" height="18" fill="#fff" stroke="#8B8878"/><text x="636" y="79">Label</text>
+    <rect x="610" y="90" width="20" height="18" fill="#fff" stroke="#8B8878"/><text x="636" y="103">TextBox</text>
+    <rect x="610" y="114" width="20" height="18" fill="#fff" stroke="#8B8878"/><text x="636" y="127">ComboBox</text>
+    <rect x="610" y="138" width="20" height="18" fill="#fff" stroke="#8B8878"/><text x="636" y="151">CommandButton</text>
+  </g>
+  <text x="610" y="180" font-family="Georgia, serif" font-size="10" fill="#555">Arrastra cada icono</text>
+  <text x="610" y="193" font-family="Georgia, serif" font-size="10" fill="#555">al lienzo del formulario.</text>
+</svg>
+</div>
+<div class="callout-box">
+  <div class="callout-item"><span class="callout-num">1</span><strong>cmbCategoria</strong> — lista para elegir Temperatura, Masa (Peso) o Volumen</div>
+  <div class="callout-item"><span class="callout-num">2</span><strong>txtValorIn</strong> — cantidad que el usuario escribe (ej. 350)</div>
+  <div class="callout-item"><span class="callout-num">3</span><strong>cmbDe</strong> — unidad de origen</div>
+  <div class="callout-item"><span class="callout-num">4</span><strong>cmbA</strong> — unidad de destino</div>
+  <div class="callout-item"><span class="callout-num">5</span><strong>btnConvertir</strong> — botón que ejecuta la conversión</div>
+  <div class="callout-item"><span class="callout-num">6</span><strong>txtResultado</strong> — muestra el resultado (recuerda poner Locked = True)</div>
+</div>
+<p class="nota">Los números en rojo solo identifican cada control en la imagen; tú les pones el nombre real en la ventana Propiedades, como se explica a continuación.</p>
+</div>
+
+<div class="subpaso">
+<h3>Paso 4C. Ventana de ejemplo: renombrar un control y bloquear el resultado</h3>
+<div class="pantalla">
+<div class="pantalla-titulo">Ventana Propiedades (F4) — ejemplo con txtResultado seleccionado</div>
+<svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="480" height="300" fill="#ECE9D8"/>
+  <rect x="10" y="10" width="460" height="280" fill="#D4D0C8" stroke="#716F64"/>
+  <rect x="10" y="10" width="460" height="18" fill="#0A5C2A"/>
+  <text x="16" y="23" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#fff">Propiedades - TextBox2</text>
+  <rect x="14" y="32" width="452" height="244" fill="#fff" stroke="#8B8878"/>
+  <rect x="14" y="32" width="452" height="16" fill="#ECE9D8"/>
+  <rect x="14" y="32" width="130" height="16" fill="#fff" stroke="#8B8878" stroke-width="1.5"/>
+  <text x="40" y="44" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#000">Alfabético</text>
+  <text x="180" y="44" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#555">Por categorías</text>
+  <rect x="14" y="48" width="452" height="20" fill="#C8DEF7" stroke="#316AC5"/>
+  <text x="18" y="62" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#000">(Name)</text>
+  <text x="230" y="62" font-family="Consolas, monospace" font-size="11" font-weight="bold" fill="#c0392b">txtResultado</text>
+  <circle cx="452" cy="58" r="10" fill="#c0392b"/><text x="452" y="62" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+  <line x1="225" y1="48" x2="225" y2="276" stroke="#B0AC9C"/>
+  <g font-family="Consolas, monospace" font-size="10" fill="#333">
+    <rect x="14" y="68" width="452" height="18" fill="#F5F5F5"/><text x="18" y="81">AutoSize</text><text x="230" y="81">False</text>
+    <rect x="14" y="86" width="452" height="18" fill="#fff"/><text x="18" y="99">Height</text><text x="230" y="99">24</text>
+    <rect x="14" y="104" width="452" height="18" fill="#F5F5F5"/><text x="18" y="117">Left</text><text x="230" y="117">45</text>
+    <rect x="14" y="122" width="452" height="20" fill="#FFF3C4" stroke="#c0392b" stroke-width="1.5"/>
+    <text x="18" y="136" font-weight="bold">Locked</text><text x="230" y="136" font-weight="bold" fill="#c0392b">True</text>
+    <circle cx="452" cy="132" r="10" fill="#c0392b"/><text x="452" y="136" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
+    <rect x="14" y="144" width="452" height="18" fill="#fff"/><text x="18" y="157">Top</text><text x="230" y="157">260</text>
+    <rect x="14" y="162" width="452" height="18" fill="#F5F5F5"/><text x="18" y="175">Width</text><text x="230" y="175">230</text>
+  </g>
+</svg>
+</div>
+<div class="callout-box">
+  <div class="callout-item"><span class="callout-num">1</span>Escribe el nuevo nombre en <strong>(Name)</strong> — debe coincidir exacto con el que usa el código</div>
+  <div class="callout-item"><span class="callout-num">2</span>Solo en <strong>txtResultado</strong>: cambia <strong>Locked</strong> a <strong>True</strong> para que no se pueda editar a mano</div>
+</div>
+<p class="nota">Antes de esto: selecciona el control dentro del UserForm y presiona F4 si no ves esta ventana. Repite el renombrado para cada control de la tabla del Paso 4 — <code>cmbDe</code> y <code>cmbA</code> son fáciles de confundir si no se escriben con cuidado.</p>
+</div>
+
+<h2>Paso 5. Código VBA completo (todo va dentro del UserForm)</h2>
+<div class="paso">
+<p>Este bloque hace tres cosas: llena las categorías al abrir el formulario, actualiza las listas de unidades según la categoría elegida, y hace la conversión al presionar el botón.</p>
+<pre><code>Private Sub UserForm_Initialize()
+    ' 1. Llenar las categorías al abrir el formulario
+    cmbCategoria.AddItem "Temperatura"
+    cmbCategoria.AddItem "Masa (Peso)"
+    cmbCategoria.AddItem "Volumen"
+End Sub
+
+Private Sub cmbCategoria_Change()
+    ' 2. Cambiar las unidades disponibles según la categoría elegida
+    cmbDe.Clear
+    cmbA.Clear
+    txtValorIn.Value = ""
+    txtResultado.Value = ""
+
+    Select Case cmbCategoria.Value
+        Case "Temperatura"
+            cmbDe.List = Array("Celsius", "Fahrenheit")
+            cmbA.List = Array("Celsius", "Fahrenheit")
+        Case "Masa (Peso)"
+            cmbDe.List = Array("Gramos", "Kilogramos", "Onzas", "Libras")
+            cmbA.List = Array("Gramos", "Kilogramos", "Onzas", "Libras")
+        Case "Volumen"
+            cmbDe.List = Array("Mililitros", "Litros", "Tazas", "Cucharadas", "Cucharaditas")
+            cmbA.List = Array("Mililitros", "Litros", "Tazas", "Cucharadas", "Cucharaditas")
+    End Select
+End Sub
+
+Private Sub btnConvertir_Click()
+    ' 3. Lógica matemática de las conversiones
+    Dim valorIn As Double
+    Dim valorOut As Double
+    Dim baseConvertida As Double
+
+    ' Validar que se haya ingresado un número
+    If Not IsNumeric(txtValorIn.Value) Then
+        MsgBox "Por favor, ingresa un número válido.", vbExclamation, "Error"
+        Exit Sub
+    End If
+
+    ' Cambiar comas por puntos si es necesario y convertir a decimal
+    valorIn = CDbl(Replace(txtValorIn.Value, ",", "."))
+
+    ' --- TEMPERATURA ---
+    If cmbCategoria.Value = "Temperatura" Then
+        If cmbDe.Value = "Celsius" And cmbA.Value = "Fahrenheit" Then
+            valorOut = (valorIn * 9 / 5) + 32
+        ElseIf cmbDe.Value = "Fahrenheit" And cmbA.Value = "Celsius" Then
+            valorOut = (valorIn - 32) * 5 / 9
+        Else
+            valorOut = valorIn ' Si eligen la misma unidad
+        End If
+        txtResultado.Value = Round(valorOut, 2)
+        Exit Sub
+    End If
+
+    ' --- MASA (Truco: Convertimos todo a gramos primero) ---
+    If cmbCategoria.Value = "Masa (Peso)" Then
+        Select Case cmbDe.Value
+            Case "Gramos": baseConvertida = valorIn
+            Case "Kilogramos": baseConvertida = valorIn * 1000
+            Case "Onzas": baseConvertida = valorIn * 28.3495
+            Case "Libras": baseConvertida = valorIn * 453.592
+        End Select
+
+        Select Case cmbA.Value
+            Case "Gramos": valorOut = baseConvertida
+            Case "Kilogramos": valorOut = baseConvertida / 1000
+            Case "Onzas": valorOut = baseConvertida / 28.3495
+            Case "Libras": valorOut = baseConvertida / 453.592
+        End Select
+        txtResultado.Value = Round(valorOut, 2)
+        Exit Sub
+    End If
+
+    ' --- VOLUMEN (Truco: Convertimos todo a mililitros primero) ---
+    If cmbCategoria.Value = "Volumen" Then
+        Select Case cmbDe.Value
+            Case "Mililitros": baseConvertida = valorIn
+            Case "Litros": baseConvertida = valorIn * 1000
+            Case "Tazas": baseConvertida = valorIn * 240 ' Taza métrica estándar
+            Case "Cucharadas": baseConvertida = valorIn * 15
+            Case "Cucharaditas": baseConvertida = valorIn * 5
+        End Select
+
+        Select Case cmbA.Value
+            Case "Mililitros": valorOut = baseConvertida
+            Case "Litros": valorOut = baseConvertida / 1000
+            Case "Tazas": valorOut = baseConvertida / 240
+            Case "Cucharadas": valorOut = baseConvertida / 15
+            Case "Cucharaditas": valorOut = baseConvertida / 5
+        End Select
+        txtResultado.Value = Round(valorOut, 2)
+        Exit Sub
+    End If
+End Sub
+</code></pre>
+</div>
+
+<div class="subpaso">
+<h3>Paso 5B. Ventana de ejemplo: cómo abrir la ventana de código y pegar el bloque completo</h3>
+<p>A diferencia de generar cada evento uno por uno, aquí basta con hacer <strong>doble clic en cualquier parte vacía</strong> del UserForm. Eso abre la ventana de código ya posicionada dentro del formulario: borras el contenido que trae por defecto y pegas el bloque completo del Paso 5.</p>
+<div class="pantalla">
+<div class="pantalla-titulo">Doble clic en el UserForm → ventana de código</div>
+<svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="780" height="320" fill="#ECE9D8"/>
+  <!-- left: userform in design -->
+  <rect x="10" y="10" width="230" height="300" fill="#D4D0C8" stroke="#716F64"/>
+  <rect x="10" y="10" width="230" height="20" fill="#0A5C2A"/>
+  <text x="16" y="24" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#fff">UserForm1 (Diseño)</text>
+  <rect x="20" y="36" width="210" height="200" fill="#F3F2ED" stroke="#8B8878"/>
+  <rect x="32" y="50" width="120" height="16" fill="#fff" stroke="#5A5A5A"/>
+  <rect x="32" y="76" width="90" height="16" fill="#fff" stroke="#5A5A5A"/>
+  <rect x="32" y="102" width="70" height="20" rx="2" fill="#fff" stroke="#5A5A5A"/>
+  <rect x="32" y="132" width="140" height="18" fill="#EFEFEF" stroke="#5A5A5A"/>
+  <circle cx="120" cy="195" r="10" fill="#c0392b"/><text x="120" y="199" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+  <!-- right: code window -->
+  <rect x="254" y="10" width="516" height="300" fill="#fff" stroke="#8B8878"/>
+  <rect x="254" y="10" width="516" height="18" fill="#F3F2ED" stroke="#8B8878"/>
+  <text x="260" y="23" font-family="Segoe UI, Arial, sans-serif" font-size="9" fill="#333">UserForm1                                  ▾        Click  ▾</text>
+  <g font-family="Consolas, monospace" font-size="11">
+    <text x="262" y="52"><tspan fill="#0000FF">Private Sub</tspan><tspan fill="#000"> UserForm_Click()</tspan></text>
+    <text x="262" y="70" fill="#666">    (aquí VBA pone el cursor)</text>
+    <text x="262" y="88"><tspan fill="#0000FF">End Sub</tspan></text>
+  </g>
+  <circle cx="748" cy="60" r="10" fill="#c0392b"/><text x="748" y="64" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
+  <rect x="258" y="126" width="504" height="150" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <circle cx="762" cy="126" r="10" fill="#c0392b"/><text x="762" y="130" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">3</text>
+  <g font-family="Consolas, monospace" font-size="10" fill="#333">
+    <text x="264" y="150">UserForm_Initialize, cmbCategoria_Change,</text>
+    <text x="264" y="166">btnConvertir_Click</text>
+  </g>
+</svg>
+</div>
+<div class="callout-box">
+  <div class="callout-item"><span class="callout-num">1</span>Doble clic en una zona vacía del UserForm (sin controles encima)</div>
+  <div class="callout-item"><span class="callout-num">2</span>Selecciona todo el código que aparece (Ctrl+A) y bórralo</div>
+  <div class="callout-item"><span class="callout-num">3</span>Pega aquí (Ctrl+V) el bloque completo del Paso 5, con sus tres procedimientos</div>
+</div>
+<p class="nota">Nota los colores del código correctamente escrito: azul para palabras clave (Private Sub, If, Select Case, End...), negro para el resto. Los comentarios con apóstrofo (') se ven en verde.</p>
+</div>
+
+<h2>Paso 6. Cómo montarlo en Excel, paso a paso con pantallas</h2>
+
+<div class="subpaso">
+<h3>Paso 6A. Activar la pestaña Programador y abrir el editor VBA</h3>
+<div class="pantalla">
+<div class="pantalla-titulo">Cinta de opciones de Excel</div>
+<svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="760" height="150" fill="#fff"/>
+  <rect x="10" y="10" width="740" height="130" fill="#fff" stroke="#C8C6C4"/>
+  <rect x="10" y="10" width="740" height="30" fill="#F3F2F1"/>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#444">
+    <text x="30" y="29">Archivo</text><text x="100" y="29">Inicio</text><text x="160" y="29">Insertar</text>
+    <text x="240" y="29">Disposición</text><text x="330" y="29">Fórmulas</text><text x="410" y="29">Datos</text>
+    <text x="470" y="29">Revisar</text><text x="540" y="29">Vista</text>
+  </g>
+  <rect x="600" y="10" width="110" height="30" fill="#fff"/>
+  <rect x="600" y="26" width="110" height="4" fill="#217346"/>
+  <text x="612" y="29" font-family="Segoe UI, Arial, sans-serif" font-size="12" fill="#217346" font-weight="bold">Programador</text>
+  <rect x="20" y="45" width="150" height="90" fill="#fff" stroke="#E1DFDD"/>
+  <rect x="35" y="58" width="110" height="50" rx="2" fill="#fff" stroke="#217346" stroke-width="1.5"/>
+  <rect x="50" y="66" width="18" height="18" fill="#217346"/>
+  <text x="76" y="80" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#333">Visual</text>
+  <text x="76" y="93" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#333">Basic</text>
+  <circle cx="155" cy="63" r="10" fill="#c0392b"/><text x="155" y="67" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+  <line x1="20" y1="120" x2="170" y2="120" stroke="#E1DFDD"/>
+  <text x="55" y="132" font-family="Segoe UI, Arial, sans-serif" font-size="9" fill="#666">Código</text>
+</svg>
+</div>
+<div class="callout-box">
+  <div class="callout-item"><span class="callout-num">1</span>Clic en "Visual Basic" (grupo Código), o presiona <strong>Alt + F11</strong> desde cualquier parte de Excel</div>
+</div>
+<p class="nota">¿No ves la pestaña "Programador"? Archivo → Opciones → Personalizar cinta → activa la casilla "Programador".</p>
+</div>
+
+<div class="subpaso">
+<h3>Paso 6B. Insertar el UserForm</h3>
+<div class="pantalla">
+<div class="pantalla-titulo">Menú Insertar del editor VBA</div>
+<svg viewBox="0 0 520 210" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="520" height="210" fill="#ECE9D8"/>
+  <rect x="10" y="10" width="140" height="24" fill="#F3F2ED" stroke="#8B8878"/>
+  <text x="20" y="26" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#000">Insertar ▾</text>
+  <rect x="10" y="34" width="210" height="134" fill="#fff" stroke="#716F64"/>
+  <rect x="10" y="34" width="210" height="28" fill="#C8DEF7" stroke="#316AC5"/>
+  <text x="18" y="53" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#000">🗔  UserForm</text>
+  <circle cx="238" cy="48" r="10" fill="#c0392b"/><text x="238" y="52" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+  <text x="18" y="81" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#888">📄  Módulo</text>
+  <circle cx="238" cy="76" r="10" fill="#999"/><text x="238" y="80" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
+  <text x="18" y="109" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#888">📘  Módulo de clase</text>
+  <text x="18" y="137" font-family="Segoe UI, Arial, sans-serif" font-size="11" fill="#888">Procedimiento...</text>
+</svg>
+</div>
+<div class="callout-box">
+  <div class="callout-item"><span class="callout-num">1</span>Elige "UserForm" para insertar el formulario del Paso 4</div>
+  <div class="callout-item"><span class="callout-num" style="background:#999">2</span>"Módulo" no se usa aquí — se usa más adelante, en el Paso 6C, solo para el botón lanzador</div>
+</div>
+<p class="nota">Coloca ahí los controles del Paso 4 y renómbralos como se explicó en el Paso 4B/4C. Luego haz doble clic en el formulario y pega el código del Paso 5.</p>
+</div>
+
+<div class="subpaso">
+<h3>Paso 6C. Un módulo pequeño para abrir el formulario desde la hoja</h3>
+<p>El UserForm no se abre solo. Se necesita una macro corta que lo mande llamar. Esta sí va en un <strong>Módulo</strong> normal (Insertar → Módulo):</p>
+<div class="pantalla">
+<div class="pantalla-titulo">Module1 — macro lanzadora</div>
+<svg viewBox="0 0 620 160" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="620" height="160" fill="#ECE9D8"/>
+  <rect x="10" y="10" width="600" height="140" fill="#fff" stroke="#8B8878"/>
+  <rect x="10" y="10" width="600" height="18" fill="#0A5C2A"/>
+  <text x="16" y="23" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#fff">Module1 (Código)</text>
+  <g font-family="Consolas, monospace" font-size="13">
+    <text x="24" y="58"><tspan fill="#0000FF">Sub</tspan><tspan fill="#000"> AbrirConversor()</tspan></text>
+    <text x="24" y="82"><tspan fill="#000">    UserForm1.Show</tspan></text>
+    <text x="24" y="106"><tspan fill="#0000FF">End Sub</tspan></text>
+  </g>
+</svg>
+</div>
+</div>
+
+<div class="subpaso">
+<h3>Paso 6D. Crear el botón en la hoja y asignarle la macro</h3>
+<div class="pantalla">
+<div class="pantalla-titulo">Hoja de Excel con el botón que abre el conversor</div>
+<svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="700" height="280" fill="#fff"/>
+  <rect x="10" y="10" width="420" height="260" fill="#fff" stroke="#C8C6C4"/>
+  <rect x="10" y="10" width="26" height="260" fill="#F3F2F1" stroke="#C8C6C4"/>
+  <rect x="10" y="10" width="420" height="22" fill="#F3F2F1" stroke="#C8C6C4"/>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#444">
+    <text x="65" y="25">A</text><text x="145" y="25">B</text><text x="225" y="25">C</text><text x="305" y="25">D</text><text x="385" y="25">E</text>
+    <text x="18" y="48">1</text><text x="18" y="88">2</text><text x="18" y="128">3</text><text x="18" y="168">4</text><text x="18" y="208">5</text><text x="18" y="248">6</text>
+  </g>
+  <g stroke="#E1DFDD">
+    <line x1="36" y1="72" x2="430" y2="72"/><line x1="36" y1="112" x2="430" y2="112"/>
+    <line x1="36" y1="152" x2="430" y2="152"/><line x1="36" y1="192" x2="430" y2="192"/>
+    <line x1="36" y1="232" x2="430" y2="232"/>
+    <line x1="116" y1="32" x2="116" y2="270" stroke="#E1DFDD"/><line x1="196" y1="32" x2="196" y2="270"/>
+    <line x1="276" y1="32" x2="276" y2="270"/><line x1="356" y1="32" x2="356" y2="270"/>
+  </g>
+  <rect x="126" y="82" width="160" height="42" rx="4" fill="#217346" stroke="#185C37"/>
+  <text x="146" y="107" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#fff">Abrir Conversor</text>
+  <circle cx="296" cy="82" r="10" fill="#c0392b"/><text x="296" y="86" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">1</text>
+  <rect x="450" y="60" width="230" height="150" fill="#fff" stroke="#8B8878"/>
+  <rect x="450" y="60" width="230" height="20" fill="#0A5C2A"/>
+  <text x="456" y="74" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#fff">Clic derecho sobre el botón</text>
+  <text x="458" y="98" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#333">Formato de forma...</text>
+  <rect x="454" y="106" width="220" height="22" fill="#C8DEF7" stroke="#316AC5"/>
+  <text x="458" y="121" font-family="Segoe UI, Arial, sans-serif" font-size="10" fill="#000">Asignar macro...</text>
+  <circle cx="668" cy="117" r="10" fill="#c0392b"/><text x="668" y="121" font-family="Arial" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">2</text>
+</svg>
+</div>
+<div class="callout-box">
+  <div class="callout-item"><span class="callout-num">1</span>Clic derecho sobre el botón que dibujaste en la hoja</div>
+  <div class="callout-item"><span class="callout-num">2</span>Elige "Asignar macro..." y selecciona <strong>AbrirConversor</strong> (la que llama a UserForm1.Show)</div>
+</div>
+<div class="paso">
+<p>Resumen ordenado de todo el montaje:</p>
+<ol>
+<li>Abrir el editor VBA (<code>Alt + F11</code>) — Paso 6A.</li>
+<li>Insertar un <strong>UserForm</strong>, colocar los controles del Paso 4 y renombrarlos en Propiedades — Paso 6B, 4B y 4C.</li>
+<li>Doble clic en el UserForm y pegar el código completo del Paso 5 — Paso 5B.</li>
+<li>Insertar un <strong>Módulo</strong> con la macro <code>AbrirConversor</code> — Paso 6C.</li>
+<li>Insertar una <strong>Forma</strong> o <strong>Botón</strong> en la hoja (Insertar → Ilustraciones → Formas) y asignarle esa macro con clic derecho → Asignar macro — Paso 6D.</li>
+<li>Guardar el archivo como <strong>.xlsm</strong> (libro habilitado para macros): Archivo → Guardar como → Tipo: Libro de Excel habilitado para macros.</li>
+</ol>
+</div>
+</div>
+
+<h2>Paso 7. Pruebas sugeridas</h2>
+<div class="paso">
+<table>
+<tr><th>Caso</th><th>Entrada</th><th>Resultado esperado</th></tr>
+<tr><td>Temperatura</td><td>180 Celsius → Fahrenheit</td><td>356</td></tr>
+<tr><td>Masa</td><td>500 Gramos → Libras</td><td>≈ 1.10</td></tr>
+<tr><td>Volumen</td><td>1000 Mililitros → Tazas</td><td>≈ 4.17</td></tr>
+<tr><td>Decimal con coma</td><td>36,6 Celsius → Fahrenheit</td><td>≈ 97.88</td></tr>
+<tr><td>Validación</td><td>Dejar txtValorIn vacío o con texto ("abc")</td><td>Mensaje "Por favor, ingresa un número válido."</td></tr>
+</table>
+</div>
+
+<h2>Nota: extensión opcional "De Masa a Volumen"</h2>
+<div class="paso">
+<p>Convertir de peso (gramos) a volumen (tazas) es el mayor reto en gastronomía porque depende de la <strong>densidad</strong> del ingrediente: no es lo mismo una taza de agua que una taza de harina.</p>
+<table>
+<tr><th>Ingrediente</th><th>1 taza equivale a</th></tr>
+<tr><td>Agua</td><td>240 g</td></tr>
+<tr><td>Harina</td><td>120 g</td></tr>
+<tr><td>Azúcar</td><td>200 g</td></tr>
+</table>
+<p class="nota">Este código base maneja Masa y Volumen por separado, sin cruzarlos. Para hacer conversiones cruzadas de Masa a Volumen habría que agregar un ComboBox extra, por ejemplo <code>cmbIngrediente</code>, con una tabla de densidades (harina, azúcar, mantequilla, cacao, etc.). Queda como posible siguiente paso una vez que esta versión funcione bien.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 1 · Fenómenos de Transporte · Ingeniería Agroindustrial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Spectral+SC:wght@600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF0E8;
+  --paper-2:#E4E7DC;
+  --ink:#182422;
+  --ink-soft:#3E4A44;
+  --blueprint:#28596B;
+  --blueprint-2:#1B3F4C;
+  --wheat:#C8963C;
+  --wheat-2:#a87a2b;
+  --clay:#B0532E;
+  --leaf:#54713A;
+  --line: rgba(24,36,34,0.14);
+  --line-strong: rgba(24,36,34,0.28);
+  --card:#FBFAF6;
+  --shadow: 0 10px 30px -18px rgba(20,30,28,0.35);
+  --radius: 4px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', sans-serif;
+  line-height:1.6;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+h1,h2,h3,h4{ font-family:'Spectral', serif; color:var(--blueprint-2); margin:0 0 .4em 0; font-weight:600;}
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-size:.72rem;
+  color:var(--wheat-2);
+  font-weight:600;
+}
+a{color:var(--blueprint);}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+
+/* ===== HEADER / PORTADA ===== */
+header.portada{
+  position:relative;
+  background: linear-gradient(160deg, var(--blueprint-2) 0%, var(--blueprint) 62%, #2c6b52 100%);
+  color:#F4F2E9;
+  overflow:hidden;
+  border-bottom:6px solid var(--wheat);
+}
+header.portada .grain-overlay{
+  position:absolute; inset:0;
+  opacity:.10;
+  background-image: radial-gradient(circle, #F4F2E9 1px, transparent 1.4px);
+  background-size: 16px 16px;
+  pointer-events:none;
+}
+.uni-block{
+  position:relative;
+  padding:28px 24px 10px;
+  max-width:1080px;
+  margin:0 auto;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:.78rem;
+  letter-spacing:.03em;
+  opacity:.92;
+}
+.uni-block .line{display:block;}
+.uni-block .l1{font-weight:600; letter-spacing:.08em; text-transform:uppercase;}
+.hero{
+  position:relative;
+  padding:18px 24px 54px;
+  max-width:1080px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap:28px;
+  align-items:end;
+}
+.hero h1{
+  color:#FBFAF6;
+  font-size:clamp(2.1rem, 4.2vw, 3.1rem);
+  line-height:1.08;
+  margin-bottom:.3em;
+}
+.hero .subt{
+  font-size:1.05rem;
+  max-width:46ch;
+  color:#E4E9DE;
+}
+.hero .tema{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--wheat);
+  margin-bottom:10px;
+  display:block;
+}
+.flow-svg{ width:100%; height:auto; }
+.flow-svg .stream{ stroke-dasharray: 6 10; animation: flow 3.2s linear infinite; }
+.flow-svg .stream.mom{ stroke: #9fd3e0; }
+.flow-svg .stream.heat{ stroke: #f0b27a; }
+.flow-svg .stream.mass{ stroke: #b7d99a; }
+@keyframes flow{ to{ stroke-dashoffset:-160; } }
+@media (prefers-reduced-motion: reduce){
+  .flow-svg .stream{ animation:none; }
+}
+
+/* ===== NAV ===== */
+nav.tabs{
+  position:sticky; top:0; z-index:40;
+  background:rgba(238,240,232,0.96);
+  backdrop-filter: blur(6px);
+  border-bottom:1px solid var(--line-strong);
+}
+nav.tabs .wrap{
+  display:flex; gap:2px; overflow-x:auto;
+  padding:0 24px;
+}
+nav.tabs button{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:.74rem;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  background:none;
+  border:none;
+  padding:16px 14px;
+  color:var(--ink-soft);
+  cursor:pointer;
+  white-space:nowrap;
+  border-bottom:3px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+nav.tabs button:hover{ color:var(--blueprint-2); }
+nav.tabs button.active{ color:var(--blueprint-2); border-bottom-color:var(--wheat); font-weight:600; }
+nav.tabs button:focus-visible{ outline:2px solid var(--blueprint); outline-offset:-2px; }
+
+/* ===== SECTIONS ===== */
+main{ padding:44px 0 90px; }
+section.panel{ display:none; }
+section.panel.active{ display:block; animation: rise .35s ease; }
+@keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+.section-head{ margin-bottom:28px; max-width:70ch; }
+.section-head .num{
+  font-family:'Spectral SC', serif;
+  font-size:.95rem;
+  color:var(--wheat-2);
+  display:block;
+  margin-bottom:6px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:26px 28px;
+  margin-bottom:26px;
+}
+.card h3{ font-size:1.25rem; margin-bottom:.5em; }
+.card h4{ font-size:1.02rem; color:var(--ink); margin-top:1.2em;}
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+@media (max-width:820px){ .grid-2{grid-template-columns:1fr;} .hero{grid-template-columns:1fr;} }
+
+table{ width:100%; border-collapse:collapse; font-size:.92rem; margin:14px 0; }
+caption{ text-align:left; font-family:'IBM Plex Mono',monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--wheat-2); margin-bottom:8px;}
+th,td{ text-align:left; padding:10px 12px; border-bottom:1px solid var(--line-strong); vertical-align:top;}
+thead th{ background:var(--blueprint-2); color:#F4F2E9; font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;}
+tbody tr:nth-child(even){ background:var(--paper-2); }
+tbody tr:hover{ background:#e4ecd8; }
+
+.eq{
+  font-family:'IBM Plex Mono', monospace;
+  background:var(--blueprint-2);
+  color:#F4F2E9;
+  padding:14px 18px;
+  border-radius:var(--radius);
+  display:inline-block;
+  margin:10px 0;
+  font-size:1.02rem;
+  letter-spacing:.02em;
+}
+.tag{
+  display:inline-block;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  padding:3px 8px;
+  border-radius:20px;
+  border:1px solid currentColor;
+}
+.tag.mom{ color:var(--blueprint); }
+.tag.heat{ color:var(--clay); }
+.tag.mass{ color:var(--leaf); }
+
+/* diagram trio */
+.trio{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px;}
+@media(max-width:760px){ .trio{grid-template-columns:1fr;} }
+.trio .chip{
+  border:1px solid var(--line-strong);
+  border-radius:var(--radius);
+  padding:16px;
+  cursor:pointer;
+  background:#fff;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.trio .chip:hover, .trio .chip.open{ transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--blueprint); }
+.trio .chip h4{ margin:8px 0 4px; font-size:1rem;}
+.trio .chip p{ font-size:.86rem; color:var(--ink-soft); margin:.3em 0;}
+.trio .chip .detail{ display:none; font-size:.85rem; margin-top:8px; border-top:1px dashed var(--line-strong); padding-top:8px;}
+.trio .chip.open .detail{ display:block; }
+.trio .icon{ width:34px; height:34px; }
+
+/* sliders / simulator */
+.sim{
+  display:grid; grid-template-columns: 1.1fr .9fr; gap:24px;
+}
+@media(max-width:820px){ .sim{grid-template-columns:1fr;} }
+.control{ margin-bottom:16px; }
+.control label{ display:flex; justify-content:space-between; font-family:'IBM Plex Mono', monospace; font-size:.78rem; margin-bottom:6px;}
+.control label .val{ color:var(--blueprint); font-weight:600; }
+input[type=range]{
+  width:100%; -webkit-appearance:none; height:6px; background:var(--paper-2);
+  border-radius:4px; outline:none; border:1px solid var(--line-strong);
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+  background:var(--wheat); border:2px solid var(--blueprint-2); cursor:pointer; margin-top:-1px;
+}
+input[type=range]::-moz-range-thumb{
+  width:18px; height:18px; border-radius:50%; background:var(--wheat); border:2px solid var(--blueprint-2); cursor:pointer;
+}
+.readout{
+  font-family:'IBM Plex Mono', monospace;
+  background:var(--blueprint-2); color:#F4F2E9;
+  border-radius:var(--radius); padding:16px; margin-top:10px; font-size:.86rem;
+}
+.readout .big{ font-size:1.5rem; color:var(--wheat); font-weight:600; display:block; margin:4px 0;}
+.tankwrap{ display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; }
+.tank-svg{ width:100%; max-width:300px; height:auto; overflow:visible; }
+.tank-svg .vc-label{ font-family:'IBM Plex Mono', monospace; font-size:8.5px; text-transform:uppercase; letter-spacing:.06em; fill:var(--blueprint); }
+.tank-svg .flow-label{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; font-weight:600; }
+.tank-svg .icon-text{ font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:700; fill:#fff; pointer-events:none; }
+.tank-svg .gc-tag{ font-family:'IBM Plex Mono', monospace; font-size:8px; text-transform:uppercase; letter-spacing:.04em; }
+.tank-fill{ transition: y .3s ease, height .3s ease; }
+.tank-arrow{ transition: stroke-width .2s ease; }
+.tank-icon{ transition: opacity .25s ease; }
+.tank-label{ font-family:'IBM Plex Mono',monospace; font-size:.78rem; margin-top:6px; text-align:center; color:var(--ink-soft);}
+.tank-label b{ color:var(--blueprint-2); }
+
+/* gradient charts */
+.grad-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:18px; }
+@media(max-width:900px){ .grad-grid{grid-template-columns:1fr;} }
+.grad-panel{ border:1px solid var(--line-strong); border-radius:var(--radius); padding:14px; background:#fff; }
+.grad-panel h4{ margin-top:0; font-size:.98rem; }
+.grad-panel .grad-controls .control{ margin-bottom:10px; }
+.grad-panel .grad-controls label{ font-size:.7rem; }
+.grad-svg{ width:100%; height:auto; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); margin:8px 0; display:block; overflow:visible; }
+.grad-svg .grid{ stroke:var(--line-strong); stroke-width:1; stroke-dasharray:2 4; }
+.grad-svg .axis{ stroke:var(--ink); stroke-width:1.6; }
+.grad-svg .tick{ font-family:'IBM Plex Mono', monospace; font-size:8.5px; fill:var(--ink-soft); }
+.grad-svg .axistitle{ font-family:'IBM Plex Mono', monospace; font-size:8.5px; fill:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:600; }
+.grad-svg .badge{ font-family:'IBM Plex Sans', sans-serif; font-size:9.5px; font-weight:600; fill:var(--ink); }
+.grad-readout{ font-family:'IBM Plex Mono', monospace; font-size:.72rem; line-height:1.5; color:var(--ink-soft); background:var(--paper-2); padding:8px 10px; border-radius:var(--radius); }
+.grad-readout b{ color:var(--ink); }
+
+/* accordion */
+.acc-item{ border:1px solid var(--line-strong); border-radius:var(--radius); margin-bottom:10px; overflow:hidden; background:#fff;}
+.acc-item button{
+  width:100%; text-align:left; background:var(--paper-2); border:none; padding:14px 18px;
+  font-family:'IBM Plex Mono', monospace; font-size:.82rem; text-transform:uppercase; letter-spacing:.04em;
+  cursor:pointer; display:flex; justify-content:space-between; align-items:center; color:var(--blueprint-2); font-weight:600;
+}
+.acc-item .content{ max-height:0; overflow:hidden; transition:max-height .3s ease; padding:0 18px;}
+.acc-item.open .content{ max-height:600px; padding:14px 18px 18px; }
+.acc-item .plus{ transition:transform .2s; }
+.acc-item.open .plus{ transform:rotate(45deg); }
+
+/* app grid */
+.apps{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media(max-width:900px){ .apps{grid-template-columns:1fr 1fr;} }
+@media(max-width:640px){ .apps{grid-template-columns:1fr;} }
+.app-card{ background:#fff; border:1px solid var(--line-strong); border-radius:var(--radius); padding:16px; }
+.app-card .k{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--wheat-2);}
+.app-card h4{ margin:.3em 0; font-size:1rem; }
+.app-card p{ font-size:.86rem; color:var(--ink-soft); }
+
+/* quiz */
+.quiz-q{ border:1px solid var(--line-strong); border-radius:var(--radius); padding:18px; margin-bottom:16px; background:#fff;}
+.quiz-q p.prompt{ font-weight:600; margin-top:0;}
+.opt{ display:block; width:100%; text-align:left; background:var(--paper); border:1px solid var(--line-strong); border-radius:var(--radius); padding:10px 14px; margin-bottom:8px; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; font-size:.92rem;}
+.opt:hover{ border-color:var(--blueprint); }
+.opt.correct{ background:#dcebd0; border-color:var(--leaf); }
+.opt.wrong{ background:#f3d9cf; border-color:var(--clay); }
+.opt[disabled]{ cursor:default; }
+#quizScoreBox{ font-family:'IBM Plex Mono',monospace; background:var(--blueprint-2); color:#F4F2E9; padding:14px 18px; border-radius:var(--radius); display:none;}
+
+/* refs */
+.ref{ padding:10px 0; border-bottom:1px solid var(--line); font-size:.92rem; }
+.ref .doi{ color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:.78rem;}
+
+footer{
+  background:var(--blueprint-2); color:#c8d4c8; text-align:center; padding:24px; font-size:.8rem;
+  font-family:'IBM Plex Mono', monospace;
+}
+.note{
+  border-left:3px solid var(--wheat);
+  background:var(--paper-2);
+  padding:12px 16px;
+  font-size:.9rem;
+  margin:14px 0;
+  border-radius:0 var(--radius) var(--radius) 0;
+}
+.note b{color:var(--wheat-2);}
+</style>
+</head>
+<body>
+
+<header class="portada">
+  <div class="grain-overlay"></div>
+  <div class="uni-block">
+    <span class="line l1">Universidad de Guanajuato</span>
+    <span class="line">Campus Celaya–Salvatierra · División de Ciencias de la Salud e Ingenierías</span>
+    <span class="line">Licenciatura en Ingeniería Agroindustrial · Asignatura: Fenómenos de Transporte</span>
+  </div>
+  <div class="hero">
+    <div>
+      <span class="tema">Unidad 1</span>
+      <h1>Principios de los Fenómenos de Transporte y Balances Globales</h1>
+      <p class="subt">Los flujos de cantidad de movimiento, calor y masa comparten una misma estructura matemática. Comprenderla es la base para diseñar y controlar cualquier proceso agroindustrial: desde el bombeo de un jarabe hasta el secado de un grano.</p>
+    </div>
+    <svg class="flow-svg" viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="118" y="40" width="84" height="90" rx="4" fill="none" stroke="#F4F2E9" stroke-width="2" opacity=".85"/>
+      <text x="160" y="90" fill="#F4F2E9" font-family="IBM Plex Mono" font-size="9" text-anchor="middle" opacity=".9">VOLUMEN DE</text>
+      <text x="160" y="102" fill="#F4F2E9" font-family="IBM Plex Mono" font-size="9" text-anchor="middle" opacity=".9">CONTROL</text>
+      <path class="stream mom" d="M0,55 H118" fill="none" stroke-width="3"/>
+      <path class="stream heat" d="M0,85 H118" fill="none" stroke-width="3"/>
+      <path class="stream mass" d="M0,115 H118" fill="none" stroke-width="3"/>
+      <path class="stream mom" d="M202,55 H320" fill="none" stroke-width="3"/>
+      <path class="stream heat" d="M202,85 H320" fill="none" stroke-width="3"/>
+      <path class="stream mass" d="M202,115 H320" fill="none" stroke-width="3"/>
+      <text x="4" y="48" fill="#9fd3e0" font-family="IBM Plex Mono" font-size="8">momentum</text>
+      <text x="4" y="78" fill="#f0b27a" font-family="IBM Plex Mono" font-size="8">calor</text>
+      <text x="4" y="108" fill="#b7d99a" font-family="IBM Plex Mono" font-size="8">masa</text>
+    </svg>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-tab="intro" class="active">0 · Mapa</button>
+    <button data-tab="t11">1.1 Concepto</button>
+    <button data-tab="t12">1.2 Balances globales</button>
+    <button data-tab="t13">1.3 Leyes de conservación</button>
+    <button data-tab="apps">Aplicaciones</button>
+    <button data-tab="quiz">Autoevaluación</button>
+    <button data-tab="refs">Referencias</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ===================== 0. MAPA / INTRO ===================== -->
+  <section class="panel active" id="intro">
+    <div class="section-head">
+      <span class="num">Panorama</span>
+      <h2>¿Por qué una sola unidad para tres fenómenos distintos?</h2>
+      <p>Porque comparten la misma forma matemática. Un ingeniero agroindustrial rara vez transporta solo materia, solo calor o solo movimiento: en un secador de granos, en un pasteurizador o en una línea de envasado, los tres ocurren a la vez. Estudiarlos con la misma estructura de balance ahorra trabajo y da una intuición transferible entre procesos.</p>
+    </div>
+
+    <div class="card">
+      <h3>Estructura de la unidad</h3>
+      <div class="trio" id="mapaChips">
+        <div class="chip" data-open="false">
+          <span class="tag mom">1.1</span>
+          <h4>Concepto de fenómenos de transporte</h4>
+          <p>La analogía entre transporte de momentum, calor y masa; leyes de Newton, Fourier y Fick.</p>
+        </div>
+        <div class="chip" data-open="false">
+          <span class="tag heat">1.2</span>
+          <h4>Concepto de balances globales</h4>
+          <p>El volumen de control y la ecuación general: entra − sale + genera − consume = acumula.</p>
+        </div>
+        <div class="chip" data-open="false">
+          <span class="tag mass">1.3</span>
+          <h4>Empleo de las leyes de conservación</h4>
+          <p>Aplicación de la conservación de masa, energía y momento a procesos agroindustriales reales.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="note"><b>Cómo usar este material:</b> cada subtema tiene un simulador o diagrama interactivo. Ajusta los controles deslizantes, abre las tarjetas y responde la autoevaluación al final antes de revisar las referencias.</div>
+  </section>
+
+  <!-- ===================== 1.1 ===================== -->
+  <section class="panel" id="t11">
+    <div class="section-head">
+      <span class="num">1.1</span>
+      <h2>Concepto de fenómenos de transporte</h2>
+      <p>Los <b>fenómenos de transporte</b> estudian cómo se mueven tres cantidades físicas —cantidad de movimiento, energía térmica y masa de una especie— desde una región donde su concentración, temperatura o velocidad es alta hacia otra donde es baja. A escala molecular, ese movimiento se describe con tres leyes que tienen la <b>misma forma</b>: un flujo es proporcional a un gradiente, con signo negativo porque el transporte ocurre en el sentido en que la propiedad disminuye.</p>
+      <div class="eq">Flujo = −(propiedad de transporte) × (gradiente de la propiedad)</div>
+    </div>
+
+    <div class="card">
+      <h3>La analogía de Newton, Fourier y Fick</h3>
+      <p>Explora cada mecanismo — haz clic en una tarjeta para ver su ley, su unidad y un ejemplo agroindustrial.</p>
+      <div class="trio" id="leyesChips">
+        <div class="chip" data-key="mom">
+          <span class="tag mom">Momentum</span>
+          <h4>Ley de Newton de la viscosidad</h4>
+          <p>τ = −μ (dv/dy)</p>
+          <div class="detail">
+            El esfuerzo cortante τ es proporcional al gradiente de velocidad; la viscosidad μ es la propiedad de transporte.<br><br>
+            <b>Agroindustria:</b> caída de presión al bombear jarabes, purés o leche por tuberías; diseño de agitadores en tanques de fermentación.
+          </div>
+        </div>
+        <div class="chip" data-key="heat">
+          <span class="tag heat">Calor</span>
+          <h4>Ley de Fourier de la conducción</h4>
+          <p>q = −k (dT/dx)</p>
+          <div class="detail">
+            El flujo de calor q es proporcional al gradiente de temperatura; la conductividad térmica k es la propiedad de transporte.<br><br>
+            <b>Agroindustria:</b> pasteurización, escaldado, refrigeración de frutas y hortalizas, secado de granos.
+          </div>
+        </div>
+        <div class="chip" data-key="mass">
+          <span class="tag mass">Masa</span>
+          <h4>Primera ley de Fick de la difusión</h4>
+          <p>J = −D (dC/dx)</p>
+          <div class="detail">
+            El flujo molar J es proporcional al gradiente de concentración; la difusividad D es la propiedad de transporte.<br><br>
+            <b>Agroindustria:</b> deshidratación osmótica de frutas, salado de quesos, extracción de aceites vegetales, migración de humedad en granos almacenados.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Visualiza los gradientes</h3>
+      <p>Cada ley de transporte molecular describe una <b>pendiente</b>: qué tan rápido cambia velocidad, temperatura o concentración con la posición. Mueve los controles y observa cómo un gradiente más pronunciado significa un flujo más intenso.</p>
+      <div class="grad-grid">
+
+        <!-- MOMENTUM: perfil de velocidad v(y) -->
+        <div class="grad-panel">
+          <span class="tag mom">Momentum</span>
+          <h4>Perfil de velocidad v(y) — flujo de Couette</h4>
+          <div class="grad-controls">
+            <div class="control">
+              <label>Velocidad de la placa móvil V₀ <span class="val" id="vMomV0">1.0</span> m/s</label>
+              <input type="range" id="rMomV0" min="0.2" max="3" step="0.1" value="1">
+            </div>
+            <div class="control">
+              <label>Separación entre placas h <span class="val" id="vMomH">10</span> mm</label>
+              <input type="range" id="rMomH" min="4" max="20" value="10">
+            </div>
+          </div>
+          <svg class="grad-svg" viewBox="0 0 300 250" id="svgMom">
+            <defs>
+              <marker id="arrowheadMom" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#28596B"/></marker>
+            </defs>
+            <!-- cuadrícula -->
+            <line class="grid" x1="56" y1="26" x2="56" y2="176"/>
+            <line class="grid" x1="113" y1="26" x2="113" y2="176"/>
+            <line class="grid" x1="170" y1="26" x2="170" y2="176"/>
+            <line class="grid" x1="227" y1="26" x2="227" y2="176"/>
+            <line class="grid" x1="284" y1="26" x2="284" y2="176"/>
+            <line class="grid" x1="56" y1="26" x2="284" y2="26"/>
+            <line class="grid" x1="56" y1="101" x2="284" y2="101"/>
+            <!-- placas -->
+            <rect x="56" y="19" width="228" height="6" fill="#C8963C"/>
+            <text class="tick" x="56" y="14" text-anchor="start">placa fija</text>
+            <rect x="56" y="176" width="228" height="6" fill="#28596B"/>
+            <text class="tick" x="56" y="248" text-anchor="start">placa móvil (arrastra el fluido)</text>
+            <!-- ejes -->
+            <line class="axis" x1="56" y1="26" x2="56" y2="176"/>
+            <line class="axis" x1="56" y1="176" x2="284" y2="176"/>
+            <text class="axistitle" x="26" y="101" text-anchor="middle" transform="rotate(-90 26 101)">posición y</text>
+            <text class="axistitle" x="284" y="212" text-anchor="end">velocidad v (m/s)</text>
+            <text class="tick" x="50" y="29" text-anchor="end">h</text>
+            <text class="tick" x="50" y="104" text-anchor="end">h/2</text>
+            <text class="tick" x="50" y="179" text-anchor="end">0</text>
+            <text class="tick" x="56" y="192" text-anchor="middle">0</text>
+            <text class="tick" x="113" y="192" text-anchor="middle">0.75</text>
+            <text class="tick" x="170" y="192" text-anchor="middle">1.5</text>
+            <text class="tick" x="227" y="192" text-anchor="middle">2.25</text>
+            <text class="tick" x="284" y="192" text-anchor="middle">3</text>
+            <!-- vectores de velocidad -->
+            <line id="momArrow0" stroke="#28596B" stroke-width="2.5" marker-end="url(#arrowheadMom)"/>
+            <line id="momArrow1" stroke="#28596B" stroke-width="2.5" marker-end="url(#arrowheadMom)"/>
+            <line id="momArrow2" stroke="#28596B" stroke-width="2.5" marker-end="url(#arrowheadMom)"/>
+            <line id="momArrow3" stroke="#28596B" stroke-width="2.5" marker-end="url(#arrowheadMom)"/>
+            <line id="momProfile" stroke="#182422" stroke-width="1.5" stroke-dasharray="2 4" opacity=".55"/>
+            <!-- valores fijos en la esquina -->
+            <circle cx="62" cy="34" r="4" fill="#C8963C"/>
+            <text class="badge" x="70" y="37">0 m/s (placa fija)</text>
+            <circle cx="62" cy="168" r="4" fill="#28596B"/>
+            <text class="badge" x="70" y="171"><tspan id="momBadge">V₀ = 1.0 m/s</tspan> (placa móvil)</text>
+          </svg>
+          <div class="grad-readout">Gradiente dv/dy ≈ <b><span id="gradMomOut">0.10</span> (m/s)/mm</b><br>El momentum se transfiere de la placa móvil hacia la placa fija (τ = −μ·dv/dy).</div>
+        </div>
+
+        <!-- CALOR: perfil de temperatura T(x) -->
+        <div class="grad-panel">
+          <span class="tag heat">Calor</span>
+          <h4>Perfil de temperatura T(x) — pared plana</h4>
+          <div class="grad-controls">
+            <div class="control">
+              <label>Temperatura superficie caliente T₁ <span class="val" id="vHeatTh">80</span> °C</label>
+              <input type="range" id="rHeatTh" min="40" max="100" value="80">
+            </div>
+            <div class="control">
+              <label>Temperatura superficie fría T₂ <span class="val" id="vHeatTc">20</span> °C</label>
+              <input type="range" id="rHeatTc" min="0" max="60" value="20">
+            </div>
+            <div class="control">
+              <label>Espesor de la pared L <span class="val" id="vHeatL">50</span> mm</label>
+              <input type="range" id="rHeatL" min="10" max="150" step="5" value="50">
+            </div>
+          </div>
+          <svg class="grad-svg" viewBox="0 0 300 250" id="svgHeat">
+            <defs>
+              <marker id="arrowheadHeat" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#B0532E"/></marker>
+            </defs>
+            <!-- cuadrícula -->
+            <line class="grid" x1="56" y1="26" x2="284" y2="26"/>
+            <line class="grid" x1="56" y1="63.5" x2="284" y2="63.5"/>
+            <line class="grid" x1="56" y1="101" x2="284" y2="101"/>
+            <line class="grid" x1="56" y1="138.5" x2="284" y2="138.5"/>
+            <line class="grid" x1="56" y1="176" x2="284" y2="176"/>
+            <line class="grid" x1="56" y1="26" x2="56" y2="176"/>
+            <line class="grid" x1="284" y1="26" x2="284" y2="176"/>
+            <!-- ejes -->
+            <line class="axis" x1="56" y1="26" x2="56" y2="176"/>
+            <line class="axis" x1="56" y1="176" x2="284" y2="176"/>
+            <text class="axistitle" x="26" y="101" text-anchor="middle" transform="rotate(-90 26 101)">temperatura T (°C)</text>
+            <text class="axistitle" x="284" y="212" text-anchor="end">posición x</text>
+            <text class="tick" x="50" y="29" text-anchor="end">100</text>
+            <text class="tick" x="50" y="66.5" text-anchor="end">75</text>
+            <text class="tick" x="50" y="104" text-anchor="end">50</text>
+            <text class="tick" x="50" y="141.5" text-anchor="end">25</text>
+            <text class="tick" x="50" y="179" text-anchor="end">0</text>
+            <text class="tick" x="56" y="192" text-anchor="middle">0</text>
+            <text class="tick" x="284" y="192" text-anchor="middle">L</text>
+            <!-- superficies -->
+            <rect x="46" y="21" width="10" height="160" fill="#f0b27a" opacity=".35"/>
+            <rect x="284" y="21" width="10" height="160" fill="#9fd3e0" opacity=".35"/>
+            <!-- perfil -->
+            <circle id="heatDot1" r="4.5" fill="#B0532E" stroke="#fff" stroke-width="1.2"/>
+            <circle id="heatDot2" r="4.5" fill="#B0532E" stroke="#fff" stroke-width="1.2"/>
+            <line id="heatArrow" stroke="#B0532E" stroke-width="2.5" marker-end="url(#arrowheadHeat)"/>
+            <line id="heatProfile" stroke="#B0532E" stroke-width="3"/>
+            <!-- valores fijos en la esquina -->
+            <circle cx="66" cy="38" r="4" fill="#B0532E"/>
+            <text class="badge" x="74" y="41">T₁ = <tspan id="heatBadge1">80</tspan> °C (caliente)</text>
+            <circle cx="66" cy="164" r="4" fill="#B0532E"/>
+            <text class="badge" x="74" y="167">T₂ = <tspan id="heatBadge2">20</tspan> °C (fría)</text>
+          </svg>
+          <div class="grad-readout">Gradiente dT/dx ≈ <b><span id="gradHeatOut">-1.2</span> °C/mm</b><br>El calor fluye de la superficie caliente hacia la fría (q = −k·dT/dx).</div>
+        </div>
+
+        <!-- MASA: perfil de concentración C(x) -->
+        <div class="grad-panel">
+          <span class="tag mass">Masa</span>
+          <h4>Perfil de concentración C(x) — película</h4>
+          <div class="grad-controls">
+            <div class="control">
+              <label>Concentración alta C₁ <span class="val" id="vMassCh">90</span> %</label>
+              <input type="range" id="rMassCh" min="40" max="100" value="90">
+            </div>
+            <div class="control">
+              <label>Concentración baja C₂ <span class="val" id="vMassCl">10</span> %</label>
+              <input type="range" id="rMassCl" min="0" max="50" value="10">
+            </div>
+            <div class="control">
+              <label>Espesor de película L <span class="val" id="vMassL">3</span> mm</label>
+              <input type="range" id="rMassL" min="1" max="10" value="3">
+            </div>
+          </div>
+          <svg class="grad-svg" viewBox="0 0 300 250" id="svgMass">
+            <defs>
+              <marker id="arrowheadMass" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#54713A"/></marker>
+            </defs>
+            <!-- cuadrícula -->
+            <line class="grid" x1="56" y1="26" x2="284" y2="26"/>
+            <line class="grid" x1="56" y1="63.5" x2="284" y2="63.5"/>
+            <line class="grid" x1="56" y1="101" x2="284" y2="101"/>
+            <line class="grid" x1="56" y1="138.5" x2="284" y2="138.5"/>
+            <line class="grid" x1="56" y1="176" x2="284" y2="176"/>
+            <line class="grid" x1="56" y1="26" x2="56" y2="176"/>
+            <line class="grid" x1="284" y1="26" x2="284" y2="176"/>
+            <!-- ejes -->
+            <line class="axis" x1="56" y1="26" x2="56" y2="176"/>
+            <line class="axis" x1="56" y1="176" x2="284" y2="176"/>
+            <text class="axistitle" x="26" y="101" text-anchor="middle" transform="rotate(-90 26 101)">concentración C (%)</text>
+            <text class="axistitle" x="284" y="212" text-anchor="end">posición x</text>
+            <text class="tick" x="50" y="29" text-anchor="end">100</text>
+            <text class="tick" x="50" y="66.5" text-anchor="end">75</text>
+            <text class="tick" x="50" y="104" text-anchor="end">50</text>
+            <text class="tick" x="50" y="141.5" text-anchor="end">25</text>
+            <text class="tick" x="50" y="179" text-anchor="end">0</text>
+            <text class="tick" x="56" y="192" text-anchor="middle">0</text>
+            <text class="tick" x="284" y="192" text-anchor="middle">L</text>
+            <!-- superficies -->
+            <rect x="46" y="21" width="10" height="160" fill="#b7d99a" opacity=".45"/>
+            <rect x="284" y="21" width="10" height="160" fill="#e4e7dc" opacity=".7"/>
+            <!-- perfil -->
+            <circle id="massDot1" r="4.5" fill="#54713A" stroke="#fff" stroke-width="1.2"/>
+            <circle id="massDot2" r="4.5" fill="#54713A" stroke="#fff" stroke-width="1.2"/>
+            <line id="massArrow" stroke="#54713A" stroke-width="2.5" marker-end="url(#arrowheadMass)"/>
+            <line id="massProfile" stroke="#54713A" stroke-width="3"/>
+            <!-- valores fijos en la esquina -->
+            <circle cx="66" cy="38" r="4" fill="#54713A"/>
+            <text class="badge" x="74" y="41">C₁ = <tspan id="massBadge1">90</tspan> % (concentrada)</text>
+            <circle cx="66" cy="164" r="4" fill="#54713A"/>
+            <text class="badge" x="74" y="167">C₂ = <tspan id="massBadge2">10</tspan> % (diluida)</text>
+          </svg>
+          <div class="grad-readout">Gradiente dC/dx ≈ <b><span id="gradMassOut">-26.7</span> %/mm</b><br>La masa difunde de la zona concentrada hacia la diluida (J = −D·dC/dx).</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Tabla comparativa</h3>
+      <table>
+        <caption>Analogía entre los tres fenómenos de transporte molecular</caption>
+        <thead>
+          <tr><th>Fenómeno</th><th>Propiedad transportada</th><th>Ley</th><th>Fuerza impulsora</th><th>Propiedad de transporte</th><th>Unidad SI</th><th>Ejemplo agroindustrial</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Momentum</td><td>Cantidad de movimiento</td><td>Newton</td><td>Gradiente de velocidad</td><td>Viscosidad, μ</td><td>Pa·s</td><td>Flujo de jarabe en tubería de envasado</td></tr>
+          <tr><td>Calor</td><td>Energía térmica</td><td>Fourier</td><td>Gradiente de temperatura</td><td>Conductividad, k</td><td>W·m⁻¹·K⁻¹</td><td>Pasteurización de leche</td></tr>
+          <tr><td>Masa</td><td>Especie química</td><td>Fick</td><td>Gradiente de concentración</td><td>Difusividad, D</td><td>m²·s⁻¹</td><td>Deshidratación osmótica de mango</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Mecanismos: molecular vs. convectivo</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Transporte molecular</h4>
+          <p>Ocurre por movimiento aleatorio de moléculas, incluso en un fluido en reposo o en un sólido. Es lento y domina en distancias cortas (una película delgada, la piel de un fruto).</p>
+        </div>
+        <div>
+          <h4>Transporte convectivo</h4>
+          <p>Se suma el movimiento macroscópico del fluido (agitación, flujo en tubería, corrientes de aire de secado). Es mucho más rápido y es el que se favorece en el diseño de equipo de proceso.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 1.2 ===================== -->
+  <section class="panel" id="t12">
+    <div class="section-head">
+      <span class="num">1.2</span>
+      <h2>Concepto de balances globales</h2>
+      <p>Un <b>balance global</b> se plantea sobre un <b>volumen de control</b>: una región del espacio delimitada por una frontera imaginaria o real (un tanque, un tramo de tubería, un secador). Todo lo que cruza esa frontera, o se genera/consume dentro de ella, debe contabilizarse.</p>
+      <div class="eq">Entrada − Salida + Generación − Consumo = Acumulación</div>
+      <p>Esta ecuación de conteo aplica igual para masa total, para una especie química, para energía o para cantidad de movimiento; solo cambia qué se está contando. Cuando la acumulación es cero, el sistema está en <b>régimen permanente (estado estacionario)</b>; si no, es <b>régimen transitorio</b>.</p>
+    </div>
+
+    <div class="card">
+      <h3>Simulador: balance en un tanque de proceso</h3>
+      <p>Ajusta los flujos de entrada, salida, generación y consumo de un tanque agroindustrial (por ejemplo, un tanque de mezclado o un fermentador) y observa cómo cambia la acumulación y el nivel del tanque en tiempo real.</p>
+      <div class="sim">
+        <div>
+          <div class="control">
+            <label>Entrada (E) <span class="val" id="vE">50</span> kg/h</label>
+            <input type="range" id="rE" min="0" max="100" value="50">
+          </div>
+          <div class="control">
+            <label>Salida (S) <span class="val" id="vS">40</span> kg/h</label>
+            <input type="range" id="rS" min="0" max="100" value="40">
+          </div>
+          <div class="control">
+            <label>Generación (G) <span class="val" id="vG">0</span> kg/h</label>
+            <input type="range" id="rG" min="0" max="30" value="0">
+          </div>
+          <div class="control">
+            <label>Consumo (C) <span class="val" id="vC">0</span> kg/h</label>
+            <input type="range" id="rC" min="0" max="30" value="0">
+          </div>
+          <div class="readout">
+            Acumulación = E − S + G − C
+            <span class="big" id="acumOut">10 kg/h</span>
+            <span id="estadoOut">Régimen transitorio: el nivel del tanque sube.</span>
+          </div>
+        </div>
+        <div class="tankwrap">
+          <svg class="tank-svg" viewBox="0 0 260 260" id="svgTank">
+            <defs>
+              <marker id="arrowE" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#28596B"/></marker>
+              <marker id="arrowS" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#a87a2b"/></marker>
+              <linearGradient id="liquidGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9fd3e0"/>
+                <stop offset="100%" stop-color="#28596B"/>
+              </linearGradient>
+              <clipPath id="tankClip"><rect x="82" y="57" width="96" height="176" rx="6"/></clipPath>
+            </defs>
+
+            <!-- frontera del volumen de control -->
+            <rect x="16" y="26" width="228" height="212" rx="6" fill="none" stroke="#28596B" stroke-width="1.4" stroke-dasharray="5 4" opacity=".5"/>
+            <text class="vc-label" x="130" y="18" text-anchor="middle">Frontera del volumen de control</text>
+
+            <!-- cuerpo del tanque -->
+            <rect x="80" y="55" width="100" height="180" rx="8" fill="#fff" stroke="#1B3F4C" stroke-width="3"/>
+            <g clip-path="url(#tankClip)">
+              <rect id="tankFillRect" class="tank-fill" x="82" width="96" y="145" height="88" fill="url(#liquidGrad)"/>
+            </g>
+            <!-- marcas de referencia de nivel -->
+            <line x1="80" y1="100" x2="180" y2="100" stroke="#3E4A44" stroke-width="1" stroke-dasharray="2 3" opacity=".3"/>
+            <line x1="80" y1="145" x2="180" y2="145" stroke="#3E4A44" stroke-width="1" stroke-dasharray="2 3" opacity=".3"/>
+            <line x1="80" y1="190" x2="180" y2="190" stroke="#3E4A44" stroke-width="1" stroke-dasharray="2 3" opacity=".3"/>
+            <text class="tick" x="76" y="103" text-anchor="end" font-family="IBM Plex Mono" font-size="7" fill="var(--ink-soft)">75%</text>
+            <text class="tick" x="76" y="148" text-anchor="end" font-family="IBM Plex Mono" font-size="7" fill="var(--ink-soft)">50%</text>
+            <text class="tick" x="76" y="193" text-anchor="end" font-family="IBM Plex Mono" font-size="7" fill="var(--ink-soft)">25%</text>
+
+            <!-- generación y consumo: ocurren DENTRO del volumen de control -->
+            <circle id="genIcon" class="tank-icon" cx="103" cy="80" r="15" fill="#54713A" opacity="0"/>
+            <text id="genIconText" class="icon-text tank-icon" x="103" y="84" text-anchor="middle" opacity="0">+G</text>
+            <circle id="consIcon" class="tank-icon" cx="157" cy="80" r="15" fill="#B0532E" opacity="0"/>
+            <text id="consIconText" class="icon-text tank-icon" x="157" y="84" text-anchor="middle" opacity="0">−C</text>
+
+            <!-- flujo de entrada: cruza la frontera hacia el tanque -->
+            <line id="arrowEntrada" class="tank-arrow" x1="6" y1="45" x2="79" y2="45" stroke="#28596B" stroke-width="4" marker-end="url(#arrowE)"/>
+            <text class="flow-label" x="6" y="36" fill="#28596B">E = <tspan id="labelE">50</tspan> kg/h</text>
+
+            <!-- flujo de salida: cruza la frontera hacia afuera -->
+            <line id="arrowSalida" class="tank-arrow" x1="181" y1="210" x2="254" y2="210" stroke="#a87a2b" stroke-width="4" marker-end="url(#arrowS)"/>
+            <text class="flow-label" x="254" y="228" text-anchor="end" fill="#a87a2b">S = <tspan id="labelS">40</tspan> kg/h</text>
+          </svg>
+          <div class="tank-label">Nivel relativo del tanque: <b><span id="tankPct">45%</span></b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Tipos de sistema y de balance</h3>
+      <table>
+        <caption>Clasificación usada al plantear un balance global</caption>
+        <thead><tr><th>Criterio</th><th>Categorías</th><th>Ejemplo agroindustrial</th></tr></thead>
+        <tbody>
+          <tr><td>Frontera del sistema</td><td>Abierto (cruzan flujos de materia) / Cerrado (no cruzan)</td><td>Un evaporador continuo (abierto) vs. un autoclave por lotes ya cerrado (cerrado durante la esterilización)</td></tr>
+          <tr><td>Comportamiento en el tiempo</td><td>Estado estacionario / Estado transitorio</td><td>Línea de pasteurización en operación continua (estacionario) vs. arranque de un secador (transitorio)</td></tr>
+          <tr><td>Qué se contabiliza</td><td>Masa total, masa por especie, energía, cantidad de movimiento</td><td>Balance de sólidos solubles en un concentrador de jugo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== 1.3 ===================== -->
+  <section class="panel" id="t13">
+    <div class="section-head">
+      <span class="num">1.3</span>
+      <h2>Empleo de las leyes de conservación</h2>
+      <p>Las leyes de conservación de masa, energía y cantidad de movimiento son casos particulares del balance global: fijan qué puede o no generarse dentro del volumen de control. La masa total y la energía total no se crean ni se destruyen (fuera de reacciones nucleares); una especie química sí puede generarse o consumirse por reacción.</p>
+    </div>
+
+    <div class="card">
+      <div class="acc-item">
+        <button aria-expanded="false">Conservación de masa <span class="plus">+</span></button>
+        <div class="content"><p>La masa total que entra a un volumen de control menos la que sale es igual a la acumulación de masa dentro de él. Si no hay reacción química, esto también aplica especie por especie.</p></div>
+      </div>
+      <div class="acc-item">
+        <button aria-expanded="false">Conservación de energía <span class="plus">+</span></button>
+        <div class="content"><p>La primera ley de la termodinámica aplicada a un volumen de control: la energía que entra (calor, trabajo, energía transportada por corrientes) menos la que sale es igual al cambio de energía acumulada dentro del sistema.</p></div>
+      </div>
+      <div class="acc-item">
+        <button aria-expanded="false">Conservación de cantidad de movimiento <span class="plus">+</span></button>
+        <div class="content"><p>La segunda ley de Newton escrita como balance: la suma de fuerzas sobre el volumen de control es igual a la rapidez de cambio de la cantidad de movimiento dentro de él más el flujo neto de momentum que lo cruza.</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Caso práctico: concentración de jugo de fruta por evaporación</h3>
+      <p>Un evaporador recibe un flujo de jugo diluido <b>F</b> con fracción másica de sólidos <b>x<sub>F</sub></b>. Sale un concentrado <b>P</b> con fracción <b>x<sub>P</sub></b>, y se evapora agua como vapor <b>V</b> (x = 0). En estado estacionario:</p>
+      <div class="eq">Balance total: F = P + V &nbsp;·&nbsp; Balance de sólidos: F·x<sub>F</sub> = P·x<sub>P</sub></div>
+      <p>Mueve los controles para calcular P y V a partir de F, x<sub>F</sub> y x<sub>P</sub>:</p>
+      <div class="sim">
+        <div>
+          <div class="control">
+            <label>Alimentación F <span class="val" id="vF">1000</span> kg/h</label>
+            <input type="range" id="rF" min="200" max="2000" step="10" value="1000">
+          </div>
+          <div class="control">
+            <label>Sólidos en la alimentación x<sub>F</sub> <span class="val" id="vXF">12</span> %</label>
+            <input type="range" id="rXF" min="5" max="25" value="12">
+          </div>
+          <div class="control">
+            <label>Sólidos en el concentrado x<sub>P</sub> <span class="val" id="vXP">42</span> %</label>
+            <input type="range" id="rXP" min="26" max="65" value="42">
+          </div>
+        </div>
+        <div class="readout" style="align-self:center;">
+          Concentrado P = F·x<sub>F</sub> / x<sub>P</sub>
+          <span class="big" id="pOut">— kg/h</span>
+          Vapor evaporado V = F − P
+          <span class="big" id="vOut">— kg/h</span>
+        </div>
+      </div>
+      <p style="margin-top:14px; font-size:.88rem; color:var(--ink-soft);">Este mismo esquema de dos ecuaciones (balance total + balance de la especie de interés) se reutiliza en secado de granos, extracción de aceites y formulación de mezclas agroindustriales.</p>
+    </div>
+  </section>
+
+  <!-- ===================== APLICACIONES ===================== -->
+  <section class="panel" id="apps">
+    <div class="section-head">
+      <span class="num">Síntesis</span>
+      <h2>Implicación de los fenómenos de transporte en la agroindustria</h2>
+      <p>Prácticamente toda operación unitaria agroindustrial es, en el fondo, un problema de transporte de momentum, calor o masa —casi siempre los tres a la vez.</p>
+    </div>
+    <div class="apps">
+      <div class="app-card"><span class="k">Momentum</span><h4>Bombeo y flujo de fluidos alimenticios</h4><p>Diseño de tuberías, bombas y agitadores para jarabes, purés, leche y masas; pérdida de carga y potencia de bombeo.</p></div>
+      <div class="app-card"><span class="k">Calor</span><h4>Pasteurización y esterilización</h4><p>Control del binomio tiempo–temperatura para inactivar microorganismos sin degradar nutrientes ni sabor.</p></div>
+      <div class="app-card"><span class="k">Calor + Masa</span><h4>Secado de granos</h4><p>El aire caliente transfiere calor al grano y retira la humedad evaporada: dos fenómenos acoplados en un mismo equipo.</p></div>
+      <div class="app-card"><span class="k">Masa</span><h4>Extracción y deshidratación osmótica</h4><p>Difusión de solutos y agua entre un alimento y un medio (aceites vegetales, frutas en jarabe concentrado).</p></div>
+      <div class="app-card"><span class="k">Calor</span><h4>Cadena de frío</h4><p>Refrigeración y congelación de frutas, hortalizas y cárnicos para conservar calidad poscosecha.</p></div>
+      <div class="app-card"><span class="k">Masa + Energía</span><h4>Fermentación</h4><p>Balances de sustrato, biomasa y producto acoplados a un balance de energía por el calor metabólico liberado.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section class="panel" id="quiz">
+    <div class="section-head">
+      <span class="num">Autoevaluación</span>
+      <h2>Comprueba lo aprendido</h2>
+      <p>Cinco preguntas de opción múltiple sobre los temas 1.1 a 1.3.</p>
+    </div>
+    <div id="quizContainer"></div>
+    <div id="quizScoreBox"></div>
+  </section>
+
+  <!-- ===================== REFERENCIAS ===================== -->
+  <section class="panel" id="refs">
+    <div class="section-head">
+      <span class="num">Bibliografía</span>
+      <h2>Referencias (formato APA)</h2>
+    </div>
+    <div class="card">
+      <div class="ref">Bird, R. B., Stewart, W. E., &amp; Lightfoot, E. N. (2006). <i>Transport phenomena</i> (2.ª ed.). John Wiley &amp; Sons.</div>
+      <div class="ref">Geankoplis, C. J., Hersel, A. A., &amp; Lepek, D. H. (2018). <i>Transport processes and separation process principles</i> (5.ª ed.). Prentice Hall.</div>
+      <div class="ref">Welty, J. R., Wicks, C. E., Wilson, R. E., &amp; Rorrer, G. L. (2015). <i>Fundamentals of momentum, heat, and mass transfer</i> (6.ª ed.). Wiley.</div>
+      <div class="ref">Singh, R. P., &amp; Heldman, D. R. (2014). <i>Introduction to food engineering</i> (5.ª ed.). Academic Press.</div>
+      <div class="ref">Çengel, Y. A., &amp; Ghajar, A. J. (2020). <i>Heat and mass transfer: Fundamentals and applications</i> (6.ª ed.). McGraw-Hill.</div>
+      <div class="ref">Ibarz, A., &amp; Barbosa-Cánovas, G. V. (2003). <i>Unit operations in food engineering</i>. CRC Press.</div>
+      <div class="ref">Earle, R. L., &amp; Earle, M. D. (2004). <i>Unit operations in food processing</i> (2.ª ed.). NZIFST.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Universidad de Guanajuato · Campus Celaya–Salvatierra · División de Ciencias de la Salud e Ingenierías · Licenciatura en Ingeniería Agroindustrial — Material de apoyo, Unidad 1 de Fenómenos de Transporte.
+</footer>
+
+<script>
+// ---- TABS ----
+const tabBtns = document.querySelectorAll('nav.tabs button');
+const panels = document.querySelectorAll('section.panel');
+tabBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    tabBtns.forEach(b=>b.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+// ---- MAPA CHIPS (0) simple toggle ----
+document.querySelectorAll('#mapaChips .chip').forEach((chip,i)=>{
+  chip.addEventListener('click', ()=>{
+    const target = ['t11','t12','t13'][i];
+    document.querySelector('nav.tabs button[data-tab="'+target+'"]').click();
+  });
+});
+
+// ---- LEYES CHIPS (1.1) ----
+document.querySelectorAll('#leyesChips .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    const willOpen = !chip.classList.contains('open');
+    document.querySelectorAll('#leyesChips .chip').forEach(c=>c.classList.remove('open'));
+    if(willOpen) chip.classList.add('open');
+  });
+});
+
+// ---- ACCORDION (1.3) ----
+document.querySelectorAll('.acc-item button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const item = btn.parentElement;
+    const opening = !item.classList.contains('open');
+    item.classList.toggle('open');
+    btn.setAttribute('aria-expanded', opening);
+  });
+});
+
+// ---- GRAFICAS DE GRADIENTES (1.1) ----
+// Área de graficado común: x de 56 a 284, y de 26 a 176
+const G_LEFT=56, G_RIGHT=284, G_TOP=26, G_BOTTOM=176;
+
+// Momentum: perfil de velocidad v(y) entre dos placas (flujo de Couette)
+const rMomV0=document.getElementById('rMomV0'), rMomH=document.getElementById('rMomH');
+const vMomV0=document.getElementById('vMomV0'), vMomH=document.getElementById('vMomH');
+const gradMomOut=document.getElementById('gradMomOut');
+const momProfile=document.getElementById('momProfile');
+const momBadge=document.getElementById('momBadge');
+function actualizarMom(){
+  const V0=+rMomV0.value, h=+rMomH.value;
+  vMomV0.textContent=V0.toFixed(1);
+  vMomH.textContent=h;
+  momBadge.textContent = 'V₀ = '+V0.toFixed(1)+' m/s';
+  const grad = V0/h; // (m/s) por mm — h ya está en mm
+  gradMomOut.textContent = grad.toFixed(2);
+  const vmax=3;
+  const xFor = v => G_LEFT + (v/vmax)*(G_RIGHT-G_LEFT);
+  momProfile.setAttribute('x1', xFor(0));   momProfile.setAttribute('y1', G_TOP);
+  momProfile.setAttribute('x2', xFor(V0));  momProfile.setAttribute('y2', G_BOTTOM);
+  const heights=[G_BOTTOM, G_BOTTOM-(G_BOTTOM-G_TOP)/3, G_BOTTOM-2*(G_BOTTOM-G_TOP)/3, G_TOP];
+  heights.forEach((yPix,i)=>{
+    const frac = (G_BOTTOM-yPix)/(G_BOTTOM-G_TOP); // 0 en la placa móvil, 1 en la placa fija
+    const v = V0*(1-frac);
+    const el = document.getElementById('momArrow'+i);
+    el.setAttribute('x1', G_LEFT); el.setAttribute('y1', yPix);
+    el.setAttribute('x2', xFor(Math.max(v,0.06))); el.setAttribute('y2', yPix);
+  });
+}
+[rMomV0,rMomH].forEach(r=>r.addEventListener('input', actualizarMom));
+actualizarMom();
+
+// Calor: perfil de temperatura T(x) a través de una pared plana
+const rHeatTh=document.getElementById('rHeatTh'), rHeatTc=document.getElementById('rHeatTc'), rHeatL=document.getElementById('rHeatL');
+const vHeatTh=document.getElementById('vHeatTh'), vHeatTc=document.getElementById('vHeatTc'), vHeatL=document.getElementById('vHeatL');
+const gradHeatOut=document.getElementById('gradHeatOut');
+const heatProfile=document.getElementById('heatProfile'), heatArrow=document.getElementById('heatArrow');
+const heatDot1=document.getElementById('heatDot1'), heatDot2=document.getElementById('heatDot2');
+const heatBadge1=document.getElementById('heatBadge1'), heatBadge2=document.getElementById('heatBadge2');
+function actualizarHeatChart(){
+  let Th=+rHeatTh.value, Tc=+rHeatTc.value;
+  const L=+rHeatL.value;
+  if(Tc>=Th){ Tc=Th-5; rHeatTc.value=Tc; }
+  vHeatTh.textContent=Th; vHeatTc.textContent=Tc; vHeatL.textContent=L;
+  heatBadge1.textContent=Th; heatBadge2.textContent=Tc;
+  const grad = (Tc-Th)/L; // °C por mm — L ya está en mm
+  gradHeatOut.textContent = grad.toFixed(2);
+  const tmin=0, tmax=100;
+  const yFor = t => G_BOTTOM - ((t-tmin)/(tmax-tmin))*(G_BOTTOM-G_TOP);
+  const x1=G_LEFT, y1=yFor(Th), x2=G_RIGHT, y2=yFor(Tc);
+  heatProfile.setAttribute('x1',x1); heatProfile.setAttribute('y1',y1);
+  heatProfile.setAttribute('x2',x2); heatProfile.setAttribute('y2',y2);
+  heatDot1.setAttribute('cx',x1); heatDot1.setAttribute('cy',y1);
+  heatDot2.setAttribute('cx',x2); heatDot2.setAttribute('cy',y2);
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  const dx=x2-x1, dy=y2-y1, len=Math.hypot(dx,dy);
+  const ux=dx/len, uy=dy/len;
+  heatArrow.setAttribute('x1', mx-ux*16); heatArrow.setAttribute('y1', my-uy*16);
+  heatArrow.setAttribute('x2', mx+ux*16); heatArrow.setAttribute('y2', my+uy*16);
+}
+[rHeatTh,rHeatTc,rHeatL].forEach(r=>r.addEventListener('input', actualizarHeatChart));
+actualizarHeatChart();
+
+// Masa: perfil de concentración C(x) a través de una película
+const rMassCh=document.getElementById('rMassCh'), rMassCl=document.getElementById('rMassCl'), rMassL=document.getElementById('rMassL');
+const vMassCh=document.getElementById('vMassCh'), vMassCl=document.getElementById('vMassCl'), vMassL=document.getElementById('vMassL');
+const gradMassOut=document.getElementById('gradMassOut');
+const massProfile=document.getElementById('massProfile'), massArrow=document.getElementById('massArrow');
+const massDot1=document.getElementById('massDot1'), massDot2=document.getElementById('massDot2');
+const massBadge1=document.getElementById('massBadge1'), massBadge2=document.getElementById('massBadge2');
+function actualizarMassChart(){
+  let Ch=+rMassCh.value, Cl=+rMassCl.value;
+  const L=+rMassL.value;
+  if(Cl>=Ch){ Cl=Ch-5; rMassCl.value=Cl; }
+  vMassCh.textContent=Ch; vMassCl.textContent=Cl; vMassL.textContent=L;
+  massBadge1.textContent=Ch; massBadge2.textContent=Cl;
+  const grad = (Cl-Ch)/L; // % por mm — L ya está en mm
+  gradMassOut.textContent = grad.toFixed(1);
+  const cmin=0, cmax=100;
+  const yFor = c => G_BOTTOM - ((c-cmin)/(cmax-cmin))*(G_BOTTOM-G_TOP);
+  const x1=G_LEFT, y1=yFor(Ch), x2=G_RIGHT, y2=yFor(Cl);
+  massProfile.setAttribute('x1',x1); massProfile.setAttribute('y1',y1);
+  massProfile.setAttribute('x2',x2); massProfile.setAttribute('y2',y2);
+  massDot1.setAttribute('cx',x1); massDot1.setAttribute('cy',y1);
+  massDot2.setAttribute('cx',x2); massDot2.setAttribute('cy',y2);
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  const dx=x2-x1, dy=y2-y1, len=Math.hypot(dx,dy);
+  const ux=dx/len, uy=dy/len;
+  massArrow.setAttribute('x1', mx-ux*16); massArrow.setAttribute('y1', my-uy*16);
+  massArrow.setAttribute('x2', mx+ux*16); massArrow.setAttribute('y2', my+uy*16);
+}
+[rMassCh,rMassCl,rMassL].forEach(r=>r.addEventListener('input', actualizarMassChart));
+actualizarMassChart();
+
+// ---- SIMULADOR 1.2: balance en tanque (diagrama de volumen de control) ----
+const rE=document.getElementById('rE'), rS=document.getElementById('rS'), rG=document.getElementById('rG'), rC=document.getElementById('rC');
+const vE=document.getElementById('vE'), vS=document.getElementById('vS'), vG=document.getElementById('vG'), vC=document.getElementById('vC');
+const acumOut=document.getElementById('acumOut'), estadoOut=document.getElementById('estadoOut');
+const tankFillRect=document.getElementById('tankFillRect'), tankPct=document.getElementById('tankPct');
+const arrowEntrada=document.getElementById('arrowEntrada'), arrowSalida=document.getElementById('arrowSalida');
+const labelE=document.getElementById('labelE'), labelS=document.getElementById('labelS');
+const genIcon=document.getElementById('genIcon'), genIconText=document.getElementById('genIconText');
+const consIcon=document.getElementById('consIcon'), consIconText=document.getElementById('consIconText');
+const TANK_TOP=57, TANK_H=176; // área interior del tanque en el SVG
+let nivel = 45;
+
+function actualizarBalance(){
+  const e=+rE.value, s=+rS.value, g=+rG.value, c=+rC.value;
+  vE.textContent=e; vS.textContent=s; vG.textContent=g; vC.textContent=c;
+  labelE.textContent=e; labelS.textContent=s;
+  const acum = e - s + g - c;
+  acumOut.textContent = acum + ' kg/h';
+  if(acum===0){ estadoOut.textContent='Régimen permanente: el nivel del tanque no cambia.'; }
+  else if(acum>0){ estadoOut.textContent='Régimen transitorio: el nivel del tanque sube.'; }
+  else{ estadoOut.textContent='Régimen transitorio: el nivel del tanque baja.'; }
+  nivel = Math.max(2, Math.min(98, nivel + acum*0.6));
+
+  // nivel de líquido dentro del tanque
+  const fillH = TANK_H*(nivel/100);
+  tankFillRect.setAttribute('y', TANK_TOP + (TANK_H - fillH));
+  tankFillRect.setAttribute('height', fillH);
+  tankPct.textContent = Math.round(nivel) + '%';
+
+  // grosor de flechas de entrada/salida proporcional al caudal
+  arrowEntrada.setAttribute('stroke-width', (1.5 + (e/100)*6).toFixed(1));
+  arrowSalida.setAttribute('stroke-width', (1.5 + (s/100)*6).toFixed(1));
+
+  // íconos de generación/consumo: solo visibles y escalados si hay valor > 0
+  const gOn = g>0, cOn = c>0;
+  genIcon.setAttribute('opacity', gOn ? (0.35 + (g/30)*0.65).toFixed(2) : 0);
+  genIconText.setAttribute('opacity', gOn ? 1 : 0);
+  genIcon.setAttribute('r', gOn ? (10 + (g/30)*7).toFixed(1) : 15);
+  consIcon.setAttribute('opacity', cOn ? (0.35 + (c/30)*0.65).toFixed(2) : 0);
+  consIconText.setAttribute('opacity', cOn ? 1 : 0);
+  consIcon.setAttribute('r', cOn ? (10 + (c/30)*7).toFixed(1) : 15);
+}
+[rE,rS,rG,rC].forEach(r=>r.addEventListener('input', actualizarBalance));
+actualizarBalance();
+
+// ---- SIMULADOR 1.3: evaporador de jugo ----
+const rF=document.getElementById('rF'), rXF=document.getElementById('rXF'), rXP=document.getElementById('rXP');
+const vF=document.getElementById('vF'), vXF=document.getElementById('vXF'), vXP=document.getElementById('vXP');
+const pOut=document.getElementById('pOut'), vOut=document.getElementById('vOut');
+function actualizarEvap(){
+  const F=+rF.value, xF=+rXF.value/100, xP=+rXP.value/100;
+  vF.textContent=F; vXF.textContent=rXF.value; vXP.textContent=rXP.value;
+  if(xP<=xF){ pOut.textContent='x_P debe ser mayor que x_F'; vOut.textContent='—'; return; }
+  const P = F*xF/xP;
+  const V = F-P;
+  pOut.textContent = P.toFixed(1)+' kg/h';
+  vOut.textContent = V.toFixed(1)+' kg/h';
+}
+[rF,rXF,rXP].forEach(r=>r.addEventListener('input', actualizarEvap));
+actualizarEvap();
+
+// ---- QUIZ ----
+const preguntas = [
+  { q:'¿Qué ley describe el transporte molecular de cantidad de movimiento?', opts:['Ley de Fick','Ley de Newton de la viscosidad','Ley de Fourier','Primera ley de la termodinámica'], correct:1,
+    exp:'La ley de Newton de la viscosidad relaciona el esfuerzo cortante con el gradiente de velocidad.' },
+  { q:'La ecuación general de un balance global es:', opts:['Entrada + Salida = Acumulación','Entrada − Salida + Generación − Consumo = Acumulación','Generación = Consumo','Entrada = Salida siempre'], correct:1,
+    exp:'Esta forma de conteo aplica a masa, energía o cantidad de movimiento sobre cualquier volumen de control.' },
+  { q:'En régimen permanente (estado estacionario), la acumulación dentro del volumen de control es:', opts:['Máxima','Negativa','Cero','Igual a la generación'], correct:2,
+    exp:'Estado estacionario significa que las propiedades del sistema no cambian con el tiempo, por lo que la acumulación es cero.' },
+  { q:'¿A qué propiedad de transporte está asociada la difusividad D?', opts:['Transporte de momentum','Transporte de calor','Transporte de masa','Transporte de carga eléctrica'], correct:2,
+    exp:'La primera ley de Fick usa la difusividad D como propiedad de transporte para el flujo de materia.' },
+  { q:'¿Cuál de los siguientes es un ejemplo típico de transporte de masa en la agroindustria?', opts:['Pasteurización de leche','Deshidratación osmótica de frutas','Bombeo de jarabe en tubería','Enfriamiento de un cuarto frío'], correct:1,
+    exp:'La deshidratación osmótica se basa en la difusión de agua y solutos entre la fruta y el jarabe concentrado.' },
+];
+
+const quizContainer = document.getElementById('quizContainer');
+let respondidas = 0, correctas = 0;
+preguntas.forEach((p, qi)=>{
+  const box = document.createElement('div');
+  box.className='quiz-q';
+  const prompt = document.createElement('p');
+  prompt.className='prompt';
+  prompt.textContent = (qi+1)+'. '+p.q;
+  box.appendChild(prompt);
+  p.opts.forEach((opt, oi)=>{
+    const b = document.createElement('button');
+    b.className='opt';
+    b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      if(box.dataset.done) return;
+      box.dataset.done='1';
+      respondidas++;
+      const allOpts = box.querySelectorAll('.opt');
+      allOpts.forEach(o=>o.disabled=true);
+      if(oi===p.correct){ b.classList.add('correct'); correctas++; }
+      else{ b.classList.add('wrong'); allOpts[p.correct].classList.add('correct'); }
+      const exp = document.createElement('p');
+      exp.style.fontSize='.86rem'; exp.style.color='var(--ink-soft)'; exp.style.marginBottom='0';
+      exp.textContent = p.exp;
+      box.appendChild(exp);
+      if(respondidas===preguntas.length){
+        const sb = document.getElementById('quizScoreBox');
+        sb.style.display='block';
+        sb.textContent = 'Resultado: '+correctas+' / '+preguntas.length+' respuestas correctas.';
+      }
+    });
+    box.appendChild(b);
+  });
+  quizContainer.appendChild(box);
+});
+</script>
+</body>
+</html>

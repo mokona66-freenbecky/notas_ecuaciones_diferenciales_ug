@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<!-- estrategia: gamificacion-evaluacion-distribuida | universidad: celaya -->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introducción a la estadística — Universidad de Celaya</title>
+<style>
+  :root {
+    /* Paleta institucional oficial UDEC */
+    --brand-primary: #0C2340;   /* Azul Marino */
+    --brand-secondary: #A3D200; /* Verde Limón */
+    --brand-accent: #A3D200;    /* Verde Limón (uso como acento) */
+    --brand-ink: #071527;       /* derivado del Azul Marino, para degradado/footer */
+    --surface: #ffffff;
+    --surface-alt: #F7F3F1;
+    --text: #262223;
+    --text-muted: #6b5f61;
+    --ok: #1e7a3c;
+    --err: #b3261e;
+    --radius: 14px;
+    /* Open Sans / Roboto: desarrollo de bloques de texto */
+    --font: "Open Sans", "Roboto", "Segoe UI", system-ui, sans-serif;
+    /* Montserrat Bold: títulos y siglas */
+    --font-display: "Montserrat", "Segoe UI", Arial, sans-serif;
+    /* Paleta de gráficos — validada con la skill dataviz, fija (no cambia por institución) */
+    --series-a: #2a78d6;   /* azul — categoría A */
+    --series-b: #eb6834;   /* naranja — categoría B */
+    --status-critical: #d03b3b;
+    --status-warning: #fab219;
+    --status-good: #0ca30c;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--surface-alt);
+    line-height: 1.6;
+  }
+
+  a { color: var(--brand-secondary); }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-ink));
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: .85rem; }
+  .brand-logo-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+  .brand-logo-fallback {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: var(--brand-accent);
+    color: var(--brand-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .8rem; letter-spacing: .02em;
+  }
+  .brand-logo-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    border-radius: 50%; object-fit: contain;
+    background: #fff; padding: 4px;
+  }
+  .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+  .brand-tagline { font-size: .8rem; opacity: .85; }
+  .course-meta { text-align: right; }
+  .course-meta .course-name { font-weight: 600; }
+  .course-meta .session-title { font-size: .9rem; opacity: .9; }
+  .strategy-badge {
+    display: inline-block;
+    margin-top: .35rem;
+    padding: .2rem .65rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.35);
+    font-size: .75rem;
+    letter-spacing: .02em;
+  }
+
+  /* ---------- Progress + puntos + insignias ---------- */
+  .progress-nav {
+    max-width: 900px; margin: 1.25rem auto 0; padding: 0 1.25rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  .progress-nav-track { flex: 1; min-width: 160px; }
+  .progress-track {
+    height: 8px; background: #e4dcd9; border-radius: 999px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; background: var(--brand-primary);
+    transition: width .3s ease;
+  }
+  .progress-label { font-size: .8rem; color: var(--text-muted); margin-top: .4rem; }
+  .points-badge {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: .35rem;
+    background: var(--brand-accent); color: var(--brand-ink);
+    font-weight: 700; font-size: .85rem;
+    padding: .4rem .8rem; border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badges-row { display: flex; gap: .3rem; flex-shrink: 0; }
+  .badge-slot {
+    width: 30px; height: 30px; border-radius: 50%; background: #e4dcd9;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    filter: grayscale(1); opacity: .45; transition: filter .2s, opacity .2s, transform .2s;
+  }
+  .badge-slot.is-earned { filter: none; opacity: 1; background: var(--brand-accent); transform: scale(1.08); }
+
+  /* ---------- Content ---------- */
+  .content { max-width: 900px; margin: 1rem auto 2rem; padding: 0 1.25rem; }
+  .step { display: none; }
+  .step.is-active { display: block; }
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    margin-bottom: 1rem;
+  }
+  .card h2 { margin-top: 0; color: var(--brand-primary); font-family: var(--font-display); font-weight: 700; }
+  .level-tag {
+    display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--brand-primary); margin-bottom: .35rem;
+    font-family: var(--font-display);
+  }
+  .objectives { background: var(--surface-alt); border-left: 4px solid var(--brand-accent); padding: .9rem 1.1rem; border-radius: 0 8px 8px 0; }
+
+  .lesson-content { margin: .5rem 0 .25rem; }
+  .lesson-content p { margin: 0 0 .8rem; }
+  .lesson-content .example {
+    border-left: 3px solid var(--brand-accent); padding: .6rem .9rem;
+    background: #fbfaf7; border-radius: 0 8px 8px 0; margin-top: .6rem;
+  }
+  .eval-heading {
+    font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--brand-primary); margin-bottom: .75rem;
+  }
+
+  .step-nav { display: flex; justify-content: space-between; margin-top: 1.25rem; }
+  .btn {
+    font-family: inherit; font-size: .9rem; font-weight: 600;
+    padding: .6rem 1.2rem; border-radius: 8px; border: none; cursor: pointer;
+    background: var(--brand-primary); color: #fff;
+  }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn.btn-secondary { background: var(--surface-alt); color: var(--brand-primary); border: 1px solid #ddd; }
+
+  /* ---------- Quiz component ---------- */
+  .quiz { margin-top: 1rem; }
+  .quiz-question { font-weight: 600; }
+  .quiz-options { display: grid; gap: .5rem; margin: .75rem 0; }
+  .quiz-option {
+    text-align: left; font-family: inherit; font-size: .95rem;
+    padding: .65rem .9rem; border-radius: 8px; border: 1px solid #ddd;
+    background: #fff; cursor: pointer;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--brand-primary); }
+  .quiz-option.is-correct, .quiz-option.is-correct-reveal { border-color: var(--ok); background: #eaf6ee; }
+  .quiz-option.is-incorrect { border-color: var(--err); background: #fbeceb; }
+  .quiz-option:disabled { cursor: default; opacity: .85; }
+  .quiz-feedback { font-weight: 600; min-height: 1.2em; margin-top: .35rem; }
+
+  .eval-summary { font-weight: 700; margin-top: 1.25rem; min-height: 1.2em; }
+  .eval-summary.is-pass { color: var(--ok); }
+  .eval-summary.is-fail { color: var(--err); }
+  .eval-retry { margin-top: .5rem; }
+
+  /* ---------- Acordeón ---------- */
+  .accordion-trigger {
+    width: 100%; text-align: left; font-family: inherit; font-size: .95rem; font-weight: 600;
+    padding: .75rem 1rem; background: var(--surface-alt); border: none; border-radius: 8px;
+    cursor: pointer; margin-bottom: .4rem;
+  }
+  .accordion-panel { padding: .25rem .25rem .9rem; }
+  .accordion-panel ul { margin: .5rem 0 0; padding-left: 1.2rem; }
+
+  /* ---------- Gráficos ---------- */
+  .chart-block, .bar-chart, .line-chart { margin: 1rem 0; }
+  .chart-title { font-weight: 600; margin-bottom: .4rem; color: var(--text); font-size: .95rem; }
+  .bar-chart-svg, .line-chart-svg { width: 100%; height: auto; max-height: 230px; display: block; }
+  .chart-baseline { stroke: #ddd; stroke-width: 1; }
+  .bar-rect { fill: var(--brand-primary); transition: filter .15s; }
+  .bar-mark:hover .bar-rect, .bar-mark:focus .bar-rect { filter: brightness(1.3); }
+  .bar-mark:focus { outline: none; }
+  .bar-mark:focus .bar-rect { stroke: #fff; stroke-width: 2; }
+  .bar-value { font-size: 11px; font-weight: 700; fill: var(--text); font-family: var(--font); }
+  .bar-label { font-size: 10px; fill: var(--text-muted); font-family: var(--font); }
+  .bar-callout { font-size: 10px; font-weight: 700; font-family: var(--font); }
+  .chart-legend { display: flex; gap: 1rem; margin-top: .5rem; flex-wrap: wrap; }
+  .chart-legend-item { display: flex; align-items: center; gap: .35rem; font-size: .8rem; color: var(--text-muted); }
+  .chart-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .mean-line { stroke: var(--status-warning); stroke-width: 2; stroke-dasharray: 4 3; }
+  .mean-label { font-size: 10px; font-weight: 700; fill: var(--status-warning); font-family: var(--font); }
+  .area-fill { fill: var(--brand-primary); opacity: .12; }
+  .line-stroke { fill: none; stroke: var(--brand-primary); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .line-end-marker { fill: var(--brand-primary); stroke: #fff; stroke-width: 2; }
+  .line-point.is-highlight { stroke: #fff; stroke-width: 2; }
+  .chart-pair { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .chart-pair { grid-template-columns: 1fr 1fr; } }
+
+  /* ---------- Diagrama de clasificación ---------- */
+  .taxo-diagram {
+    margin: 1rem 0 .5rem; border-radius: 10px; overflow: hidden;
+    border: 1px solid #e6e1dc; box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  }
+  .taxo-root {
+    background: var(--brand-primary); color: #fff; font-weight: 700;
+    padding: .6rem 1rem; text-align: center; font-family: var(--font-display); font-size: .95rem;
+  }
+  .taxo-branches { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .taxo-card { background: var(--surface); border-top: 4px solid var(--branch-color); padding: .9rem .75rem; text-align: center; }
+  .taxo-card + .taxo-card { border-left: 1px solid #eee; }
+  .taxo-card-header {
+    font-weight: 700; color: var(--text); font-size: .92rem; margin-bottom: .5rem;
+    display: flex; align-items: center; justify-content: center; gap: .4rem;
+  }
+  .taxo-card-header::before {
+    content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--branch-color); flex-shrink: 0;
+  }
+  .taxo-card-body { display: flex; gap: .4rem; justify-content: center; flex-wrap: wrap; }
+  .taxo-chip {
+    display: inline-block; background: var(--surface-alt); border: 1px solid #ddd;
+    border-radius: 999px; padding: .25rem .7rem; font-size: .78rem; color: var(--text);
+  }
+
+  /* ---------- Tablero final ---------- */
+  .scoreboard { text-align: center; padding: 1rem 0; }
+  .scoreboard .final-points { font-size: 2.4rem; font-weight: 700; color: var(--brand-primary); font-family: var(--font-display); }
+  .badges-final { display: flex; justify-content: center; gap: .5rem; margin: 1rem 0; flex-wrap: wrap; }
+  .badges-final .badge-slot { width: 44px; height: 44px; font-size: 1.4rem; }
+
+  /* ---------- Footer ---------- */
+  .site-footer {
+    background: var(--brand-ink); color: #d8cfd1;
+    text-align: center; padding: 1.25rem; font-size: .8rem;
+  }
+  .site-footer strong { color: #fff; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <div class="brand-logo-fallback">UDEC</div>
+      <img class="brand-logo-img" src="" alt="Logo Universidad de Celaya" onerror="this.remove()">
+    </div>
+    <div>
+      <div class="brand-name">Universidad de Celaya</div>
+      <div class="brand-tagline">Material de apoyo digital</div>
+    </div>
+  </div>
+  <div class="course-meta">
+    <div class="course-name">Reto Estadístico</div>
+    <div class="session-title">Introducción a la estadística</div>
+    <span class="strategy-badge">Estrategia: Gamificación con evaluación distribuida</span>
+  </div>
+</header>
+
+<nav class="progress-nav" aria-label="Progreso de la actividad">
+  <div class="progress-nav-track">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">Paso 1 de 12</div>
+  </div>
+  <div class="badges-row" id="badgesRow" aria-label="Insignias obtenidas"></div>
+  <div class="points-badge">⭐ <span id="points-count">0</span> pts</div>
+</nav>
+
+<main class="content">
+
+  <!-- Misión inicial -->
+  <section class="step is-active" data-step="1">
+    <div class="card">
+      <span class="level-tag">Misión</span>
+      <h2>Reto Estadístico: domina los fundamentos</h2>
+      <div class="objectives">
+        <strong>Objetivo de la sesión:</strong>
+        <p>Comprender los conceptos fundamentales de la estadística: qué es un dato, cómo se clasifica (por naturaleza y por fuente), y la diferencia entre estadística descriptiva e inferencial — como base para el análisis de datos en ingeniería industrial y ciencia de datos.</p>
+      </div>
+      <p>Vas a avanzar por 5 niveles. Cada nivel tiene un bloque de <strong>contenido</strong> y, después, un bloque de <strong>evaluación con 3 preguntas</strong> (una de ellas difícil) — necesitas al menos <strong>2 de 3 correctas</strong> para desbloquear el siguiente nivel y ganar tu insignia. Si no alcanzas el puntaje, puedes reintentar el nivel.</p>
+      <ol>
+        <li>¿Qué es un dato? Clasificación general</li>
+        <li>Datos cuantitativos y cualitativos</li>
+        <li>Datos discretos y continuos</li>
+        <li>Fuentes de datos: primarias y secundarias</li>
+        <li>Estadística descriptiva e inferencial</li>
+      </ol>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev disabled>Anterior</button>
+      <button class="btn" data-next>Comenzar →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 1: contenido ============ -->
+  <section class="step" data-step="2">
+    <div class="card">
+      <span class="level-tag">Nivel 1 de 5 · Contenido</span>
+      <h2>¿Qué es un dato? Clasificación general</h2>
+      <div class="lesson-content">
+        <p>Un <strong>dato</strong> es un valor o hecho que representa una característica de una persona, objeto, proceso o fenómeno. En ingeniería industrial, un dato puede ser el tiempo que tarda una máquina en producir una pieza; en ciencia de datos, puede ser el precio de una vivienda dentro de un dataset.</p>
+        <p>Los datos se clasifican principalmente en dos grandes categorías, según la naturaleza de lo que representan:</p>
+        <div class="example">
+          <strong>Cuantitativos</strong> — se expresan con números y admiten operaciones aritméticas (promedios, sumas).<br>
+          <strong>Cualitativos</strong> — describen cualidades o categorías; no se suman ni se promedian de forma directa.
+        </div>
+        <p>Dentro de los cuantitativos existe además la distinción entre discretos y continuos — la veremos con detalle en el Nivel 3.</p>
+
+        <div class="taxo-diagram">
+          <div class="taxo-root">Datos</div>
+          <div class="taxo-branches">
+            <div class="taxo-card" style="--branch-color: var(--series-a)">
+              <div class="taxo-card-header">Cuantitativos</div>
+              <div class="taxo-card-body">
+                <span class="taxo-chip">Discretos</span>
+                <span class="taxo-chip">Continuos</span>
+              </div>
+            </div>
+            <div class="taxo-card" style="--branch-color: var(--series-b)">
+              <div class="taxo-card-header">Cualitativos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next>Ir a la evaluación →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 1: evaluación ============ -->
+  <section class="step" data-step="3" data-required="2" data-badge-icon="📋" data-badge-label="Nivel 1: Clasificador de datos">
+    <div class="card">
+      <span class="level-tag">Nivel 1 de 5 · Evaluación</span>
+      <h2>Evaluación del nivel</h2>
+      <p class="eval-heading">Responde las 3 preguntas — necesitas al menos 2 correctas para avanzar.</p>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">1. ¿Cuál es la clasificación PRINCIPAL de los datos según su naturaleza?</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Cuantitativos y cualitativos</button>
+          <button class="quiz-option" data-value="b">Primarios y secundarios</button>
+          <button class="quiz-option" data-value="c">Descriptiva e inferencial</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">2. Un dato es:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Un valor que representa una característica observable de algo</button>
+          <button class="quiz-option" data-value="b">Siempre un número</button>
+          <button class="quiz-option" data-value="c">Información recolectada únicamente por encuestas</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="20">
+        <p class="quiz-question">3. Un ingeniero registra la satisfacción del cliente en una escala de 1 a 5 (1 = muy insatisfecho, 5 = muy satisfecho). Aunque use números, este dato se comporta como:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Cualitativo, aunque esté codificado con números</button>
+          <button class="quiz-option" data-value="b">Cuantitativo continuo</button>
+          <button class="quiz-option" data-value="c">Cuantitativo discreto puro</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <p class="eval-summary" aria-live="polite"></p>
+      <button class="btn btn-secondary eval-retry" data-retry-eval hidden>↺ Reintentar nivel</button>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next disabled>Siguiente nivel →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 2: contenido ============ -->
+  <section class="step" data-step="4">
+    <div class="card">
+      <span class="level-tag">Nivel 2 de 5 · Contenido</span>
+      <h2>Datos cuantitativos y cualitativos</h2>
+      <div class="lesson-content">
+        <p>Los datos <strong>cuantitativos</strong> se expresan de forma numérica y tiene sentido calcularles un promedio. Ejemplos en un proceso de manufactura: el peso de una pieza (kg), el tiempo de ensamble (segundos), el número de unidades producidas por turno.</p>
+        <p>Los datos <strong>cualitativos</strong> (o categóricos) describen atributos que no se miden numéricamente, aunque a veces se codifiquen con números. Ejemplos: el turno de trabajo (matutino/vespertino/nocturno), el tipo de defecto detectado (rayón, golpe, desalineación).</p>
+        <div class="example"><strong>Regla práctica:</strong> si tiene sentido calcular un promedio del dato, probablemente es cuantitativo; si el "promedio" no significa nada (¿cuál es el promedio de "rayón" y "golpe"?), es cualitativo.</div>
+
+        <div class="bar-chart" data-chart='{
+          "title":"Auditoría de calidad: 20 variables registradas",
+          "categories":["Cuantitativas","Cualitativas"],
+          "values":[12,8],
+          "unit":"",
+          "seriesColors":["var(--series-a)","var(--series-b)"],
+          "legend":["Cuantitativas (peso, tiempo, temperatura...)","Cualitativas (turno, tipo de defecto...)"]
+        }'></div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next>Ir a la evaluación →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 2: evaluación ============ -->
+  <section class="step" data-step="5" data-required="2" data-badge-icon="🔢" data-badge-label="Nivel 2: Cuanti / Cuali">
+    <div class="card">
+      <span class="level-tag">Nivel 2 de 5 · Evaluación</span>
+      <h2>Evaluación del nivel</h2>
+      <p class="eval-heading">Responde las 3 preguntas — necesitas al menos 2 correctas para avanzar.</p>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">1. El turno de trabajo (matutino, vespertino, nocturno) en el que se produjo una pieza es un dato:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Cualitativo</button>
+          <button class="quiz-option" data-value="b">Cuantitativo continuo</button>
+          <button class="quiz-option" data-value="c">Cuantitativo discreto</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">2. El peso en kilogramos de una pieza es un dato:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Cuantitativo</button>
+          <button class="quiz-option" data-value="b">Cualitativo</button>
+          <button class="quiz-option" data-value="c">No es un dato</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="20">
+        <p class="quiz-question">3. En una base de datos, el "código de empleado" (ej. EMP-00231) es un dato:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Cualitativo — aunque tenga formato numérico, no representa una cantidad</button>
+          <button class="quiz-option" data-value="b">Cuantitativo discreto, porque es un número</button>
+          <button class="quiz-option" data-value="c">Cuantitativo continuo</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <p class="eval-summary" aria-live="polite"></p>
+      <button class="btn btn-secondary eval-retry" data-retry-eval hidden>↺ Reintentar nivel</button>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next disabled>Siguiente nivel →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 3: contenido ============ -->
+  <section class="step" data-step="6">
+    <div class="card">
+      <span class="level-tag">Nivel 3 de 5 · Contenido</span>
+      <h2>Datos discretos y continuos</h2>
+      <div class="lesson-content">
+        <p>Dentro de los datos cuantitativos hay dos subtipos. Los <strong>discretos</strong> toman valores contables, generalmente enteros, con "saltos" entre un valor y el siguiente — no existen valores intermedios con sentido. Ejemplo: el número de piezas defectuosas por lote (0, 1, 2, 3… nunca 2.5 piezas).</p>
+        <p>Los <strong>continuos</strong> pueden tomar cualquier valor dentro de un intervalo, incluyendo decimales. Ejemplo: el tiempo de ciclo de producción de una pieza (puede ser 42.3 s, 42.31 s, 42.317 s…).</p>
+        <p>Compara las dos gráficas: en la primera las barras están separadas porque solo existen esos valores exactos; en la segunda la línea es continua. En ambas resalté en rojo el punto que un ingeniero de calidad revisaría primero.</p>
+
+        <div class="chart-pair">
+          <div class="bar-chart" data-chart='{
+            "title":"Discreto: piezas defectuosas por lote",
+            "categories":["Lote 1","Lote 2","Lote 3","Lote 4","Lote 5"],
+            "values":[2,0,3,1,2],
+            "unit":"",
+            "highlight":{"index":2,"color":"var(--status-critical)","icon":"⚠","label":"Máximo"}
+          }'></div>
+          <div class="line-chart" data-chart='{
+            "title":"Continuo: tiempo de ciclo (s)",
+            "points":[[1,41.8],[2,42.3],[3,42.9],[4,43.1],[5,42.6],[6,43.4]],
+            "unit":" s",
+            "highlight":{"index":5,"color":"var(--status-critical)","icon":"⚠","label":"Pico"}
+          }'></div>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next>Ir a la evaluación →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 3: evaluación ============ -->
+  <section class="step" data-step="7" data-required="2" data-badge-icon="📊" data-badge-label="Nivel 3: Discreto / Continuo">
+    <div class="card">
+      <span class="level-tag">Nivel 3 de 5 · Evaluación</span>
+      <h2>Evaluación del nivel</h2>
+      <p class="eval-heading">Responde las 3 preguntas — necesitas al menos 2 correctas para avanzar.</p>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">1. El número de llamadas recibidas por un call center en una hora es un dato:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Discreto</button>
+          <button class="quiz-option" data-value="b">Continuo</button>
+          <button class="quiz-option" data-value="c">Cualitativo</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">2. El tiempo de ciclo de producción, que puede tomar cualquier valor decimal, es un dato:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Continuo</button>
+          <button class="quiz-option" data-value="b">Discreto</button>
+          <button class="quiz-option" data-value="c">Cualitativo</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="20">
+        <p class="quiz-question">3. El número de defectos por metro cuadrado de tela (una tasa, ej. 2.3 defectos/m², calculada sobre lotes grandes) se trata en la práctica estadística como una variable:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Continua — es una tasa, aunque se origine de un conteo discreto</button>
+          <button class="quiz-option" data-value="b">Discreta, porque cuenta defectos</button>
+          <button class="quiz-option" data-value="c">Cualitativa, porque depende del tipo de tela</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <p class="eval-summary" aria-live="polite"></p>
+      <button class="btn btn-secondary eval-retry" data-retry-eval hidden>↺ Reintentar nivel</button>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next disabled>Siguiente nivel →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 4: contenido ============ -->
+  <section class="step" data-step="8">
+    <div class="card">
+      <span class="level-tag">Nivel 4 de 5 · Contenido</span>
+      <h2>Fuentes de datos: primarias y secundarias</h2>
+      <div class="lesson-content">
+        <p>Además de clasificarse por su naturaleza, los datos se clasifican según su <strong>fuente</strong> — de dónde provienen.</p>
+        <p>Los datos de <strong>fuente primaria</strong> son recolectados directamente por quien realiza el estudio, para ese propósito específico. Ejemplo: un ingeniero industrial que cronometra personalmente el tiempo de ensamble en la línea, o un científico de datos que diseña y aplica una encuesta a los clientes.</p>
+        <p>Los datos de <strong>fuente secundaria</strong> ya existían antes del estudio — los recolectó alguien más, con otro propósito, y el investigador los reutiliza. Ejemplo: usar el histórico de producción del ERP de la empresa, o los reportes del INEGI para un análisis de mercado.</p>
+        <div class="example">La fuente no dice si un dato es "mejor" o "peor": una fuente secundaria puede ser perfectamente válida si es confiable — pero siempre debe evaluarse su calidad y vigencia antes de usarla.</div>
+
+        <div class="taxo-diagram">
+          <div class="taxo-root">Fuentes de datos</div>
+          <div class="taxo-branches">
+            <div class="taxo-card" style="--branch-color: var(--series-a)">
+              <div class="taxo-card-header">Primarias</div>
+            </div>
+            <div class="taxo-card" style="--branch-color: var(--series-b)">
+              <div class="taxo-card-header">Secundarias</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next>Ir a la evaluación →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 4: evaluación ============ -->
+  <section class="step" data-step="9" data-required="2" data-badge-icon="🔍" data-badge-label="Nivel 4: Fuentes de datos">
+    <div class="card">
+      <span class="level-tag">Nivel 4 de 5 · Evaluación</span>
+      <h2>Evaluación del nivel</h2>
+      <p class="eval-heading">Responde las 3 preguntas — necesitas al menos 2 correctas para avanzar.</p>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">1. Un analista de ciencia de datos descarga el histórico de ventas de los últimos 5 años desde el sistema de la empresa para construir un modelo predictivo. Esos datos son de fuente:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Secundaria</button>
+          <button class="quiz-option" data-value="b">Primaria</button>
+          <button class="quiz-option" data-value="c">Cualitativa</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">2. Un ingeniero cronometra personalmente el tiempo de ensamble en la línea para su tesis. Ese dato es de fuente:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Primaria</button>
+          <button class="quiz-option" data-value="b">Secundaria</button>
+          <button class="quiz-option" data-value="c">Cualitativa</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="20">
+        <p class="quiz-question">3. Una encuestadora externa diseña y aplica una encuesta EXCLUSIVA para una empresa, y le entrega los resultados crudos. Desde la perspectiva de la empresa que los usará, estos datos son de fuente:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Primaria — se recolectaron específicamente para este estudio, aunque la empresa no la aplicó ella misma</button>
+          <button class="quiz-option" data-value="b">Secundaria, porque la empresa no los recolectó directamente</button>
+          <button class="quiz-option" data-value="c">Cualitativa</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <p class="eval-summary" aria-live="polite"></p>
+      <button class="btn btn-secondary eval-retry" data-retry-eval hidden>↺ Reintentar nivel</button>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next disabled>Siguiente nivel →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 5: contenido ============ -->
+  <section class="step" data-step="10">
+    <div class="card">
+      <span class="level-tag">Nivel 5 de 5 · Contenido</span>
+      <h2>Estadística descriptiva e inferencial</h2>
+      <div class="lesson-content">
+        <p>La estadística se divide en dos grandes ramas según lo que se busca hacer con los datos.</p>
+        <p>La <strong>estadística descriptiva</strong> organiza, resume y presenta los datos de una muestra o población, sin ir más allá de lo observado: promedios, medianas, gráficas, tablas de frecuencia. Ejemplo: calcular el tiempo promedio de ciclo de los últimos lotes producidos.</p>
+        <p>La <strong>estadística inferencial</strong> usa los datos de una muestra para sacar conclusiones o hacer predicciones sobre una población más grande, con un nivel de confianza o margen de error. Ejemplo: con base en una muestra de lotes, estimar si el proceso completo cumple la especificación de calidad, o entrenar un modelo con datos históricos para predecir la demanda futura.</p>
+        <div class="example">En ciencia de datos, casi todo modelo predictivo (regresión, clasificación) es, en el fondo, una aplicación de estadística inferencial: se usa una muestra de entrenamiento para inferir un patrón que se espera se cumpla en datos nuevos.</div>
+
+        <div class="bar-chart" data-chart='{
+          "title":"Estadística descriptiva: tiempo de ciclo (min) de 6 lotes muestreados",
+          "categories":["Lote 1","Lote 2","Lote 3","Lote 4","Lote 5","Lote 6"],
+          "values":[40,42,39,45,41,43],
+          "unit":"",
+          "meanLine":{"value":41.7,"label":"Promedio: 41.7 min"}
+        }'></div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next>Ir a la evaluación →</button>
+    </div>
+  </section>
+
+  <!-- ============ NIVEL 5: evaluación ============ -->
+  <section class="step" data-step="11" data-required="2" data-badge-icon="🧮" data-badge-label="Nivel 5: Descriptiva / Inferencial">
+    <div class="card">
+      <span class="level-tag">Nivel 5 de 5 · Evaluación</span>
+      <h2>Evaluación del nivel</h2>
+      <p class="eval-heading">Responde las 3 preguntas — necesitas al menos 2 correctas para ver tu resultado final.</p>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">1. Entrenar un modelo con datos históricos de ventas para predecir la demanda del próximo mes es una aplicación de estadística:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Inferencial</button>
+          <button class="quiz-option" data-value="b">Descriptiva</button>
+          <button class="quiz-option" data-value="c">Cualitativa</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="10">
+        <p class="quiz-question">2. Calcular el promedio y la desviación estándar del tiempo de ciclo de los últimos 30 lotes producidos es un ejemplo de estadística:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Descriptiva</button>
+          <button class="quiz-option" data-value="b">Inferencial</button>
+          <button class="quiz-option" data-value="c">Cualitativa</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <div class="quiz" data-answer="a" data-points="20">
+        <p class="quiz-question">3. Un ingeniero mide el diámetro de 50 piezas de un lote de 10,000 y, con base en esa muestra, calcula un intervalo de confianza del 95% para estimar el diámetro promedio de todo el lote. Este procedimiento combina:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" data-value="a">Descriptiva (para resumir la muestra de 50) e inferencial (para generalizar a las 10,000 piezas)</button>
+          <button class="quiz-option" data-value="b">Solo estadística descriptiva</button>
+          <button class="quiz-option" data-value="c">Solo estadística inferencial</button>
+        </div>
+        <p class="quiz-feedback" aria-live="polite"></p>
+      </div>
+
+      <p class="eval-summary" aria-live="polite"></p>
+      <button class="btn btn-secondary eval-retry" data-retry-eval hidden>↺ Reintentar nivel</button>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next disabled>Ver resultado final →</button>
+    </div>
+  </section>
+
+  <!-- Tablero final -->
+  <section class="step" data-step="12">
+    <div class="card">
+      <span class="level-tag">Tablero final</span>
+      <h2>¡Reto Estadístico completado!</h2>
+      <div class="scoreboard">
+        <div class="final-points"><span id="final-points-count">0</span> / 200 pts</div>
+        <p>Completaste los 5 niveles de introducción a la estadística.</p>
+        <div class="badges-final" id="badgesFinal"></div>
+      </div>
+
+      <button class="accordion-trigger" aria-expanded="false">Ver repaso de todo el temario</button>
+      <div class="accordion-panel" hidden>
+        <ul>
+          <li>Un dato representa una característica observable; se clasifica principalmente en cuantitativo y cualitativo.</li>
+          <li>Cuantitativos: se miden numéricamente. Cualitativos: describen categorías/atributos (aunque a veces se codifiquen con números).</li>
+          <li>Dentro de los cuantitativos: discretos (valores contables, con saltos) y continuos (cualquier valor en un intervalo).</li>
+          <li>Por su fuente: primarios (recolectados con el propósito específico del estudio) y secundarios (ya existían, recolectados por alguien más).</li>
+          <li>Estadística descriptiva: resume y presenta los datos observados. Estadística inferencial: usa una muestra para concluir o predecir sobre una población.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" data-prev>Anterior</button>
+      <button class="btn" data-next disabled>Finalizar</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <strong>Universidad de Celaya</strong> · Reto Estadístico (Ing. Industrial / Ing. en Ciencia de Datos) · Dra. María de la Luz López González<br>
+  Material con fines educativos · 31 de julio de 2026
+</footer>
+
+<script>
+  // ---- Navegación por pasos (formato común a todas las plantillas) ----
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  let current = 0;
+
+  function showStep(index) {
+    steps.forEach((s, i) => s.classList.toggle('is-active', i === index));
+    const pct = ((index + 1) / steps.length) * 100;
+    progressFill.style.width = pct + '%';
+    progressLabel.textContent = `Paso ${index + 1} de ${steps.length}`;
+    current = index;
+    if (index === steps.length - 1) {
+      document.getElementById('final-points-count').textContent = points;
+    }
+  }
+
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => { if (current < steps.length - 1 && !btn.disabled) showStep(current + 1); });
+  });
+  document.querySelectorAll('[data-prev]').forEach(btn => {
+    btn.addEventListener('click', () => { if (current > 0) showStep(current - 1); });
+  });
+
+  showStep(0);
+
+  // ---- Sistema de puntos ----
+  let points = 0;
+  const pointsEl = document.getElementById('points-count');
+  function addPoints(n) {
+    points += n;
+    pointsEl.textContent = points;
+  }
+
+  // ---- Insignias ----
+  const badgesRow = document.getElementById('badgesRow');
+  const badgesFinal = document.getElementById('badgesFinal');
+  const levelSteps = steps.filter(s => s.dataset.badgeIcon);
+  levelSteps.forEach(step => {
+    const slot = document.createElement('span');
+    slot.className = 'badge-slot';
+    slot.textContent = step.dataset.badgeIcon;
+    slot.title = step.dataset.badgeLabel || 'Insignia';
+    slot.dataset.forStep = step.dataset.step;
+    badgesRow.appendChild(slot);
+
+    const finalSlot = slot.cloneNode(true);
+    badgesFinal.appendChild(finalSlot);
+  });
+  function earnBadge(step) {
+    document.querySelectorAll(`[data-for-step="${step.dataset.step}"]`).forEach(el => el.classList.add('is-earned'));
+  }
+
+  // ---- Evaluación con umbral: >= data-required correctas entre los .quiz del .step ----
+  function checkEvalGate(step) {
+    const quizzes = Array.from(step.querySelectorAll('.quiz'));
+    const nextBtn = step.querySelector('[data-next]');
+    const retryBtn = step.querySelector('[data-retry-eval]');
+    const summary = step.querySelector('.eval-summary');
+    if (!quizzes.length || !nextBtn) return;
+    const allAnswered = quizzes.every(q => q.dataset.answered === 'true');
+    if (!allAnswered) return;
+    const correctCount = quizzes.filter(q => q.dataset.solved === 'true').length;
+    const required = parseInt(step.dataset.required, 10) || quizzes.length;
+    const passed = correctCount >= required;
+    if (summary) {
+      summary.textContent = passed
+        ? `✓ ${correctCount}/${quizzes.length} correctas — ¡nivel superado!`
+        : `${correctCount}/${quizzes.length} correctas — necesitas al menos ${required} para avanzar.`;
+      summary.classList.toggle('is-pass', passed);
+      summary.classList.toggle('is-fail', !passed);
+    }
+    nextBtn.disabled = !passed;
+    if (retryBtn) retryBtn.hidden = passed;
+    if (passed && step.dataset.badgeIcon) earnBadge(step);
+  }
+
+  // ---- Reintentar nivel ----
+  document.querySelectorAll('[data-retry-eval]').forEach(retryBtn => {
+    retryBtn.addEventListener('click', () => {
+      const step = retryBtn.closest('.step');
+      step.querySelectorAll('.quiz').forEach(q => {
+        q.dataset.answered = '';
+        q.dataset.solved = '';
+        q.querySelectorAll('.quiz-option').forEach(b => {
+          b.disabled = false;
+          b.classList.remove('is-correct', 'is-incorrect', 'is-correct-reveal');
+        });
+        q.querySelector('.quiz-feedback').textContent = '';
+      });
+      const summary = step.querySelector('.eval-summary');
+      if (summary) { summary.textContent = ''; summary.className = 'eval-summary'; }
+      step.querySelector('[data-next]').disabled = true;
+      retryBtn.hidden = true;
+    });
+  });
+
+  // ---- Quiz de un solo intento por ronda ----
+  document.querySelectorAll('.quiz').forEach(quiz => {
+    const correct = quiz.dataset.answer;
+    const reward = parseInt(quiz.dataset.points, 10) || 10;
+    const feedback = quiz.querySelector('.quiz-feedback');
+    const step = quiz.closest('.step');
+    quiz.querySelectorAll('.quiz-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (quiz.dataset.answered === 'true') return;
+        const isCorrect = btn.dataset.value === correct;
+        quiz.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+        quiz.dataset.answered = 'true';
+        quiz.dataset.solved = isCorrect ? 'true' : 'false';
+        if (isCorrect) {
+          btn.classList.add('is-correct');
+          if (quiz.dataset.awarded !== 'true') {
+            addPoints(reward);
+            quiz.dataset.awarded = 'true';
+            feedback.textContent = `✓ ¡Correcto! +${reward} pts`;
+          } else {
+            feedback.textContent = '✓ Correcto';
+          }
+        } else {
+          btn.classList.add('is-incorrect');
+          const revealBtn = quiz.querySelector(`[data-value="${correct}"]`);
+          if (revealBtn) revealBtn.classList.add('is-correct-reveal');
+          feedback.textContent = '✗ Incorrecto.';
+        }
+        if (step) checkEvalGate(step);
+      });
+    });
+  });
+
+  // ---- Acordeón ----
+  document.querySelectorAll('.accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const panel = trigger.nextElementSibling;
+      const expanded = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      panel.hidden = expanded;
+    });
+  });
+
+  // ---- Gráfico de barras (1 o 2 series, resalte opcional, línea de promedio opcional) ----
+  function renderBarChart(container) {
+    const cfg = JSON.parse(container.dataset.chart);
+    const { title, categories, values, unit, highlight, seriesColors, legend, meanLine } = cfg;
+    const u = unit || '';
+    const n = categories.length;
+    const W = n * 110, H = 210, padBottom = 34, padTop = 26;
+    const maxVal = Math.max(...values, meanLine ? meanLine.value : 0) * 1.15;
+    const bandW = W / n;
+    const barW = Math.min(bandW * 0.42, 46);
+
+    const colorFor = i => {
+      if (highlight && highlight.index === i) return highlight.color;
+      if (seriesColors) return seriesColors[i % seriesColors.length];
+      return 'var(--brand-primary)';
+    };
+
+    let bars = '';
+    values.forEach((v, i) => {
+      const bh = (H - padTop - padBottom) * (v / maxVal);
+      const x = i * bandW + (bandW - barW) / 2;
+      const y = H - padBottom - bh;
+      const isHi = highlight && highlight.index === i;
+      bars += `
+        <g class="bar-mark" tabindex="0">
+          <title>${categories[i]}: ${v}${u}${isHi ? ' (' + highlight.label + ')' : ''}</title>
+          <rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="4" class="bar-rect" style="fill:${colorFor(i)}"></rect>
+          ${isHi ? `<text x="${x + barW / 2}" y="${y - 20}" text-anchor="middle" class="bar-callout" style="fill:${highlight.color}">${highlight.icon || '★'} ${highlight.label}</text>` : ''}
+          <text x="${x + barW / 2}" y="${y - 6}" text-anchor="middle" class="bar-value">${v}${u}</text>
+          <text x="${x + barW / 2}" y="${H - padBottom + 16}" text-anchor="middle" class="bar-label">${categories[i]}</text>
+        </g>`;
+    });
+
+    let meanMarkup = '';
+    if (meanLine) {
+      const my = H - padBottom - (H - padTop - padBottom) * (meanLine.value / maxVal);
+      meanMarkup = `
+        <line x1="0" y1="${my}" x2="${W}" y2="${my}" class="mean-line"></line>
+        <text x="${W - 4}" y="${my - 6}" text-anchor="end" class="mean-label">${meanLine.label}</text>`;
+    }
+
+    const legendMarkup = legend ? `
+      <div class="chart-legend">
+        ${legend.map((l, i) => `<span class="chart-legend-item"><span class="chart-legend-swatch" style="background:${(seriesColors && seriesColors[i]) || 'var(--brand-primary)'}"></span>${l}</span>`).join('')}
+      </div>` : '';
+
+    container.innerHTML = `
+      ${title ? `<p class="chart-title">${title}</p>` : ''}
+      <svg viewBox="0 0 ${W} ${H}" class="bar-chart-svg" role="img" aria-label="${title || 'Gráfico de barras'}">
+        <line x1="0" y1="${H - padBottom}" x2="${W}" y2="${H - padBottom}" class="chart-baseline"></line>
+        ${bars}
+        ${meanMarkup}
+      </svg>
+      ${legendMarkup}`;
+  }
+  document.querySelectorAll('.bar-chart[data-chart]').forEach(renderBarChart);
+
+  // ---- Gráfico de línea / área con resalte opcional ----
+  function renderLineChart(container) {
+    const cfg = JSON.parse(container.dataset.chart);
+    const { title, points: pts, unit, highlight } = cfg;
+    const u = unit || '';
+    const W = 400, H = 210, padTop = 24, padBottom = 34, padX = 20;
+    const xs = pts.map(p => p[0]);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const maxY = Math.max(...pts.map(p => p[1])) * 1.15;
+    const scaleX = x => padX + ((x - minX) / (maxX - minX || 1)) * (W - padX * 2);
+    const scaleY = y => H - padBottom - (y / maxY) * (H - padTop - padBottom);
+
+    const linePoints = pts.map(p => `${scaleX(p[0])},${scaleY(p[1])}`).join(' ');
+    const areaPoints = `${scaleX(minX)},${H - padBottom} ${linePoints} ${scaleX(maxX)},${H - padBottom}`;
+    const last = pts[pts.length - 1];
+
+    let markers = '';
+    pts.forEach((p, i) => {
+      const isHi = highlight && highlight.index === i;
+      if (isHi) {
+        markers += `
+          <text x="${scaleX(p[0])}" y="${scaleY(p[1]) - 14}" text-anchor="middle" class="bar-callout" style="fill:${highlight.color}">${highlight.icon || '★'} ${highlight.label}</text>
+          <circle cx="${scaleX(p[0])}" cy="${scaleY(p[1])}" r="6" class="line-point is-highlight" style="fill:${highlight.color}"></circle>`;
+      }
+    });
+
+    container.innerHTML = `
+      ${title ? `<p class="chart-title">${title}</p>` : ''}
+      <svg viewBox="0 0 ${W} ${H}" class="line-chart-svg" role="img" aria-label="${title || 'Gráfico de línea'}">
+        <line x1="${padX}" y1="${H - padBottom}" x2="${W - padX}" y2="${H - padBottom}" class="chart-baseline"></line>
+        <polygon points="${areaPoints}" class="area-fill"></polygon>
+        <polyline points="${linePoints}" class="line-stroke"></polyline>
+        <circle cx="${scaleX(last[0])}" cy="${scaleY(last[1])}" r="4" class="line-end-marker"></circle>
+        <text x="${scaleX(last[0])}" y="${scaleY(last[1]) - 10}" text-anchor="end" class="bar-value">${last[1]}${u}</text>
+        ${markers}
+      </svg>`;
+  }
+  document.querySelectorAll('.line-chart[data-chart]').forEach(renderLineChart);
+</script>
+
+</body>
+</html>
