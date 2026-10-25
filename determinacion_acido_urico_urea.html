@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ácido úrico y urea: presentación, cuestionario y laboratorio</title>
+<style>
+:root{--g:#7B003A;--g2:#5a002b;--o:#F28C28;--n:#1B2A4A;--bg:#F7F2F4;--ink:#222;--ok:#1e7a46;--bad:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+header{background:var(--g);color:#fff;padding:14px 16px;border-bottom:5px solid var(--o)}
+header h1{margin:0;font-size:20px}
+header p{margin:2px 0 0;font-size:13px;opacity:.9}
+.wrap{max-width:920px;margin:0 auto;display:flex;gap:14px;padding:12px}
+.side{width:104px;flex:none;position:sticky;top:10px;align-self:flex-start;text-align:center;display:none}
+.rim{width:66px;height:9px;margin:0 auto;border:3px solid #5b6270;border-radius:5px;background:#e9ecf1}
+.tube{position:relative;width:54px;height:250px;margin:0 auto;border:3px solid #5b6270;border-top:none;border-radius:0 0 27px 27px;background:#fff;overflow:hidden;display:flex;flex-direction:column-reverse}
+.layer{height:0;width:100%;transition:height .9s ease;flex:none}
+.bub{position:absolute;bottom:6px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.7);opacity:0}
+.tube.on .bub{animation:up 3.2s infinite}
+.bub:nth-child(5){left:12px}.bub:nth-child(6){left:28px;animation-delay:1.1s}.bub:nth-child(7){left:20px;animation-delay:2s}
+@keyframes up{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-190px);opacity:0}}
+.pct{margin-top:8px;font-weight:bold;color:var(--g);font-size:18px}
+main{flex:1;min-width:0}
+.card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.12);margin-bottom:12px}
+h2{margin:6px 0 10px;color:var(--g);font-size:20px}
+.stepper{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.pill{border:2px solid #cfc3c9;background:#fff;color:#666;border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit}
+.pill.on{background:var(--g);border-color:var(--g);color:#fff}
+.pill.ok{border-color:var(--ok);color:var(--ok)}
+.pill.on.ok{color:#fff}
+.theory{background:#fbf5f8;border-left:5px solid var(--o);padding:8px 14px;border-radius:6px;font-size:15px;margin-bottom:14px}
+.theory p{margin:6px 0}.theory ul{margin:6px 0;padding-left:20px}.theory li{margin:4px 0}
+.case{background:#eef1f8;border-left:5px solid var(--n);padding:10px 14px;border-radius:6px;margin:14px 0 8px;font-size:15px}
+.game{font-weight:bold;color:var(--n);margin:4px 0 8px;font-size:15px}
+/* presentación */
+.bar{height:8px;background:#eadfe4;border-radius:4px;overflow:hidden;margin-bottom:10px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--g),var(--o));transition:width .4s}
+.slide{min-height:330px}
+.slide h2{font-size:23px;margin-top:2px}
+.slide ul{padding-left:20px;font-size:16px}.slide li{margin:8px 0}
+.slide p{font-size:16px}
+.cover{text-align:center;padding:34px 8px}
+.cover .big{font-size:36px}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0;font-size:14px}
+.chip{background:var(--n);color:#fff;border-radius:8px;padding:7px 11px;font-weight:bold}
+.chip.g{background:var(--g)}.chip.o{background:var(--o);color:#222}
+.arrow{color:var(--o);font-weight:bold;font-size:20px;text-align:center;line-height:1}
+.arrow small{display:block;font-size:11px;color:#444;font-weight:bold}
+.box{background:#fbf5f8;border:2px solid var(--o);border-radius:10px;padding:8px 14px;margin:8px 0;font-size:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two .box{margin:0}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl td,.tbl th{border:1px solid #d9ccd2;padding:7px;vertical-align:top;text-align:left}
+.tbl th{background:var(--g);color:#fff;width:24%}
+/* memorama */
+.memo{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mc{min-height:92px;border-radius:10px;border:3px solid var(--o);background:linear-gradient(135deg,var(--o),#f7b15e);color:#fff;font-size:26px;font-weight:bold;font-family:inherit;cursor:pointer;padding:6px}
+.mc.up{font-size:13px;font-weight:bold;line-height:1.25;cursor:default}
+.mc.up.term{background:var(--g);border-color:var(--g);color:#fff}
+.mc.up.def{background:#fff;border-color:var(--n);color:var(--n)}
+.mc.ok{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok) inset}
+.mc.up.term.ok{background:var(--ok);border-color:var(--ok)}
+.mc.up.def.ok{background:#e6f4ec;color:#14562f}
+/* preguntas */
+.item{border-top:1px solid #eadfe4;padding:12px 0}
+.q{font-weight:bold;margin-bottom:8px;font-size:15px}
+.num{display:inline-block;background:var(--n);color:#fff;border-radius:50%;width:22px;height:22px;text-align:center;line-height:22px;font-size:12px;margin-right:4px}
+.opts{display:grid;gap:6px}.opts.dos{grid-template-columns:1fr 1fr}
+.opt{text-align:left;background:#fff;border:2px solid #cdd3e0;border-radius:8px;padding:10px;font-size:14px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.opts.dos .opt{text-align:center;font-weight:bold}
+.opt:hover:not(:disabled){border-color:var(--o)}
+.opt.ok{background:#e6f4ec;border-color:var(--ok);color:var(--ok);font-weight:bold}
+.opt.bad{background:#fbe9e7;border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.opt:disabled{cursor:default}
+textarea,input[type=text]{width:100%;border:2px solid #cdd3e0;border-radius:8px;padding:8px;font-family:inherit;font-size:14px}
+textarea:focus,input[type=text]:focus{outline:none;border-color:var(--o)}
+.numrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.numrow input{width:140px}
+.cnt{font-size:12px;color:#777;margin-top:6px}
+.fb{margin-top:8px;font-size:13px;padding:8px 10px;border-radius:6px}
+.fb.ok{background:#e6f4ec;color:#14562f}.fb.bad{background:#fbe9e7;color:var(--bad)}
+.btn{background:var(--g);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:15px;font-family:inherit;cursor:pointer}
+.btn:hover:not(:disabled){background:var(--g2)}
+.btn:disabled{background:#c9b8c0;cursor:not-allowed}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn.alt{background:var(--n)}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:14px}
+label{font-size:13px;font-weight:bold;display:block;margin:10px 0 4px}
+.big{font-size:34px;font-weight:bold;color:var(--g)}
+@media(max-width:600px){.wrap{padding:8px;gap:8px}.side{width:70px}.tube{width:42px;height:210px}.rim{width:54px}.card{padding:12px}.memo{grid-template-columns:repeat(3,1fr)}.mc{min-height:86px}.mc.up{font-size:12px}.two{grid-template-columns:1fr}.cover .big{font-size:28px}.slide{min-height:280px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧪 Ácido úrico y urea</h1>
+  <p>Química Clínica · Presentación → Cuestionario → Laboratorio</p>
+</header>
+<div class="wrap">
+  <aside class="side" id="side">
+    <div class="rim"></div>
+    <div class="tube" id="tube">
+      <div class="layer" id="ly0" style="background:linear-gradient(90deg,#c93662,#e8668a,#c93662)"></div>
+      <div class="layer" id="ly1" style="background:linear-gradient(90deg,#1f55a0,#4a86d6,#1f55a0)"></div>
+      <div class="layer" id="ly2" style="background:linear-gradient(90deg,#d97a12,#f7a94d,#d97a12)"></div>
+      <div class="layer" id="ly3" style="background:linear-gradient(90deg,#5a002b,#9a1d5b,#5a002b)"></div>
+      <span class="bub"></span><span class="bub"></span><span class="bub"></span>
+    </div>
+    <div class="pct" id="pct">0%</div>
+  </aside>
+  <main><div id="app"></div></main>
+</div>
+
+<script>
+/* ===== PRESENTACIÓN ===== */
+const SL=[
+`<div class="cover"><div class="big">Ácido úrico y urea</div><p style="font-size:19px">¿Qué miden y cómo se miden?</p><p>Lee cada diapositiva con calma. Después sigue un cuestionario y, al final, el laboratorio.</p></div>`,
+`<h2>1. El ácido úrico: ¿de dónde sale?</h2>
+<div class="chain"><span class="chip">Adenina y guanina</span><span class="arrow">→</span><span class="chip">Hipoxantina</span><span class="arrow">→</span><span class="chip">Xantina</span><span class="arrow">→<small>xantina oxidasa</small></span><span class="chip g">Ácido úrico</span></div>
+<ul><li>Es el <b>producto final</b> del catabolismo de las <b>purinas</b> en el humano.</li>
+<li>Se elimina sobre todo por el <b>riñón</b> (≈70 %) y el resto por el intestino.</li>
+<li>Valores normales (aprox.): hombres <b>3.4–7.0</b> mg/dL · mujeres <b>2.4–6.0</b> mg/dL.</li></ul>`,
+`<h2>2. ¿Cómo se mide el ácido úrico?</h2>
+<p><b>Método uricasa-peroxidasa</b> (punto final)</p>
+<div class="chain"><span class="chip">Ácido úrico</span><span class="arrow">→<small>uricasa</small></span><span class="chip g">Alantoína + CO₂ + <u>H₂O₂</u></span></div>
+<div class="chain"><span class="chip">H₂O₂ + 4-aminofenazona + cromógeno fenólico</span><span class="arrow">→<small>peroxidasa</small></span><span class="chip o">Quinoneimina (rosa-rojo)</span></div>
+<ul><li>El color se lee a ≈<b>500–550 nm</b>.</li><li><b>Más color = más ácido úrico</b> en la muestra.</li></ul>`,
+`<h2>3. La urea: ¿de dónde sale?</h2>
+<ul><li>Se forma en el <b>hígado</b> (ciclo de la urea) con el <b>amoniaco (NH₃)</b> que sale del catabolismo de los aminoácidos.</li>
+<li>Se filtra en el glomérulo y una parte se reabsorbe en el túbulo. Por eso depende de la <b>hidratación</b> y del flujo urinario.</li>
+<li>Valores normales (aprox.): urea <b>15–45</b> mg/dL · BUN <b>7–21</b> mg/dL.</li></ul>
+<div class="box">Conversión: <b>BUN = urea × 0.467</b></div>`,
+`<h2>4. ¿Cómo se mide la urea?</h2>
+<p><b>Método ureasa-GLDH</b> (cinético UV)</p>
+<div class="chain"><span class="chip">Urea + H₂O</span><span class="arrow">→<small>ureasa</small></span><span class="chip g">2 NH₃ + CO₂</span></div>
+<div class="chain"><span class="chip">NH₃ + α-cetoglutarato + NADH</span><span class="arrow">→<small>GLDH</small></span><span class="chip g">Glutamato + NAD⁺</span></div>
+<ul><li>Se mide cuánto <b>baja</b> la absorbancia a <b>340 nm</b>, porque se gasta NADH. Más urea = más baja.</li>
+<li><b>Método alterno (Berthelot):</b> el NH₃ + fenol + hipoclorito, en medio alcalino, forma <b>indofenol azul</b>.</li></ul>`,
+`<h2>5. Cuidado con los errores</h2>
+<div class="two"><div class="box"><b>Ácido úrico</b><ul style="font-size:14px"><li>Ácido ascórbico y bilirrubina: lo dan <b>falsamente bajo</b> (consumen el H₂O₂).</li><li>Se usa suero o plasma con heparina.</li><li>Alcohol, purinas, fructosa y tiazidas lo elevan.</li></ul></div>
+<div class="box"><b>Urea</b><ul style="font-size:14px"><li>Evitar contaminación con <b>amonio</b> y anticoagulantes con amonio.</li><li>El <b>fluoruro de sodio</b> inhibe la ureasa: no se usa como conservador.</li></ul></div></div>`,
+`<h2>6. ¿Qué pasa cuando sube o baja?</h2>
+<table class="tbl">
+<tr><th>Ácido úrico ↑</th><td>Gota, enfermedad renal crónica, síndrome metabólico, quimioterapia (lisis tumoral), síndromes mieloproliferativos, preeclampsia.</td></tr>
+<tr><th>Ácido úrico ↓</th><td>Alopurinol o febuxostat, uricosúricos, hepatopatía grave.</td></tr>
+<tr><th>Urea ↑</th><td><b>Prerrenal:</b> deshidratación, insuficiencia cardiaca, hemorragia gastrointestinal, dieta hiperproteica. <b>Renal:</b> enfermedad renal. <b>Posrenal:</b> obstrucción de vías urinarias.</td></tr>
+<tr><th>Urea ↓</th><td>Hepatopatía grave, poca proteína en la dieta, embarazo, sobrehidratación.</td></tr></table>`,
+`<h2>Resumen</h2>
+<ul><li>Cada método usa una <b>enzima</b> que produce algo medible: la <b>uricasa</b> da H₂O₂ y color rosa-rojo; la <b>ureasa</b> da NH₃ y se mide la baja a 340 nm (o el color azul de Berthelot).</li>
+<li>Los <b>errores</b> cambian el resultado: ácido ascórbico, amonio y fluoruro de sodio.</li>
+<li>Para interpretar un valor hay que fijarse en el cuadro: hidratación, dieta, riñón e hígado.</li></ul>
+<div class="box"><b>Siguiente:</b> un cuestionario con lo que leíste.</div>`
+];
+
+/* ===== CUESTIONARIO + LABORATORIO ===== */
+const AU=['Ácido úrico ↑','Ácido úrico ↓','Urea ↑','Urea ↓'];
+const S=[
+{name:'Cuestionario',short:'Cuestionario',type:'quiz',notube:1,
+theory:'<p>Contesta con lo que leíste en la presentación. Si fallas, te decimos qué diapositiva revisar.</p>',
+items:[
+{t:'mcq',d:2,q:'¿Qué enzima forma el ácido úrico a partir de la xantina?',o:['Xantina oxidasa','Uricasa','Peroxidasa','Ureasa'],c:0,w:'La xantina oxidasa forma el ácido úrico. La uricasa es la enzima del método.'},
+{t:'mcq',d:3,q:'En el método del ácido úrico, ¿qué se lee a ≈500–550 nm?',o:['Alantoína','Quinoneimina (rosa-rojo)','NADH','Indofenol azul'],c:1,w:'La quinoneimina da el color; más color significa más ácido úrico.'},
+{t:'mcq',d:4,q:'¿Dónde se forma la urea?',o:['En el hígado','En el riñón','En el intestino','En el músculo'],c:0,w:'Se forma en el hígado, en el ciclo de la urea.'},
+{t:'mcq',d:4,q:'Una urea de 100 mg/dL equivale a un BUN de…',o:['46.7 mg/dL','214 mg/dL','21.4 mg/dL','4.67 mg/dL'],c:0,w:'BUN = 100 × 0.467 = 46.7 mg/dL.'},
+{t:'mcq',d:5,q:'En el método ureasa-GLDH, ¿qué se mide?',o:['Cuánto baja la absorbancia a 340 nm','Cuánto sube la absorbancia a 340 nm','El color rosa-rojo a 500 nm','La cantidad de H₂O₂'],c:0,w:'Se gasta NADH, y por eso baja la absorbancia a 340 nm.'},
+{t:'mcq',d:5,q:'¿Qué color da el método de Berthelot para la urea?',o:['Azul (indofenol)','Rosa-rojo','Amarillo','Verde'],c:0,w:'El NH₃ con fenol e hipoclorito forma indofenol azul.'},
+{t:'mcq',d:6,q:'El ácido ascórbico en la muestra da un ácido úrico…',o:['Falsamente bajo','Falsamente alto','Igual al real','No medible'],c:0,w:'Consume el H₂O₂ de la reacción, y por eso baja el resultado.'},
+{t:'mcq',d:6,q:'¿Por qué no se usa fluoruro de sodio como conservador para medir urea?',o:['Inhibe la ureasa','Libera amonio','Forma color azul','Destruye el NADH'],c:0,w:'El fluoruro de sodio inhibe la ureasa.'},
+{t:'mcq',d:6,q:'Una muestra contaminada con amonio da una urea…',o:['Falsamente alta','Falsamente baja','Igual al real','Sin reacción'],c:0,w:'El amonio extra se lee como si viniera de la urea.'}
+]},
+{name:'Conoce las sustancias',short:'1. Conoce',type:'memo',
+theory:'<p>Ya viste la presentación. Ahora a jugar.</p>',
+game:'Memorama: une cada término con su significado.',
+pairs:[['Ácido úrico','Producto final de las purinas'],['Urea','Se forma en el hígado con el amoniaco'],['Xantina oxidasa','Enzima que forma el ácido úrico'],['Uricasa','Rompe el ácido úrico en alantoína'],['Ureasa','Rompe la urea en NH₃ y CO₂'],['Gota','Ácido úrico alto y dolor en una articulación']]},
+{name:'Cómo se miden',short:'2. Cómo se miden',type:'memo',
+theory:'',
+game:'Memorama: une cada dato con su explicación.',
+pairs:[['Quinoneimina','Color rosa-rojo del método de ácido úrico'],['340 nm','Ahí baja la absorbancia (se gasta NADH)'],['Indofenol azul','Color del método de Berthelot para urea'],['Ácido ascórbico','Da ácido úrico falsamente bajo'],['Amonio en la muestra','Da urea falsamente alta'],['Fluoruro de sodio','Inhibe la ureasa: no se usa']]},
+{name:'¿Sube o baja?',short:'3. ¿Sube o baja?',type:'quiz',
+theory:'',
+game:'Clasifica: ¿qué le pasa al resultado en cada situación?',
+items:[
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Gota',c:0,w:'La gota es una causa de ácido úrico alto.'},
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Tratamiento con alopurinol',c:1,w:'El alopurinol baja el ácido úrico.'},
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Diarrea y vómito con deshidratación',c:2,w:'La deshidratación es causa prerrenal de urea alta.'},
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Dieta rica en purinas y alcohol',c:0,w:'Las purinas y el alcohol elevan el ácido úrico.'},
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Comer muy poca proteína',c:3,w:'Con poca proteína baja la urea.'},
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Dieta muy rica en proteínas',c:2,w:'Más proteína significa más urea.'},
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Sobrehidratación',c:3,w:'Con exceso de líquidos la urea baja.'},
+{t:'mcq',fixed:1,dos:1,o:AU,q:'Quimioterapia',c:0,w:'La quimioterapia (lisis tumoral) eleva el ácido úrico.'}
+]},
+{name:'Casos clínicos',short:'4. Casos',type:'quiz',
+theory:'<p>Valores normales: ácido úrico en hombres 3.4–7.0 mg/dL, urea 15–45 mg/dL, <b>BUN = urea × 0.467</b>.</p>',
+items:[
+{pre:'<div class="case"><b>Caso 1.</b> Hombre de 52 años. Dolor intenso, calor e hinchazón en el dedo gordo del pie, de noche, después de cenar mariscos y cerveza.<br>Ácido úrico <b>9.8</b> mg/dL · Urea <b>38</b> mg/dL.</div>',t:'mcq',q:'¿Qué valor está alterado?',o:['Solo el ácido úrico','Solo la urea','Los dos','Ninguno'],c:0,w:'El ácido úrico (9.8) pasa de 7.0. La urea (38) está dentro de 15–45.'},
+{t:'mcq',q:'¿Qué enfermedad sugiere este cuadro?',o:['Gota','Deshidratación','Hepatopatía grave','Sobrehidratación'],c:0,w:'Ácido úrico alto con dolor, calor e hinchazón en una articulación: gota.'},
+{pre:'<div class="case"><b>Caso 2.</b> Mujer de 70 años. Tres días con vómito y diarrea, boca seca y mucha sed.<br>Urea <b>112</b> mg/dL.</div>',t:'mcq',q:'¿Qué explica la urea alta?',o:['Deshidratación (causa prerrenal)','Hepatopatía grave','Comer muy poca proteína','Sobrehidratación'],c:0,w:'El vómito y la diarrea hacen perder líquido, y por eso sube la urea.'},
+{t:'num',q:'Convierte la urea de la paciente a BUN (mg/dL).',a:52.3,tol:0.6,u:'mg/dL',w:'BUN = 112 × 0.467 ≈ 52.3 mg/dL.'},
+{t:'open',q:'En 2 o 3 renglones y con tus palabras: ¿para qué sirve medir ácido úrico y urea en el laboratorio clínico?',min:40}
+]}
+];
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const st=S.map(s=>{
+  if(s.type==='memo'){
+    const cards=[];s.pairs.forEach((p,k)=>{cards.push({pid:k,kind:'term',text:p[0]});cards.push({pid:k,kind:'def',text:p[1]})});
+    return {cards:shuffle(cards),flip:[],matched:[],tries:0,lock:false};
+  }
+  return s.items.map(it=>({done:false,tries:0,first:null,wrong:[],val:'',fb:'',fbc:'',ord:it.t==='mcq'?(it.fixed?it.o.map((_,k)=>k):shuffle(it.o.map((_,k)=>k))):null}));
+});
+const who={n:'',g:''};
+const seen=SL.map(()=>false);
+let cur=-1,slide=0,tmr=null;
+const app=document.getElementById('app');
+const frac=si=>S[si].type==='memo'?st[si].matched.length/st[si].cards.length:st[si].filter(x=>x.done).length/st[si].length;
+const stageDone=si=>frac(si)===1;
+
+function memoHTML(si){
+  const m=st[si];
+  return '<div class="memo">'+m.cards.map((c,k)=>{
+    const mt=m.matched.includes(k),up=mt||m.flip.includes(k);
+    return `<button class="mc${up?' up '+c.kind:''}${mt?' ok':''}" data-a="flip" data-s="${si}" data-k="${k}">${up?c.text:'?'}</button>`;
+  }).join('')+`</div><div class="cnt">Intentos: ${m.tries} · Parejas encontradas: ${m.matched.length/2} de ${m.cards.length/2}</div>`;
+}
+function redrawMemo(si){const el=document.getElementById('memo-'+si);if(el)el.innerHTML=memoHTML(si)}
+
+function itemInner(si,ii){
+  const it=S[si].items[ii],s=st[si][ii];
+  let h=`<div class="q"><span class="num">${ii+1}</span> ${it.q}</div>`;
+  if(it.t==='mcq'){
+    h+=`<div class="opts${it.dos?' dos':''}">`+s.ord.map(k=>{
+      let c='opt';
+      if(s.done&&k===it.c)c+=' ok';else if(s.wrong.includes(k))c+=' bad';
+      return `<button class="${c}" data-a="mcq" data-s="${si}" data-i="${ii}" data-o="${k}" ${s.done||s.wrong.includes(k)?'disabled':''}>${it.o[k]}</button>`;
+    }).join('')+'</div>';
+  }else if(it.t==='num'){
+    h+=`<div class="numrow"><input type="text" inputmode="decimal" id="n-${si}-${ii}" value="${esc(s.val)}" ${s.done?'disabled':''} placeholder="Resultado"><span>${it.u||''}</span><button class="btn sm" data-a="num" data-s="${si}" data-i="${ii}" ${s.done?'disabled':''}>Comprobar</button></div>`;
+  }else{
+    h+=`<textarea id="t-${si}-${ii}" data-a="open" data-s="${si}" data-i="${ii}" rows="4" placeholder="Escribe con tus propias palabras…">${esc(s.val)}</textarea><div class="cnt" id="c-${si}-${ii}">${s.val.trim().length}/${it.min} letras mínimo</div>`;
+  }
+  if(s.fb)h+=`<div class="fb ${s.fbc}">${s.fb}</div>`;
+  return h;
+}
+function redraw(si,ii){document.getElementById(`it-${si}-${ii}`).innerHTML=itemInner(si,ii)}
+
+function refresh(){
+  let tot=0;
+  S.forEach((s,si)=>{if(s.notube)return;const f=frac(si);tot+=f*25;document.getElementById('ly'+(si-1)).style.height=(f*25)+'%'});
+  document.getElementById('pct').textContent=Math.round(tot)+'%';
+  document.getElementById('tube').classList.toggle('on',tot>0);
+  document.getElementById('side').style.display=(cur>=1)?'block':'none';
+  const nx=document.getElementById('nx');
+  if(nx&&cur>=0&&cur<S.length)nx.disabled=!stageDone(cur);
+  document.querySelectorAll('.pill').forEach(p=>{
+    const k=+p.dataset.go;
+    p.classList.toggle('on',k===cur);
+    p.classList.toggle('ok',stageDone(k));
+  });
+}
+function stepper(){return '<div class="stepper">'+S.map((s,k)=>`<button class="pill" data-go="${k}">${s.short}</button>`).join('')+'</div>'}
+function canGo(k){for(let j=0;j<k;j++)if(!stageDone(j))return false;return true}
+
+function stopTimer(){if(tmr){clearInterval(tmr);tmr=null}}
+
+function renderStart(){
+  stopTimer();cur=-1;
+  app.innerHTML=`<div class="card">
+  <h2>¡Bienvenido!</h2>
+  <p>Esta actividad tiene 3 partes:</p>
+  <ol><li><b>Presentación</b> corta con lo que necesitas saber.</li>
+  <li><b>Cuestionario</b> sobre lo que leíste.</li>
+  <li><b>Laboratorio</b> con memoramas, un juego de ¿sube o baja? y dos casos clínicos. Aquí se llena el tubo de ensaye.</li></ol>
+  <p>Al final descargas tu reporte y lo subes a Google Classroom.</p>
+  <label for="nom">Nombre completo</label><input type="text" id="nom" autocomplete="name">
+  <label for="grp">Grupo</label><input type="text" id="grp">
+  <div class="nav"><span></span><button class="btn" id="go" disabled>Empezar →</button></div>
+  </div>`;
+  refresh();
+}
+function renderSlide(i){
+  stopTimer();cur=-2;slide=i;
+  const last=i===SL.length-1;
+  const label=last?'Ir al cuestionario →':'Siguiente →';
+  app.innerHTML=`<div class="card"><div class="cnt" style="margin:0 0 4px">Presentación · diapositiva ${i+1} de ${SL.length}</div>
+  <div class="bar"><i style="width:${(i+1)/SL.length*100}%"></i></div>
+  <div class="slide">${SL[i]}</div>
+  <div class="nav">${i>0?'<button class="btn alt" id="sp">← Anterior</button>':'<span></span>'}<button class="btn" id="sn">${label}</button></div></div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+  refresh();
+  const nb=document.getElementById('sn');
+  if(!seen[i]){
+    let t=5;nb.disabled=true;nb.textContent=`Siguiente en ${t}…`;
+    tmr=setInterval(()=>{t--;if(t<=0){stopTimer();seen[i]=true;nb.disabled=false;nb.textContent=label}else nb.textContent=`Siguiente en ${t}…`},1000);
+  }
+}
+function renderStage(si){
+  stopTimer();cur=si;const s=S[si];
+  const title=si===0?'Cuestionario':'Reto '+si+'. '+s.name;
+  let h=`<div class="card">${stepper()}<h2>${title}</h2>`;
+  if(s.theory)h+=`<div class="theory">${s.theory}</div>`;
+  if(s.game)h+=`<div class="game">🎯 ${s.game}</div>`;
+  if(s.type==='memo')h+=`<div id="memo-${si}">${memoHTML(si)}</div>`;
+  else s.items.forEach((it,ii)=>{h+=(it.pre||'')+`<div class="item" id="it-${si}-${ii}">${itemInner(si,ii)}</div>`});
+  h+=`<div class="nav"><button class="btn alt" id="pv">${si===0?'← Presentación':'← Anterior'}</button><button class="btn" id="nx" disabled>${si<S.length-1?'Siguiente →':'Terminar y generar reporte'}</button></div></div>`;
+  app.innerHTML=h;
+  window.scrollTo({top:0,behavior:'smooth'});
+  refresh();
+}
+function score(){
+  let ok=0,n=0;
+  S.forEach((s,si)=>{if(s.type==='quiz')s.items.forEach((it,ii)=>{if(it.t!=='open'){n++;if(st[si][ii].first)ok++}})});
+  return{ok,n};
+}
+function renderFinal(){
+  stopTimer();cur=S.length;const sc=score();
+  app.innerHTML=`<div class="card" style="text-align:center">${stepper()}
+  <div class="big">¡Tubo lleno! 🎉</div>
+  <p>Terminaste la actividad, ${esc(who.n)}.</p>
+  <p>Acertaste <b>${sc.ok} de ${sc.n}</b> preguntas a la primera.</p>
+  <p>Descarga tu reporte y súbelo a Google Classroom.</p>
+  <div class="nav" style="justify-content:center;flex-wrap:wrap">
+    <button class="btn" id="dl">Descargar reporte (.txt)</button>
+    <button class="btn alt" id="cp">Copiar reporte</button>
+  </div><div class="cnt" id="msg"></div></div>`;
+  refresh();
+}
+function report(){
+  const sc=score(),L=[];
+  L.push('ÁCIDO ÚRICO Y UREA: PRESENTACIÓN, CUESTIONARIO Y LABORATORIO');
+  L.push('Química Clínica');
+  L.push('Alumno: '+who.n);L.push('Grupo: '+who.g);
+  L.push('Fecha: '+new Date().toLocaleString('es-MX'));
+  L.push('Presentación: '+seen.filter(Boolean).length+' de '+SL.length+' diapositivas vistas');
+  L.push('Preguntas acertadas a la primera (cuestionario, clasificación y casos): '+sc.ok+' de '+sc.n);L.push('');
+  S.forEach((s,si)=>{
+    L.push('=== '+(si===0?'CUESTIONARIO':'RETO '+si+'. '+s.name.toUpperCase())+' ===');
+    if(s.type==='memo'){L.push('Memorama completado en '+st[si].tries+' intentos')}
+    else s.items.forEach((it,ii)=>{
+      const x=st[si][ii],q=it.q.replace(/<[^>]+>/g,'');
+      if(it.t==='open'){L.push((ii+1)+'. '+q);L.push('   Respuesta: '+x.val.trim())}
+      else if(it.t==='num'){L.push((ii+1)+'. '+q+' -> '+x.val+' (intento '+x.tries+')')}
+      else L.push((ii+1)+'. '+q+' -> correcta en el intento '+x.tries);
+    });
+    L.push('');
+  });
+  return L.join('\n');
+}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const a=b.dataset.a;
+  if(b.id==='go'){who.n=document.getElementById('nom').value.trim();who.g=document.getElementById('grp').value.trim();renderSlide(0);return}
+  if(b.id==='sn'){slide<SL.length-1?renderSlide(slide+1):renderStage(0);return}
+  if(b.id==='sp'){renderSlide(slide-1);return}
+  if(b.id==='nx'){cur<S.length-1?renderStage(cur+1):renderFinal();return}
+  if(b.id==='pv'){cur===0?renderSlide(SL.length-1):renderStage(cur-1);return}
+  if(b.dataset.go!==undefined){const k=+b.dataset.go;if(canGo(k))renderStage(k);return}
+  if(b.id==='dl'){
+    const blob=new Blob([report()],{type:'text/plain;charset=utf-8'});
+    const u=document.createElement('a');u.href=URL.createObjectURL(blob);
+    u.download='reporte_'+(who.n||'alumno').replace(/[^\wáéíóúñÁÉÍÓÚÑ]+/g,'_')+'.txt';
+    document.body.appendChild(u);u.click();u.remove();
+    document.getElementById('msg').textContent='Si no se descargó, usa "Copiar reporte" y pégalo en un documento.';return}
+  if(b.id==='cp'){
+    const m=document.getElementById('msg');
+    try{navigator.clipboard.writeText(report()).then(()=>m.textContent='Reporte copiado.',()=>m.textContent='No se pudo copiar.')}catch(_){m.textContent='No se pudo copiar.'}
+    return}
+  if(!a)return;
+  const si=+b.dataset.s;
+  if(a==='flip'){
+    const m=st[si],k=+b.dataset.k;
+    if(m.lock||m.matched.includes(k)||m.flip.includes(k))return;
+    m.flip.push(k);
+    if(m.flip.length===2){
+      m.tries++;
+      const [x,y]=m.flip;
+      if(m.cards[x].pid===m.cards[y].pid){m.matched.push(x,y);m.flip=[]}
+      else{m.lock=true;redrawMemo(si);setTimeout(()=>{m.flip=[];m.lock=false;redrawMemo(si)},1000);return}
+    }
+    redrawMemo(si);refresh();return;
+  }
+  const ii=+b.dataset.i,it=S[si].items[ii],s=st[si][ii];
+  if(a==='mcq'){
+    if(s.done)return;
+    s.tries++;const o=+b.dataset.o;
+    if(o===it.c){s.done=true;s.first=s.tries===1;s.fb='✔ '+it.w;s.fbc='ok'}
+    else{s.wrong.push(o);s.fb='Todavía no. '+(it.d?'Revisa la diapositiva '+it.d+'.':'Prueba con otra opción.');s.fbc='bad'}
+    redraw(si,ii);refresh();
+  }else if(a==='num'){
+    if(s.done)return;
+    s.val=document.getElementById(`n-${si}-${ii}`).value.trim();
+    const v=parseFloat(s.val.replace(',','.'));
+    s.tries++;
+    if(!isNaN(v)&&Math.abs(v-it.a)<=it.tol){s.done=true;s.first=s.tries===1;s.fb='✔ '+it.w;s.fbc='ok'}
+    else{s.fb='No coincide. Revisa la operación.';s.fbc='bad'}
+    redraw(si,ii);refresh();
+  }
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.id==='nom'||t.id==='grp'){
+    document.getElementById('go').disabled=!(document.getElementById('nom').value.trim()&&document.getElementById('grp').value.trim());return}
+  if(t.dataset&&t.dataset.a==='open'){
+    const si=+t.dataset.s,ii=+t.dataset.i,it=S[si].items[ii],s=st[si][ii];
+    s.val=t.value;s.done=t.value.trim().length>=it.min;
+    document.getElementById(`c-${si}-${ii}`).textContent=t.value.trim().length+'/'+it.min+' letras mínimo'+(s.done?' ✔':'');
+    refresh();
+  }
+});
+renderStart();
+</script>
+</body>
+</html>
